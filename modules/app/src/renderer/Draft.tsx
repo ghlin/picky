@@ -70,7 +70,17 @@ function Pickreq({ drafting, pickreq, selection, expand }: {
               c.pack.map((code, i) => <div key={c.id + '/' + i} className={style.cimg}>
                 <img src={'cimg://' + code} />
                 <div className={classnames(style.togglebtnwrapper, Flex)}>
-                  <div className={style.togglebtn} onClick={() => expand(code)}>?</div>
+                  <div
+                    className={style.togglebtn}
+                    onClick={
+                      e => {
+                        expand(code)
+                        e.stopPropagation()
+                      }
+                    }
+                  >
+                    ?
+                  </div>
                 </div>
               </div>)
             }
