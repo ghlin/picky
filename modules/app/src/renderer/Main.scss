@@ -1,0 +1,53 @@
+.container {
+  justify-content: space-between;
+
+  a {
+    cursor: pointer;
+  }
+
+  > div {
+    overflow: hidden;
+  }
+
+  .rooms {
+    justify-content: flex-start;
+
+    &> div:first-child {
+      margin-top: 4em;
+    }
+
+    &> div:last-child {
+      margin-bottom: 4em;
+    }
+
+    overflow-y: scroll;
+    :global(.cimgclipbtn) {
+      width: 22rem;
+      margin: 2em;
+
+      transform: scale(1);
+      transition: all 70ms linear;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+
+    :global(.cimgclipbtn > .cimgclip) {
+      width: 5rem;
+      height: 5rem;
+    }
+  }
+
+  .navs {
+    justify-content: center;
+    padding: 3em;
+    > div {
+      min-width: 20rem;
+      button {
+        margin: 0.2rem;
+      }
+    }
+  }
+}
+

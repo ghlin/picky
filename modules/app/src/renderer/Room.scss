@@ -1,0 +1,42 @@
+.container {
+  a { cursor: pointer; }
+  justify-content: space-between;
+
+  .header {
+    justify-content: flex-start;
+    > * {
+      margin: 0.2em;
+    }
+  }
+
+  :global(.cimgclipbtn) {
+    width: 22rem;
+    margin: 2em;
+
+    &:hover {
+      background-color: rgba(100, 100, 100, 0.7);
+    }
+  }
+
+  :global(.cimgclipbtn > .cimgclip) {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .players, .presets {
+    width: 50%;
+    overflow-y: scroll;
+  }
+
+  .preset {
+    width: 30rem;
+    margin: 1rem;
+    background-color: rgba(100, 100, 100, 0.6);
+    border: 1px solid rgba(200, 200, 200, 0.9);
+    filter: brightness(0.4);
+
+    &.active {
+      filter: none;
+    }
+  }
+}

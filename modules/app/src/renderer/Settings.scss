@@ -1,0 +1,24 @@
+.container {
+  overflow-y: scroll;
+  padding: 2em;
+  .section {
+    width: 40%;
+    min-width: 40rem;
+    flex-direction: column;
+    span {
+      font-size: 1.3em;
+      display: block;
+      width: 100%;
+    }
+
+    > div > * {
+      margin: 1rem;
+    }
+
+    border-bottom: 1px solid darkgray;
+
+    &:last-child {
+      border: none;
+    }
+  }
+}

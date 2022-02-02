@@ -1,0 +1,20 @@
+{
+  "name": "picky",
+  "version": "0.0.2",
+  "description": "draft/unsealed duel for ygopro",
+  "main": "./dist/main/main.js",
+  "author": {
+    "name": "ghlin",
+    "email": "sfinae@foxmail.com",
+    "url": "https://github.com/ghlin"
+  },
+  "scripts": {
+    "electron-rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
+    "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts",
+    "postinstall": "yarn electron-rebuild && yarn link-modules"
+  },
+  "dependencies": {
+    "sql.js": "^1.6.2"
+  },
+  "license": "MIT"
+}

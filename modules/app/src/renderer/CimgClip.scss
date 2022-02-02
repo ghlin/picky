@@ -1,0 +1,72 @@
+:local {
+  .cimgfull {
+    img {
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .cimgclip {
+    position: static;
+    height: 100%;
+    overflow: hidden;
+    padding: 0;
+
+    img {
+      padding: 0;
+      margin: 0;
+      position: relative;
+
+      left: -15.53%;
+      top: -34.54%;
+
+      width:  131.06%;
+      height: auto;
+
+      // clip-path: inset(18.37% 11.85% 20.41% 11.85%);
+    }
+  }
+
+  .cimgclipbtn {
+    box-sizing: content-box;
+    width: 100%;
+    display: flex;
+    border: 1px solid grey;
+    background-color: rgba(100, 100, 100, 0.6);
+    height: 5rem;
+
+    > .cimgclip {
+      border: 1px solid rgba(200, 200, 200, 0.8);
+      width: 5rem;
+      height: 5rem;
+      min-width: 5rem;
+      min-height: 5rem;
+    }
+
+    .cimgclipbtnlbl {
+      cursor: default;
+      display: flex;
+      flex-direction: column;
+        width: 100%;
+        height: 100%;
+
+      >div {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-left: 0.3rem;
+      }
+
+      >div:first-child {
+        overflow-y: hidden;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        border-bottom: 1px solid grey;
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+:local {
+  .FullW, .Full {
+    width: 100%;
+  }
+
+  .FullH, .Full {
+    height: 100%;
+  }
+
+  /*
+  .Debug {
+    border: 1px solid black;
+    background-color: rgba(220, 220, 220, 0.3);
+  }
+  */
+
+  .FlexH, .Flex, .FlexV {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .FlexV {
+    flex-direction: column;
+  }
+
+  .UI {
+    min-width: 10em;
+  }
+
+  input[type="text"], button {
+    padding: 0.2rem;
+    margin: 0.2rem;
+    font-size: 1.1em;
+    color: white;
+    background-color: rgba(100, 100, 100, 0.6);
+    border: 1px solid rgba(200, 200, 200, 0.9);
+    appearance: none;
+
+    &:disabled {
+      cursor: not-allowed;
+      filter: brightness(0.5);
+    }
+
+    transform: scale(1.0);
+
+    transition: all 70ms linear;
+
+    &:not(:disabled):hover {
+      background-color: rgba(130, 130, 130, 0.7);
+      transform: scale(1.1);
+    }
+  }
+}

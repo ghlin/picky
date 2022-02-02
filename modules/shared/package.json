@@ -1,0 +1,23 @@
+{
+  "name": "@picky/shared",
+  "version": "0.0.0",
+  "private": true,
+  "description": "interfaces & common utils",
+  "keywords": [],
+  "license": "UNLICENSED",
+  "author": "ghlin <2012.2.9.ghl@gmail.com>",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "typings": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "npx tsc",
+    "build:watch": "npx tsc --watch --preserveWatchOutput --incremental",
+    "prepublishOnly": "npx tsc"
+  },
+  "dependencies": {
+    "typeorm": "^0.2.41"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.0"
+  }
+}

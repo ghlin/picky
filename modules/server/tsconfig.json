@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "ts-node": { "files": true },
+  "include": ["src/**/*.ts"],
+  "references": [
+    { "path": "../shared" }
+  ]
+}

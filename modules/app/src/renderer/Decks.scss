@@ -1,0 +1,34 @@
+.container {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.ctrls {
+  margin: 3rem;
+
+  &> input, &> button {
+    margin: 1rem;
+  }
+
+  &> input {
+    min-width: 20rem;
+    width: 20rem;
+    font-family: monospace;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+}
+
+.cardlist {
+  background-color: rgba(100, 100, 100, 0.2);
+  border: 1px solid rgba(200, 200, 200, 0.8);
+
+  justify-content: center;
+  flex-wrap: wrap;
+
+  :global(.cimgfull) {
+    margin: 0.8em;
+    width: 8rem;
+  }
+}
+

@@ -84,4 +84,4 @@ dist/
 
 # dev files
 modules/*/nodemon.json
-
+config.json
