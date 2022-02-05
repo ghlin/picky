@@ -17,7 +17,9 @@ export function Room() {
   const self  = room?.participants.find(p => p.uuid === ctx.session.bound?.uuid)
   const ready = self?.ready
 
-  const [presets] = usePromise(ctx.request('c_poll_presets', {}).catch(ctx.handle) as Promise<Drafting.DraftRoomPreset[]>, [])
+  const [presets] = usePromise(
+    ctx.request('c_poll_presets', {}).catch(ctx.handle) as Promise<Drafting.DraftRoomPreset[]>,
+    [room.room_id])
 
   return <div className={classnames(style.container, Full, FlexV)}>
     <Header

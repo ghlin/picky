@@ -191,7 +191,7 @@ export function useAppState(
 
   const cleardraft: U<'cleardraft'> = () => updateDrafting(undefined)
 
-  useEffect(() => refresh(), [session.bound, drafting])
+  useEffect(() => refresh(), [session.bound, !!drafting])
 
   return {
     session, drafting, rooms,
