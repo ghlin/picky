@@ -94,6 +94,13 @@ if (isDevelopment) {
 }
 
 async function main() {
+  const locked = app.requestSingleInstanceLock()
+
+  if (!locked) {
+    dialog.showErrorBox('不支持多开', 'see you')
+    app.quit()
+  }
+
   app.on('window-all-closed', () => app.quit())
   await app.whenReady()
 
@@ -147,6 +154,12 @@ async function main() {
       mainWindow.minimize()
     } else {
       mainWindow.show()
+    }
+  })
+
+  app.on('second-instance', () => {
+    if (mainWindow.isMinimized()) {
+      mainWindow.restore()
     }
   })
 }

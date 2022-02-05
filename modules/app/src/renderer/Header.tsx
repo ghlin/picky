@@ -39,9 +39,13 @@ export function Header(props: {
                         excludes: ['TOKEN', 'PENDULUM', 'LINK']
                       })
                       if (ci) {
-                        const resp = await ctx.request('c_bind', { uuid, secret, image_id: ci.code })
-                        ctx.update.bound(resp)
-                        localStorage.setItem(Keys.AVATAR, ci.code.toString())
+                        try {
+                          const resp = await ctx.request('c_bind', { uuid, secret, image_id: ci.code })
+                          ctx.update.bound(resp)
+                          localStorage.setItem(Keys.AVATAR, ci.code.toString())
+                        } catch (e: any) {
+                          ctx.handle(e)
+                        }
                       }
                     }
                   }

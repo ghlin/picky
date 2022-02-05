@@ -55,9 +55,21 @@ export interface AppContext {
     tag:  Tag,
     body: Omit<Drafting.C_MsgDefs[Tag], 'tag'>
   ) => Promise<Drafting.AckBodyOf<Tag>>
+
+  handle: (e: Error) => void
 }
 
 export const AppContext = React.createContext<AppContext>(undefined as unknown as AppContext)
+
+export class ErrorWithCode extends Error {
+  constructor(readonly code: string, message: string) {
+    super(`错误: ${code} - ${message}`)
+  }
+}
+
+export function hasCode(e: Error): e is ErrorWithCode {
+  return `code` in e
+}
 
 export function initialize() {
   const socket = io(localStorage.getItem('SERVER_URL') || 'http://49.232.147.104:5003')
@@ -73,7 +85,7 @@ export function initialize() {
           return resolve(resp.data)
         } else {
           console.log(`<= ${tag}.${resp.status} ${resp.code} ${resp.message}`)
-          return reject({ code: resp.code, message: resp.message, tag: tag })
+          return reject(new ErrorWithCode(resp.code, resp.message))
         }
       })
     })
@@ -90,7 +102,9 @@ export function initialize() {
   return { socket, rx$, request }
 }
 
-export function useAppState({ socket, request, rx$ }: Pick<AppContext, 'socket' | 'request' | 'rx$'>): AppContext {
+export function useAppState(
+  { socket, request, rx$, handle }: Pick<AppContext, 'socket' | 'request' | 'rx$' | 'handle'>
+): AppContext {
   const [session,  updateSession]  = useState<SessionState>({ online: socket.connected })
   const [drafting, updateDrafting] = useState<DraftingState>()
   const [rooms,    updateRooms]    = useState<Drafting.BaseRoomInfo[]>([])
@@ -184,6 +198,7 @@ export function useAppState({ socket, request, rx$ }: Pick<AppContext, 'socket' 
     socket,
     rx$,
     request,
+    handle,
     update: {
       online,
       bound,
