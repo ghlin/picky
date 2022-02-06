@@ -188,27 +188,24 @@ export function Draft() {
             <div><span>Spells</span><span>{stats.spells.length}</span></div>
             <div><span>Traps</span><span>{stats.traps.length}</span></div>
           </div>
-          <div className={style.previewctls}>
-            {
-              (
-                [
-                  ['none',       '无'],
-                  ['mattribute', '属性'],
-                  ['mtype',      '种族'],
-                  ['mlevel',     '等级'],
-                  ['matk',       '攻击力'],
-                  ['mdef',       '守备力'],
-                ] as const
-              ).map(
-                ([ord, label]) => <button
-                  key={ord}
-                  className={classnames({ [style.activeorder]: ord === order })}
-                  onClick={() => setOrder(ord)}
-                >
-                  {label}
-                </button>
-              )
-            }
+          <div className={classnames(style.previewctls, FullW, Flex)}>
+            <div className={classnames(style.ctrl, Flex, FullW)}>
+              <label htmlFor="order">排序</label>
+              <select id="order" name="order" onChange={e => setOrder(e.target.value as any)} value={order} className={UI}>
+                {
+                  (
+                    [
+                      ['none',       '无'],
+                      ['mattribute', '属性'],
+                      ['mtype',      '种族'],
+                      ['mlevel',     '等级'],
+                      ['matk',       '攻击力'],
+                      ['mdef',       '守备力'],
+                    ] as const
+                  ).map(([ord, label]) => <option key={ord} value={ord}>{label}</option>)
+                }
+              </select>
+            </div>
           </div>
         </div>
         {

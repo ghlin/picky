@@ -106,17 +106,15 @@ $ti_effect:  #b96636;
       }
 
       &> .previewctls {
-        display: flex;
         justify-content: flex-start;
-        align-items: center;
         flex-wrap: wrap;
-
-        button {
-          flex: 1;
-          min-width: 6rem;
-
-          &.activeorder {
-            text-decoration: underline;
+        .ctrl {
+          >*:last-child { flex: 1; }
+          >* {
+            padding-top: 0.2rem;
+            padding-bottom: 0.2rem;
+            padding-left: 0.8rem;
+            padding-right: 0.8rem;
           }
         }
       }
@@ -249,7 +247,7 @@ $ti_effect:  #b96636;
   }
 }
 
-.modal {
+.modal { // {{{
   z-index: 250;
   background: transparent;
   display: flex;
@@ -332,4 +330,4 @@ $ti_effect:  #b96636;
 .modal, .overlay {
   position: fixed;
 }
-
+// }}}
