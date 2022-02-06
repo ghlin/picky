@@ -8,6 +8,8 @@ $ti_synchro: #e6e6e4;
 $ti_xyz:     #1e272b;
 $ti_effect:  #b96636;
 
+$cimg_border_width: 0.2rem;
+
 .container {
   overflow-x: hidden;
   overflow-y: scroll;
@@ -168,12 +170,14 @@ $ti_effect:  #b96636;
   }
 
   .over .candidate.highlight img {
-    border: 5px solid red;
+    border: $cimg_border_width solid red;
+    box-shadow: 0 0 0.3rem red;
   }
 
   .candidate { // {{{
     position: relative;
 
+    // {{{ (?) button
     .cimg > .togglebtnwrapper {
       position: absolute;
       opacity: 0;
@@ -215,30 +219,39 @@ $ti_effect:  #b96636;
         border: 2px solid lightyellow;
       }
     }
-
-    &.highlight img {
-      border: 4px solid lightyellow;
-      border-radius: 5px;
-    }
-
-    &.normal img {
-      border: 4px solid transparent;
-      border-radius: 5px;
-    }
+    // }}}
 
     justify-content: flex-start;
     flex-wrap: wrap;
 
-    // transition: all 70ms linear;
-    // transform: scale(1);
-    // &:hover {
-    //   transform: scale(1.2);
-    //   z-index: 100;
-    // }
+    transition: all 70ms linear;
+    transform: scale(1);
+
+    .cimg { margin: 0.5em; }
+
+    &:hover {
+      transform: scale(1.1);
+      z-index: 100;
+
+      &.normal img {
+        border: $cimg_border_width solid lightgrey;
+        box-shadow: 0 0 0.3rem lightgrey, 0 0 0.2rem yellow;
+      }
+    }
 
     img {
-      margin: 0.3em;
       width: 8rem;
+      border-radius: 0.2rem;
+    }
+
+    &.normal img {
+      border: $cimg_border_width solid transparent;
+    }
+
+    &.highlight img {
+      border: $cimg_border_width solid lightyellow;
+      box-shadow: 0 0 0.8rem lightyellow,
+                  0 0 0.4rem yellow;
     }
   } // }}}
 
