@@ -1,5 +1,6 @@
 import { flatten, Logger } from '@nestjs/common'
 import { Drafting, tuple } from '@picky/shared'
+import { firstValueFrom, Subject } from 'rxjs'
 import { inspect } from 'util'
 import { DispatchingPreset, DispatchSchema, DraftDispatching, SealedDispatching } from './dispatching.interface'
 
@@ -8,9 +9,11 @@ const expand = (d: {}) => inspect(d, false, null, false)
 export class DraftingSession {
   logger   = new Logger(`dss:${this.id}`)
   supplier = 0
+  abort$ = new Subject<void>()
 
   participants: Array<{
     uuid:       string
+    image_id:   number
     selections: Record<
       string, /*  req_id (+shift_id) */
       Drafting.PickCandidate[]
@@ -30,7 +33,9 @@ export class DraftingSession {
     const { tag: _tag1, ...msgdump } = message
     this.logger.debug(`${message.tag}.req -> ${uuid} ${expand(msgdump)}`)
 
-    const resp = await this._emit(uuid, message)
+    const resp = await Promise.race([this._emit(uuid, message), firstValueFrom(this.abort$)])
+
+    if (!resp) { throw new Error(`Abort`) }
     this.logger.debug(`${message.tag}.ack <- ${uuid} ${expand(resp)}`)
 
     return resp as unknown as T
@@ -46,8 +51,9 @@ export class DraftingSession {
 
   async start() {
     await this.broadcast(Drafting.mkmsg('s_draft_did_start', {
-      draft_id: this.id,
-      preset:   {
+      draft_id:     this.id,
+      participants: this.participants,
+      preset: {
         id:          this.preset.id,
         name:        this.preset.name,
         description: this.preset.description
@@ -63,6 +69,12 @@ export class DraftingSession {
       return this.emit(p.uuid, Drafting.mkmsg('s_draft_complete', { draft_id: this.id, picks }))
     }))
     await this.broadcast(Drafting.mkmsg('s_draft_did_stop', { draft_id: this.id }))
+  }
+
+  async abort() {
+    this.abort$.next()
+    await this.broadcast(Drafting.mkmsg('s_draft_did_stop', { draft_id: this.id }))
+    await this.broadcast(Drafting.mkmsg('s_draft_complete', { draft_id: this.id, picks: [] }))
   }
 
   private async _dispatch(d: DispatchSchema) {
@@ -165,7 +177,7 @@ export class DraftingSession {
       this.broadcast(Drafting.mkmsg('s_pick_progress', {
         draft_id: this.id,
         req_id,
-        participants: this.participants.map(p => ({ uuid: p.uuid, done: !!p.selections[req_id] }))
+        participants: this.participants.map(p => ({ uuid: p.uuid, image_id: p.image_id, done: !!p.selections[req_id] }))
       }))
     ])
   }

@@ -223,7 +223,7 @@ export class DraftGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
             // reconnected, send recover-info
             const picks = flatten(Object.values(session.participants.find(p => p.uuid === uuid)?.selections ?? {}))
-            socket.emit('M', Drafting.mkmsg('s_draft_recover', { draft_id: room_id, picks }))
+            socket.emit('M', Drafting.mkmsg('s_draft_recover', { draft_id: room_id, picks, participants: session.participants }))
           }
 
           const response = await Promise.race([
@@ -259,7 +259,10 @@ export class DraftGateway implements OnGatewayDisconnect, OnGatewayConnection {
         }
       })
 
-      session.participants = room.participants.map(p => ({ uuid: p.client.uuid, selections: {} }))
+      session.participants = room.participants.map(p => ({
+        uuid: p.client.uuid, image_id: p.client.image_id, selections: {}
+      }))
+
       this.sessions.set(room_id, session)
 
       session.start()
