@@ -30,6 +30,7 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: 14.16.1
+          cache: yarn
 
       # Install deps
       - name: install-deps
