@@ -6,7 +6,7 @@ name: build-and-release
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    tags: [ '*' ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -22,6 +22,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@master
+
+      # Tag it
+      - uses: EndBug/latest-tag@v1.4.0
 
       # Setup node env
       - uses: actions/setup-node@master
@@ -48,7 +51,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: auto release
           body: auto release
-          commit: ${{ github.sha }}
+          tag: latest
           prerelease: true
           draft: true
           artifacts: "./modules/app/release/build/*.exe"
