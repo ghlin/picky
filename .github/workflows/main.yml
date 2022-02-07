@@ -65,6 +65,8 @@ jobs:
           name: auto release
           body: auto release
           allowUpdates: true
+          removeArtifacts: true
+          replacesArtifacts: true
           tag: latest
           prerelease: true
           artifacts: "./modules/app/release/build/*.exe"
