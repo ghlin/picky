@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: build-and-release
 
 # Controls when the workflow will run
 on:
@@ -33,13 +33,14 @@ jobs:
         run: |
           npm i -g lerna lerna
           lerna bootstrap
-  
+
       # Build the app!
-      - name: build 
-        run: |
-          lerna run build   --scope @picky/shared
-          lerna run package --scope @picky/app -- -w
-          
+      - name: prepare
+        run: lerna run build   --scope @picky/shared
+      - name: build
+        working-directory: ./modules/app
+        run: yarn package -w
+
       # Release
       - name: Create Release
         uses: ncipollo/release-action@v1
@@ -50,5 +51,3 @@ jobs:
           prerelease: true
           draft: true
           artifacts: "./modules/app/release/build/*.exe"
-        
-          
