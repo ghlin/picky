@@ -38,7 +38,6 @@ jobs:
       - name: build 
         run: |
           lerna run build   --scope @picky/shared
-          rm -rf modules/app/release/build
           lerna run package --scope @picky/app -- -w
           
       # Release
