@@ -52,6 +52,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: auto release
           body: auto release
+          allowUpdates: true
           tag: latest
           prerelease: true
           artifacts: "./modules/app/release/build/*.exe"
