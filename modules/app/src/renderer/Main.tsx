@@ -1,8 +1,9 @@
 import classnames from 'classnames'
 import { useContext } from 'react'
+import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 import { CimgClipButton } from './CimgClip'
-import { AppContext } from './context'
+import { AppContext, hasCode } from './context'
 import { Draft } from './Draft'
 import { Header } from './Header'
 import style from './Main.scss'
@@ -32,7 +33,20 @@ export function MainPage() {
           ctx.rooms.map(r => <CimgClipButton
             key={r.room_id}
             code={r.image_id}
-            onClick={() => ctx.request('c_join_room', { room_id: r.room_id }).then(ctx.update.room)}
+            onClick={
+              async () => {
+                try {
+                  await ctx.request('c_join_room', { room_id: r.room_id }).then(ctx.update.room)
+                } catch (e: any) {
+                  if (hasCode(e)) {
+                    toast.error(`轮抽已经开始!`)
+                    ctx.update.refresh()
+                  } else {
+                    ctx.handle(e)
+                  }
+                }
+              }
+            }
             label={<span>Join</span>}
           />)
         }
@@ -42,7 +56,7 @@ export function MainPage() {
         <div className={FullW}>
           <button
             disabled={!ctx.session.bound}
-            onClick={create}
+            onClick={() => create().catch(ctx.handle)}
             className={classnames(UI, FullW)}>
             创建房间
           </button>

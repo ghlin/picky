@@ -11,17 +11,17 @@ export interface SessionState {
   room?:  Drafting.RoomInfo
 }
 
+type SelectionState = { state: 'confirmed'; picks: Drafting.PickCandidate[] }
+                    | { state: 'pending';   picks: undefined }
 export interface DraftingState {
-  id:         string
-  complete:   boolean
-  pickreqs:   Record<string, Drafting.PickRequest>
-  selections: Record<string, undefined | {
-    state: 'confirmed'; picks: Drafting.PickCandidate[]
-  } | {
-    state: 'pending';   picks: undefined
-  }>
-  stables:    YGOPROCardInfo[]
-  unstables:  Record<string, YGOPROCardInfo[]>
+  id:           string
+  participants: Drafting.ParticipantInfo[]
+  complete:     boolean
+  pickreqs:     Record<string, Drafting.PickRequest>
+  selections:   Record<string, SelectionState | undefined>
+  progress:     Record<string, Array<Drafting.ParticipantInfo & { done: boolean }>>
+  stables:      YGOPROCardInfo[]
+  unstables:    Record<string, YGOPROCardInfo[]>
 }
 
 export interface AppContext {
@@ -42,6 +42,7 @@ export interface AppContext {
     pickreq:  (s: Drafting.PickRequest)               => void
     recover:  (s: Drafting.MsgOf<'s_draft_recover'>)  => void
     complete: (s: Drafting.MsgOf<'s_draft_complete'>) => void
+    progress: (s: Drafting.MsgOf<'s_pick_progress'>)  => void
 
     select:   (draft_id: string, req_id: string, picks: Drafting.PickCandidate[]) => void
 
@@ -55,9 +56,21 @@ export interface AppContext {
     tag:  Tag,
     body: Omit<Drafting.C_MsgDefs[Tag], 'tag'>
   ) => Promise<Drafting.AckBodyOf<Tag>>
+
+  handle: (e: Error) => void
 }
 
 export const AppContext = React.createContext<AppContext>(undefined as unknown as AppContext)
+
+export class ErrorWithCode extends Error {
+  constructor(readonly code: string, message: string) {
+    super(`错误: ${code} - ${message}`)
+  }
+}
+
+export function hasCode(e: Error): e is ErrorWithCode {
+  return `code` in e
+}
 
 export function initialize() {
   const socket = io(localStorage.getItem('SERVER_URL') || 'http://49.232.147.104:5003')
@@ -73,7 +86,7 @@ export function initialize() {
           return resolve(resp.data)
         } else {
           console.log(`<= ${tag}.${resp.status} ${resp.code} ${resp.message}`)
-          return reject({ code: resp.code, message: resp.message, tag: tag })
+          return reject(new ErrorWithCode(resp.code, resp.message))
         }
       })
     })
@@ -90,7 +103,9 @@ export function initialize() {
   return { socket, rx$, request }
 }
 
-export function useAppState({ socket, request, rx$ }: Pick<AppContext, 'socket' | 'request' | 'rx$'>): AppContext {
+export function useAppState(
+  { socket, request, rx$, handle }: Pick<AppContext, 'socket' | 'request' | 'rx$' | 'handle'>
+): AppContext {
   const [session,  updateSession]  = useState<SessionState>({ online: socket.connected })
   const [drafting, updateDrafting] = useState<DraftingState>()
   const [rooms,    updateRooms]    = useState<Drafting.BaseRoomInfo[]>([])
@@ -109,12 +124,14 @@ export function useAppState({ socket, request, rx$ }: Pick<AppContext, 'socket' 
   const room:   U<'room'>   = room   => updateSession(s => ({ ...s, room }))
 
   const pickreq: U<'pickreq'> = pickreq => updateDrafting(s => ({
-    id:         pickreq.draft_id,
-    complete:   false,
-    pickreqs:   { ...s?.pickreqs, [pickreq.req_id]: pickreq },
-    selections: { ...s?.selections, [pickreq.req_id]: undefined },
-    stables:    s?.stables   ?? [],
-    unstables:  s?.unstables ?? {}
+    id:           pickreq.draft_id,
+    participants: s?.participants ?? [],
+    progress:     s?.progress ?? {},
+    complete:     false,
+    pickreqs:     { ...s?.pickreqs, [pickreq.req_id]: pickreq },
+    selections:   { ...s?.selections, [pickreq.req_id]: undefined },
+    stables:      s?.stables   ?? [],
+    unstables:    s?.unstables ?? {}
   }))
 
   const select: U<'select'> = async (draft_id, req_id, picks) => {
@@ -151,6 +168,11 @@ export function useAppState({ socket, request, rx$ }: Pick<AppContext, 'socket' 
     }
   }
 
+  const progress: U<'progress'> = prog => updateDrafting(s => s && ({
+    ...s,
+    progress: { ...s.progress, [prog.req_id]: prog.participants }
+  }))
+
   const complete: U<'complete'> = complete => updateDrafting(s => s && ({
     ...s,
     complete: true,
@@ -166,24 +188,27 @@ export function useAppState({ socket, request, rx$ }: Pick<AppContext, 'socket' 
   })
 
   const recover: U<'recover'> = recover => updateDrafting(s => ({
-    id:         recover.draft_id,
-    complete:   false,
-    pickreqs:   s?.pickreqs ?? {},
-    selections: s?.selections ?? {},
-    unstables:  s?.unstables ?? {},
-    stables:    recover.picks.flatMap(c => c.pack).map(window.ipc.queryCardInfoSync).filter(defined),
-    deck:       []
+    id:           recover.draft_id,
+    participants: recover.participants,
+    progress:     s?.progress ?? {},
+    complete:     false,
+    pickreqs:     s?.pickreqs ?? {},
+    selections:   s?.selections ?? {},
+    unstables:    s?.unstables ?? {},
+    stables:      recover.picks.flatMap(c => c.pack).map(window.ipc.queryCardInfoSync).filter(defined),
+    deck:         []
   }))
 
   const cleardraft: U<'cleardraft'> = () => updateDrafting(undefined)
 
-  useEffect(() => refresh(), [session.bound, drafting])
+  useEffect(() => refresh(), [session.bound, !!drafting])
 
   return {
     session, drafting, rooms,
     socket,
     rx$,
     request,
+    handle,
     update: {
       online,
       bound,
@@ -192,6 +217,7 @@ export function useAppState({ socket, request, rx$ }: Pick<AppContext, 'socket' 
       recover,
       complete,
       select,
+      progress,
       prepick,
       cleardraft,
       refresh,
@@ -231,6 +257,7 @@ export function handleSessionState(
     if (msg.tag === 's_room_expired')   { return update.room(undefined) }
     if (msg.tag === 's_draft_recover')  { return update.recover(msg)    }
     if (msg.tag === 's_draft_complete') { return update.complete(msg)   }
+    if (msg.tag === 's_pick_progress')  { return update.progress(msg)   }
   })
 
   return () => {

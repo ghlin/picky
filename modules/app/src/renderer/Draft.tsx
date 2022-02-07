@@ -11,31 +11,39 @@ import { Flex, FlexV, Full, FullH, FullW, UI } from './style-common'
 
 type DraftingState = AppContext['drafting'] extends (undefined | infer P) ? P : never
 
-function Pickreq({ drafting, pickreq, selection, expand }: {
+function Pickreq({ drafting, pickreq, selection, expand, ...divprops }: {
   drafting:  DraftingState
   pickreq:   Drafting.PickRequest
   selection: DraftingState['selections'][string]
   expand:    (code: number | undefined) => void
-}) {
-  const ctx = useContext(AppContext)
+} & HTMLAttributes<HTMLDivElement>) {
+  const ctx                  = useContext(AppContext)
   const [picks, updatePicks] = useState<string[]>([])
-  const [stable, setStable]  = useState(false)
-  useEffect(() => {
-    const timer = setTimeout(() => setStable(true), 50)
-    return () => clearTimeout(timer)
-  }, [])
-
-  const [packid]   = pickreq.req_id.split(':')[0]
-  const prefix     = `第${packid}包${pickreq.ptype === 'draft' ? ` 第${pickreq.meta.shift.index + 1}轮 (共${pickreq.meta.shift.total}轮)` : ''}`
-  const min        = pickreq.ptype === 'draft' ? pickreq.npicks : pickreq.npicks.min
-  const max        = pickreq.ptype === 'draft' ? pickreq.npicks : pickreq.npicks.max
-  const constraint = min === max ? min : [min, max].join('~')
-  const hint       = `已选${picks.length}件, 应选${constraint}件`
+  const [packid]             = pickreq.req_id.split(':')[0]
+  const prefix               = `第${packid}包${pickreq.ptype === 'draft' ? ` 第${pickreq.meta.shift.index + 1}轮 (共${pickreq.meta.shift.total}轮)` : ''}`
+  const min                  = pickreq.ptype === 'draft' ? pickreq.npicks : pickreq.npicks.min
+  const max                  = pickreq.ptype === 'draft' ? pickreq.npicks : pickreq.npicks.max
+  const constraint           = min === max ? min : [min, max].join('~')
+  const hint                 = `已选${picks.length}件, 应选${constraint}件`
 
   useEffect(() => ctx.update.prepick(pickreq.req_id, pickreq.candidates.filter(c => picks.includes(c.id))), [picks.length, picks])
 
+  const progress = drafting.progress[pickreq.req_id] ?? []
+  const picking  = progress.filter(p => !p.done && p.uuid !== ctx.session?.bound?.uuid)
+
+  const [slowpickers] = usePromise(() => Promise.all(picking.map(p => window.ipc.queryCardInfo(p.image_id))), [picking.length])
+
   if (selection?.state === 'confirmed') {
-    return <></>
+    if (picking.length === 0) { return <></> }
+    return <div {...divprops} className={classnames(style.section, style.picking, FlexV, FullW)}>
+      <div className={classnames(Flex, FullW)}>
+        <span>{prefix}</span>
+        <span className={classnames(style.slowpickers, Flex)}>
+          等待{ (slowpickers ?? []).map(whom => whom?.name ?? 'loading').map(s => '[' + s + ']').join(', ')}选择...
+        </span>
+        <span />
+      </div>
+    </div>
   }
 
   const over = picks.length > max
@@ -43,51 +51,49 @@ function Pickreq({ drafting, pickreq, selection, expand }: {
   const fine = !over && !lack
   const toggle = (id: string) => updatePicks(ps => ps.includes(id) ? ps.filter(p => p !== id) : ps.concat([id]))
 
-  return <div className={classnames(style.section, style.picking, FlexV, FullW, { [style.entering]: !stable })}>
-    <div className={classnames(Flex, FullW)}>
-      <span>{prefix}</span>
-      {
-        selection?.state === 'pending' ? <span>提交中...</span> : <button
-          className={UI}
-          disabled={!fine}
-          onClick={() => ctx.update.select(drafting.id, pickreq.req_id, pickreq.candidates.filter(c => picks.includes(c.id)))}
+  const center = selection?.state === 'pending' ? <button disabled>提交中</button> : <button
+    className={UI}
+    disabled={!fine}
+    onClick={() => ctx.update.select(drafting.id, pickreq.req_id, pickreq.candidates.filter(c => picks.includes(c.id)))}
+  >
+    确认选择
+  </button>
+
+  const pile = <div className={classnames(style.pile, FullW, Flex, fine ? style.fine : lack ? style.lack : style.over)} >
+    {
+      pickreq.candidates.map(c => {
+        const highlight = picks.includes(c.id)
+        return <div
+          key={c.id}
+          className={classnames(Flex, style.candidate, highlight ? style.highlight : style.normal)}
+          onClick={() => !selection && toggle(c.id)}
         >
-          确认
-        </button>
-      }
-      <span>{hint}</span>
-    </div>
-    <div className={classnames(style.pile, FullW, Flex, fine ? style.fine : lack ? style.lack : style.over)}>
-      {
-        pickreq.candidates.map(c => {
-          const highlight = picks.includes(c.id)
-          return <div
-            key={c.id}
-            className={classnames(Flex, style.candidate, highlight ? style.highlight : style.normal)}
-            onClick={() => !selection && toggle(c.id)}
-          >
-            {
-              c.pack.map((code, i) => <div key={c.id + '/' + i} className={style.cimg}>
-                <img src={'cimg://' + code} />
-                <div className={classnames(style.togglebtnwrapper, Flex)}>
-                  <div
-                    className={style.togglebtn}
-                    onClick={
-                      e => {
-                        expand(code)
-                        e.stopPropagation()
-                      }
+          {
+            c.pack.map((code, i) => <div key={c.id + '/' + i} className={style.cimg}>
+              <img src={'cimg://' + code} />
+              <div className={classnames(style.togglebtnwrapper, Flex)}>
+                <div
+                  className={style.togglebtn}
+                  onClick={
+                    e => {
+                      expand(code)
+                      e.stopPropagation()
                     }
-                  >
-                    ?
-                  </div>
+                  }
+                >
+                  ?
                 </div>
-              </div>)
-            }
-          </div>
-        })
-      }
-    </div>
+              </div>
+            </div>)
+          }
+        </div>
+      })
+    }
+  </div>
+
+  return <div {...divprops} className={classnames(style.section, style.picking, FlexV, FullW)}>
+    <div className={classnames(Flex, FullW)}><span>{prefix} / {hint}</span>{center}<span /></div>
+    {pile}
   </div>
 }
 
@@ -198,27 +204,24 @@ export function Draft() {
             <div><span>Spells</span><span>{stats.spells.length}</span></div>
             <div><span>Traps</span><span>{stats.traps.length}</span></div>
           </div>
-          <div className={style.previewctls}>
-            {
-              (
-                [
-                  ['none',       '无'],
-                  ['mattribute', '属性'],
-                  ['mtype',      '种族'],
-                  ['mlevel',     '等级'],
-                  ['matk',       '攻击力'],
-                  ['mdef',       '守备力'],
-                ] as const
-              ).map(
-                ([ord, label]) => <button
-                  key={ord}
-                  className={classnames({ [style.activeorder]: ord === order })}
-                  onClick={() => setOrder(ord)}
-                >
-                  {label}
-                </button>
-              )
-            }
+          <div className={classnames(style.previewctls, FullW, Flex)}>
+            <div className={classnames(style.ctrl, Flex, FullW)}>
+              <label htmlFor="order">排序</label>
+              <select id="order" name="order" onChange={e => setOrder(e.target.value as any)} value={order} className={UI}>
+                {
+                  (
+                    [
+                      ['none',       '无'],
+                      ['mattribute', '属性'],
+                      ['mtype',      '种族'],
+                      ['mlevel',     '等级'],
+                      ['matk',       '攻击力'],
+                      ['mdef',       '守备力'],
+                    ] as const
+                  ).map(([ord, label]) => <option key={ord} value={ord}>{label}</option>)
+                }
+              </select>
+            </div>
           </div>
         </div>
         {
@@ -232,14 +235,17 @@ export function Draft() {
     }
 
     {
-      Object.keys(drafting.pickreqs).sort((a, b) => atoi10(a.split(':')[0])! - atoi10(b.split(':')[0])!).map(key => <Pickreq
-        key={key}
-        drafting={drafting}
-        pickreq={drafting.pickreqs[key]}
-        selection={drafting.selections[key]}
-        expand={code => setExpand(code)}
-      />)
+      Object.keys(drafting.pickreqs)
+        .sort((a, b) => atoi10(a.split(':')[0])! - atoi10(b.split(':')[0])!)
+        .map(key => <Pickreq
+            key={key}
+            drafting={drafting}
+            pickreq={drafting.pickreqs[key]}
+            selection={drafting.selections[key]}
+            expand={code => setExpand(code)}
+          />)
     }
+
     {
       drafting.complete && <>
         <div className={classnames(style.deckview, FullW, Flex)}>

@@ -17,7 +17,9 @@ export function Room() {
   const self  = room?.participants.find(p => p.uuid === ctx.session.bound?.uuid)
   const ready = self?.ready
 
-  const [presets] = usePromise(ctx.request('c_poll_presets', {}) as Promise<Drafting.DraftRoomPreset[]>, [])
+  const [presets] = usePromise(
+    ctx.request('c_poll_presets', {}).catch(ctx.handle) as Promise<Drafting.DraftRoomPreset[]>,
+    [room.room_id])
 
   return <div className={classnames(style.container, Full, FlexV)}>
     <Header
@@ -33,6 +35,8 @@ export function Room() {
                 async () => {
                   try {
                     await ctx.request('c_leave_room', {})
+                  } catch (e: any) {
+                    ctx.handle(e)
                   } finally {
                     ctx.update.room(undefined)
                   }
@@ -52,7 +56,7 @@ export function Room() {
           presets?.map(preset => <div
             key={preset.id}
             className={classnames(FlexV, style.preset, { [style.active]: preset.id === room?.preset.id })}
-            onClick={() => ctx.request('c_use_preset', { id: preset.id })}
+            onClick={() => ctx.request('c_use_preset', { id: preset.id }).catch(ctx.handle)}
           >
             <h3>{preset.name}</h3>
             <p>{preset.description}</p>
@@ -71,14 +75,14 @@ export function Room() {
         <button
           disabled={!defined(ready)}
           className={UI}
-          onClick={() => ctx.request('c_ready', { ready: !ready })}>
+          onClick={() => ctx.request('c_ready', { ready: !ready }).catch(ctx.handle)}>
           {ready ? '稍等' : '准备'}
         </button>
 
         <button
           disabled={!room || room?.participants.some(p => !p.ready)}
           className={UI}
-          onClick={() => ctx.request('c_request_start_draft', {})}>
+          onClick={() => ctx.request('c_request_start_draft', {}).catch(ctx.handle)}>
           开始
         </button>
       </div>

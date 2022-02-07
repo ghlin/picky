@@ -18,14 +18,14 @@ export interface S_MsgDefs {
   s_participant_did_join_room:  ParticipantInfo
   s_participant_did_ready:      ParticipantInfo & { ready: boolean }
   s_participant_did_leave_room: ParticipantInfo
-  s_draft_did_start:            { draft_id: string; preset: DraftRoomPreset }
+  s_draft_did_start:            { draft_id: string; preset: DraftRoomPreset; participants: ParticipantInfo[] }
   s_participant_did_pick:       { draft_id: string; req_id: string; who: string }
   s_draft_complete:             { draft_id: string; picks: PickCandidate[] }
   s_draft_did_stop:             { draft_id: string }
   s_pick_progress:              PickProgress
   s_pick_request:               PickRequest
   s_pick_complete:              { draft_id: string; req_id: string }
-  s_draft_recover:              { draft_id: string; picks: PickCandidate[] }
+  s_draft_recover:              { draft_id: string; picks: PickCandidate[]; participants: ParticipantInfo[] }
   s_error:                      { code: string; message: string }
 }
 
@@ -102,7 +102,7 @@ export interface PickSelection { picks: PickID[] }
 export interface PickProgress {
   draft_id:     string
   req_id:       string
-  participants: Array<{ uuid: string; done: boolean }>
+  participants: Array<{ uuid: string; image_id: number; done: boolean }>
 }
 
 type DistributeMsgHelper<U>     = U extends keyof MsgDefs ? MsgOf<U>     : never
