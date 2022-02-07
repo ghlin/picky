@@ -46,9 +46,7 @@ jobs:
 
       # Install deps
       - name: install-deps
-        run: |
-          yarn i -g lerna
-          lerna bootstrap
+        run: lerna bootstrap
 
       # Build the app!
       - name: prepare
