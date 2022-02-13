@@ -1,1 +1,6 @@
-  declare var G_CONFIG: any
+declare var G_CONFIG: {
+  dirs: {
+    pool:   string
+    preset: string
+  }
+}

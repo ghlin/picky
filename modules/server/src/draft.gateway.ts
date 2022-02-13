@@ -52,7 +52,7 @@ type MsgContext<K extends keyof Drafting.MsgDefs> = {
 
 @WebSocketGateway({ cors: true })
 export class DraftGateway implements OnGatewayDisconnect, OnGatewayConnection {
-  constructor(readonly presets: PresetService) {
+  constructor(readonly preset: PresetService) {
     this.online$.subscribe(o => this.logger.log(`BIND ${o.socket.id} -> ${o.uuid}`))
     this.offline$.subscribe(o => this.logger.log(`EXIT ${o.socket.id} -> ${o.uuid ?? '*'}`))
   }
@@ -68,7 +68,7 @@ export class DraftGateway implements OnGatewayDisconnect, OnGatewayConnection {
   online$  = new Subject<{ uuid: string; socket: Socket }>()
   offline$ = new Subject<{ uuid: string; socket: Socket }>()
 
-  loading = this.presets.loadPoolData().then(() => this.logger.log(`this.presets.loadPoolData done.`))
+  loading = this.preset.initialized
 
   picked$ = new Subject<{
     uuid: string
@@ -91,12 +91,12 @@ export class DraftGateway implements OnGatewayDisconnect, OnGatewayConnection {
       return { uuid: reg.uuid, image_id: reg.image_id }
     },
 
-    c_poll_presets: this.presets.list,
+    c_poll_presets: async () => this.preset.list(),
 
     c_create_room: async ({ data, asserts }) => {
       asserts.session()
 
-      const [preset]        = await this.presets.list()
+      const [preset]        = this.preset.list()
       const room_id         = randomBytes(12).toString('base64').replace(/\//g, '_')
       const room: DraftRoom = { participants: [], image_id: data.image_id, preset }
 
@@ -207,7 +207,11 @@ export class DraftGateway implements OnGatewayDisconnect, OnGatewayConnection {
       }
 
       const preset  = room.preset
-      const schema  = await this.presets.getDispatchSchema(preset.id)
+      const schema  = this.preset.presets.get(preset.id)?.schema
+      if (!schema) {
+        throw new DSError('NOT_FOUND', `no preset ${preset.id}`)
+      }
+
       const session = new DraftingSession(room_id, { ...preset, schema }, async (uuid, message) => {
         const reg = this.clients.get(uuid)
         if (!reg) { throw new DSError('BUG') }
@@ -294,6 +298,8 @@ export class DraftGateway implements OnGatewayDisconnect, OnGatewayConnection {
       const body = await this._handlers[data.tag](ctx as any)
       return Drafting.okack(data.tag, body)
     } catch (e) {
+      this.logger.error(e)
+      this.logger.error(e.stack)
       return Drafting.errack(data.tag, e.code ?? 'SERVER_ERROR', e.message)
     }
   }
