@@ -61,6 +61,7 @@ async function bootstrap() {
     }
   }) // }}}
 
+  app.enableCors({ origin: '*' })
   app.disable('x-powered-by')
 
   const port = parseInt(process.argv[2] || '3000')

@@ -1,0 +1,117 @@
+id:       default_draft
+name:     default draft
+description: 主卡组轮抓(6Χ4) + 额外轮抓(3×4)
+uses:
+  - pool: default
+    alias: C
+patterns:
+  - mode: sealed
+    minpicks: 1
+    maxpicks: 1
+    configs:  { uniq: true }
+    patterns:
+      - compose:
+        - rate: 1
+          parts:
+            - n: 3
+              filter: T1&G1
+
+  # main deck...
+  - mode: draft
+    repeats: { fork: 6 }
+    shifts: [1, 1, 1, 1]
+    patterns:
+      - compose:
+        - rate: 1
+          parts:
+            - n: 2
+              filter: Main&G1&(T3|T4)
+            - n: 1
+              filter: Main&G1&!T1&!T2&!T3&(SPELL|TRAP)
+            - n: 4
+              filter: Main&G1&T5
+            - n: 2
+              filter: Main&G2
+
+        - rate: 3
+          parts:
+            - n: 1
+              filter: Main&G1&T3
+            - n: 1
+              filter: Main&G1&T4
+            - n: 1
+              filter: Main&G1&!T1&!T2&(SPELL|TRAP)
+            - n: 4
+              filter: Main&G1&T5
+            - n: 2
+              filter: Main&G2
+
+        - rate: 2
+          parts:
+            - n: 2
+              filter: Main&G1&T4
+            - n: 5
+              filter: Main&G1&T5
+            - n: 1
+              filter: Main&!T1&(SPELL|TRAP)
+            - n: 1
+              filter: Main&G2
+
+        - rate: 1
+          parts:
+            # cool!
+            - n: 8
+              filter: Main&(!T1)
+            - n: 1
+              filter: Main&!T1&(SPELL|TRAP)
+
+        - rate: 2
+          parts:
+            - n: 1
+              filter: Main&G1&T4
+            - n: 5
+              filter: Main&G1&T5
+            - n: 1
+              filter: Main&G1&(SPELL|TRAP)
+            - n: 2
+              filter: Main&G2&(T2|T3|T4)
+
+  - mode: draft
+    shifts: [1, 1, 1]
+    repeats: { fork: 3 }
+    patterns:
+      - compose:
+        - rate: 1
+          parts:
+            - n: 2
+              filter: 'LINK&G1'
+            - n: 2
+              filter: 'LINK&G2'
+        - rate: 2
+          parts:
+            - n: 3
+              filter: 'LINK&G1'
+            - n: 1
+              filter: 'LINK&G2'
+
+      - compose:
+        - rate: 1
+          parts:
+            - n: 3
+              filter: 'SYNCHRO&G1'
+            - n: 1
+              filter: 'SYNCHRO&G2'
+
+      - compose:
+        - rate: 1
+          parts:
+            - n: 2
+              filter: 'XYZ&G1'
+            - n: 2
+              filter: 'XYZ&G2'
+        - rate: 2
+          parts:
+            - n: 3
+              filter: 'XYZ&G1'
+            - n: 1
+              filter: 'XYZ&G2'
