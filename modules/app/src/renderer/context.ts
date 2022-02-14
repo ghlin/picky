@@ -28,8 +28,10 @@ export interface AppContext {
   session:   SessionState
   drafting?: DraftingState
   rooms:     Drafting.BaseRoomInfo[]
+  dbcache:   Record<number, YGOPROCardInfo>
 
   update: {
+    cache:    (info: YGOPROCardInfo)        => void
     online:   (s: SessionState['online'])   => void
     room:     (s: SessionState['room'])     => void
     bound:    (s: SessionState['bound'])    => void
@@ -109,6 +111,7 @@ export function useAppState(
   const [session,  updateSession]  = useState<SessionState>({ online: socket.connected })
   const [drafting, updateDrafting] = useState<DraftingState>()
   const [rooms,    updateRooms]    = useState<Drafting.BaseRoomInfo[]>([])
+  const [dbcache,  updateDbCache]  = useState<Record<number, YGOPROCardInfo>>({})
 
   type U<K extends keyof AppContext['update']> = AppContext['update'][K]
 
@@ -152,8 +155,22 @@ export function useAppState(
         return {
           ...s,
           selections: { ...s.selections, [req_id]: { state: 'confirmed', picks } },
-          stables:  s.stables.concat(picks.flatMap(c => c.pack).map(window.ipc.queryCardInfoSync).filter(defined)),
           unstables,
+          stables:  s.stables.concat(
+            picks
+              .flatMap(c => c.pack)
+              .map(c => {
+                const hit = dbcache[c]
+                if (hit) { return hit }
+
+                const info = window.ipc.queryCardInfoSync(c)
+                if (info) {
+                  updateDbCache(s => ({ ...s, [info.code]: info }))
+                }
+
+                return info
+              })
+              .filter(defined)),
         }
       })
     } catch {
@@ -201,15 +218,18 @@ export function useAppState(
 
   const cleardraft: U<'cleardraft'> = () => updateDrafting(undefined)
 
+  const cache: U<'cache'> = (info: YGOPROCardInfo) => updateDbCache(s => ({ ...s, [info.code]: info }))
+
   useEffect(() => refresh(), [session.bound, !!drafting])
 
   return {
-    session, drafting, rooms,
+    session, drafting, rooms, dbcache,
     socket,
     rx$,
     request,
     handle,
     update: {
+      cache,
       online,
       bound,
       room,
@@ -228,7 +248,7 @@ export function useAppState(
 
 export function handleSessionState(
   userinfo: { uuid: string;  secret: string; image_id: number },
-  { request, socket, rx$, update }: AppContext
+  { request, socket, rx$, update, dbcache }: AppContext
 ) {
   const rebind = () => {
     request('c_bind', userinfo)
@@ -252,6 +272,18 @@ export function handleSessionState(
   socket.on('disconnect', onStateChange)
 
   const subscription = rx$.subscribe(msg => {
+    if (msg.tag === 's_pick_request') {
+      for (const c of msg.candidates) {
+        for (const code of c.pack) {
+          if (dbcache[code]) { continue }
+
+          window.ipc.queryCardInfo(code).then(info => {
+            if (info) { update.cache(info) }
+          })
+        }
+      }
+    }
+
     if (msg.tag === 's_pick_request')   { return update.pickreq(msg)    }
     if (msg.tag === 's_room_info')      { return update.room(msg)       }
     if (msg.tag === 's_room_expired')   { return update.room(undefined) }
