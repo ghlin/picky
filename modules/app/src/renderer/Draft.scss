@@ -339,16 +339,19 @@ $cimg_border_width: 0.2rem;
   }
 }
 
+.tooltipcontainer, .tooltip > div {
+  border: 1px solid rgba(200, 200, 200, 0.8);
+  border-radius: 2px;
+}
+
 .tooltip {
-  width: 13rem;
+  font-size: 1.2em;
+  width: 24rem;
   justify-content: start;
 
   > div {
     margin: 0.3rem;
     width: 100%;
-    border: 1px solid rgba(200, 200, 200, 0.8);
-    box-shadow: 0 0 7px rgba(200, 200, 200, 0.8), inset 0 0 7px rgba(200, 200, 200, 0.6), ;
-    border-radius: 2px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -356,8 +359,8 @@ $cimg_border_width: 0.2rem;
     > span, p {
       padding-left: 1em;
       padding-right: 1em;
-      padding-top: 0.3em;
-      padding-bottom: 0.3em;
+      padding-top: 0.6em;
+      padding-bottom: 0.6em;
     }
   }
 }

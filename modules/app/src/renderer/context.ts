@@ -272,12 +272,17 @@ export function handleSessionState(
   socket.on('disconnect', onStateChange)
 
   const subscription = rx$.subscribe(msg => {
-    if (msg.tag === 's_pick_request') {
-      for (const c of msg.candidates) {
+    if (msg.tag === 's_pick_request' || msg.tag === 's_draft_recover') {
+      const candidates = msg.tag === 's_draft_recover' ? msg.picks
+                       :                                 msg.candidates
+
+      for (const c of candidates) {
         for (const code of c.pack) {
           if (dbcache[code]) { continue }
 
+          console.log(`query card info - ${code}`)
           window.ipc.queryCardInfo(code).then(info => {
+            console.log(`query card info - ${code} done`)
             if (info) { update.cache(info) }
           })
         }

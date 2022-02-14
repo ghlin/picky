@@ -71,7 +71,7 @@ function Pickreq({ drafting, pickreq, selection, expand, ...divprops }: {
           onClick={() => !selection && toggle(c.id)}
         >
           {
-            c.pack.map((code, i) => <div key={c.id + '/' + i} className={style.cimg} data-tip={c.id} data-for='info-tooltip'>
+            c.pack.map((code, i) => <div key={c.id + '/' + i} className={style.cimg} data-tip={code} data-for='info-tooltip'>
               <img src={'cimg://' + code} />
               <div className={classnames(style.togglebtnwrapper, Flex)}>
                 <div
@@ -119,6 +119,7 @@ function PreviewItemLabel({ info }: { info: YGOPROCardInfo }) {
 }
 
 function DeckPreviewItem({ info, ...divprops }: HTMLAttributes<HTMLDivElement> & { info: YGOPROCardInfo }) {
+  useEffect(() => { ReactTooltip.rebuild() }, [])
   return <div {...divprops} className={classnames(style.previewitem, ...(info?.types ?? []))}>
     <CimgClipButton
       code={info.code}
@@ -228,6 +229,8 @@ export function Draft() {
         </div>
         {
           previewitems.map((info, i) => <DeckPreviewItem
+            data-tip={info.code}
+            data-for='info-tooltip'
             info={info}
             key={i}
             onClick={() => setExpand(info.code)}
@@ -267,11 +270,14 @@ export function Draft() {
     }
 
     <ReactTooltip
+      className={style.tooltipcontainer}
+      border
       id='info-tooltip'
+      place='right'
       getContent={
         data => {
           const code = atoi10(data)
-          if (!code) { return '<loading>' }
+          if (!code) { return 'ill code: ' + data }
           const info = ctx.dbcache[code]
           if (!info) { return '<loading>' }
 
