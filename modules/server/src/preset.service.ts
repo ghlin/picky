@@ -3,7 +3,7 @@ import { Preset } from '@picky/shared'
 import { randomInt } from 'crypto'
 import { readdir, readFile } from 'fs/promises'
 import { join } from 'path'
-import { pick, range } from 'ramda'
+import { groupBy, identity, pick, range } from 'ramda'
 import YAML from 'yaml'
 import { Dispatcher, DispatchingPreset, DispatchSchema } from './dispatching.interface'
 
@@ -67,16 +67,21 @@ export class PresetService {
 
   _makeDealDispatcher(
     root:    Preset.YAMLDispatchSchema,
-    pattern: Preset.Deal<string>,
+    segment: Preset.Deal<string | string[]>,
     path:    string
   ) {
-    this.logger.debug(`_makeDealDispatcher - ${path}`)
+    this.logger.debug(`Dispatcher from ${root.id} (${root.name}) - ${path}: ${segment.mode}, ${
+      segment.mode === 'draft' ? segment.shifts.join('/') : [segment.minpicks, segment.maxpicks].join('~')
+    }`)
 
     const copies = Object.fromEntries(root.uses.map(u => [u.alias, 1]))
     const deal: Preset.Deal<DealContext> = {
-      ...pattern,
-      patterns: pattern.patterns.map((p, i) => {
-        const compose = p.compose.map((c, j) => {
+      ...segment,
+      segments: segment.segments.map((p, i) => {
+        this.logger.debug(`+ segments[${i}]:`)
+
+        const candidates = p.candidates.map((c, j) => {
+          this.logger.debug(`| + candidates[${j}]: rate ${c.rate}`)
           const parts = c.parts.map((d, k) => {
             const uses = Object.entries(d.copies ?? copies).flatMap(([alias, copies]) => {
               const id = root.uses.find(u => u.alias === alias)?.pool
@@ -87,32 +92,39 @@ export class PresetService {
               return range(0, copies).flatMap(() => [...pool.items])
             })
 
-            const filter = Preset.parseTagFilterExpr(d.filter)
-            const items  = uses.filter(item => Preset.matchTags(item.tags, filter))
-            const fpath  = join(path, 'patterns', i.toString(), 'compose', j.toString(), 'parts', k.toString())
+            const fexprs  = Array.isArray(d.filter) ? d.filter : [d.filter]
+            const filters = fexprs.map(Preset.parseTagFilterExpr)
+            const items   = filters.flatMap(filter => uses.filter(item => Preset.matchTags(item.tags, filter)))
+            const fpath   = join(path, 'segments', i.toString(), 'candidates', j.toString(), 'parts', k.toString())
 
             if (items.length < d.n * 5) {
-              throw new Error(`No enough items: ${fpath}, filter ${d.filter} (${items.length} - ${d.n})`)
+              throw new Error(`No enough items: ${fpath}, filter(s) ${fexprs.join('; ')} (${items.length} - ${d.n})`)
             }
 
             const config = {
               ...d.config        ?? {},
               ...p.configs       ?? {},
-              ...pattern.configs ?? {},
+              ...segment.configs ?? {},
               ...root.configs    ?? {}
             }
             const pool  = new SimplePool(items, config.uniq ?? false)
-            const label = d.filter + ' × ' + d.n
+            const pairs = Object.entries(groupBy(identity, fexprs))
+            const src   = pairs.map(([expr, r]) => r.length > 1 ? expr + ' × ' + r.length : expr).join(' + ')
+            const label = d.n + ' from ' + src
+
+            this.logger.debug(`| |   ${label}`)
+
             return { ...d, filter: { pool, label, path: fpath } }
           })
 
-          const labels = parts.map(d => d.filter.label).join('; ')
-          this.logger.debug(`${root.name} - ${path}: [rate ${c.rate}]: ${labels}`)
+          const ncandidates = parts.reduce((sum, p) => sum + p.n, 0)
+          this.logger.debug(`| \`- ... ${ncandidates} candidates`)
 
-          return { ...c, parts }
+          return { ...c, parts, ncandidates }
         })
 
-        return { ...p, compose }
+        this.logger.debug(`\`- ... ${[... new Set(candidates.map(c => c.ncandidates))].join('/')} candidates`)
+        return { ...p, candidates }
       })
     }
 
@@ -127,7 +139,7 @@ export class PresetService {
 
   private _makeSchema(
     root:    Preset.YAMLDispatchSchema,
-    pattern: Preset.DispatchPattern<string>,
+    pattern: Preset.DispatchPattern<string | string[]>,
     path:    string
   ): DispatchSchema {
     if (`fork` in pattern) {
@@ -136,6 +148,7 @@ export class PresetService {
         children: pattern.fork.map((p, i) => this._makeSchema(root, p, join(path, 'fork', i.toString())))
       }
     }
+
     if (`seql` in pattern) {
       return {
         tag:      'seql_dispatch',
@@ -182,8 +195,8 @@ interface DealContext {
 class DealDispatcher implements Dispatcher {
   logger    = new Logger(`DealDispatcher`)
 
-  patterns = this.deal.patterns.map(p => {
-    const roll    = makeSkip(p.compose.map(c => c.rate))
+  segments = this.deal.segments.map(p => {
+    const roll    = makeSkip(p.candidates.map(c => c.rate))
     return { ...p, roll }
   })
 
@@ -191,7 +204,7 @@ class DealDispatcher implements Dispatcher {
 
   async dispatch(nplayer: number) {
     const dispatches = range(0, nplayer).map(() =>
-      this.patterns.flatMap(pattern => this._dispatchPattern(pattern))
+      this.segments.flatMap(pattern => this._dispatchPattern(pattern))
       .map((item, idx) => ({ id: ':' + idx, pack: item.pack })))
 
     return this.deal.mode === 'sealed' ? {
@@ -205,17 +218,17 @@ class DealDispatcher implements Dispatcher {
     }
   }
 
-  _dispatchCompose(compose: DealDispatcher['patterns'][number]['compose'][number]) {
-    return compose.parts.flatMap(part => part.filter.pool.deal(part.n))
+  _deal(candidates: DealDispatcher['segments'][number]['candidates'][number]) {
+    return candidates.parts.flatMap(part => part.filter.pool.deal(part.n))
   }
 
-  _dispatchPattern(pattern: DealDispatcher['patterns'][number]) {
-    const idx     = rollIdx(pattern.roll)
-    const compose = pattern.compose[idx]
+  _dispatchPattern(pattern: DealDispatcher['segments'][number]) {
+    const idx       = rollIdx(pattern.roll)
+    const candidate = pattern.candidates[idx]
     this.logger.debug(
-      `_dispatchPattern: rolled ${idx} - ${compose.parts.map(p => p.filter.label).join('; ')}`
+      `_dispatchPattern: rolled ${idx} - ${candidate.parts.map(p => p.filter.label).join('; ')}`
     )
-    return this._dispatchCompose(compose)
+    return this._deal(candidate)
   }
 }
 

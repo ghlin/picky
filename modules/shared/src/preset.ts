@@ -28,11 +28,11 @@ export type DispatchConfigs       = Record<string, PartialDispatchConfig>
 export type DispatchMode = { mode: 'draft';  shifts: number[] }
                          | { mode: 'sealed'; minpicks: number; maxpicks: number }
 
-export type DealPattern<F> = {
+export type DealSegment<F> = {
   configs?: DispatchConfigs
   copies?:  Record<string, number>
 
-  compose:  Array<{
+  candidates: Array<{
     rate:  number
     parts: DealPart<F>[]
   }>
@@ -47,7 +47,7 @@ export type DispatchPattern<F> = Seql<F>
 export type Deal<F> = DispatchMode & {
   repeats?: ({ fork: number } | { seql: number })
   configs?: DispatchConfigs
-  patterns: DealPattern<F>[]
+  segments: DealSegment<F>[]
 }
 
 export type DispatchSchema<F = unknown> = {
@@ -57,7 +57,7 @@ export type DispatchSchema<F = unknown> = {
   patterns: DispatchPattern<F>[]
 }
 
-export type YAMLDispatchSchema = DispatchSchema<string> & {
+export type YAMLDispatchSchema = DispatchSchema<string | string[]> & {
   defs:        any
 
   id:          string

@@ -9,8 +9,8 @@ patterns:
     minpicks: 1
     maxpicks: 1
     configs:  { uniq: true }
-    patterns:
-      - compose:
+    segments:
+      - candidates:
         - rate: 1
           parts:
             - n: 3
@@ -20,12 +20,16 @@ patterns:
   - mode: draft
     repeats: { fork: 6 }
     shifts: [1, 1, 1, 1]
-    patterns:
-      - compose:
+    segments:
+      - candidates:
         - rate: 1
           parts:
             - n: 2
-              filter: Main&G1&(T3|T4)
+              filter:
+                - Main&G1&T3
+                - Main&G1&T4
+                - Main&G1&T4
+                - Main&G1&T4
             - n: 1
               filter: Main&G1&!T1&!T2&!T3&(SPELL|TRAP)
             - n: 4
@@ -79,8 +83,8 @@ patterns:
   - mode: draft
     shifts: [1, 1, 1]
     repeats: { fork: 3 }
-    patterns:
-      - compose:
+    segments:
+      - candidates:
         - rate: 1
           parts:
             - n: 2
@@ -94,7 +98,7 @@ patterns:
             - n: 1
               filter: 'LINK&G2'
 
-      - compose:
+      - candidates:
         - rate: 1
           parts:
             - n: 3
@@ -102,7 +106,7 @@ patterns:
             - n: 1
               filter: 'SYNCHRO&G2'
 
-      - compose:
+      - candidates:
         - rate: 1
           parts:
             - n: 2
