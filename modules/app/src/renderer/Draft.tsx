@@ -11,6 +11,20 @@ import { Flex, FlexV, Full, FullH, FullW, UI } from './style-common'
 
 type DraftingState = AppContext['drafting'] extends (undefined | infer P) ? P : never
 
+function tooltip(code: number) {
+  const info = window.ipc.queryCardInfoSync(code)
+  if (!info) { return '<无数据 需要更新ygopro>' }
+  return [
+    info.name + ' (' + info.types.join('/') + ')',
+    ...info.types.includes('MONSTER') ? [
+      '  ☆ ' + info.mlevel,
+      '  ATK ' + info.matk + '/' + (info.types.includes('LINK') ? '-' : ('DEF ' + info.mdef)),
+    ] : [],
+    '',
+    ...info.desc.split('\r\n')
+  ].join('\r\n')
+}
+
 function Pickreq({ drafting, pickreq, selection, expand, ...divprops }: {
   drafting:  DraftingState
   pickreq:   Drafting.PickRequest
@@ -70,7 +84,10 @@ function Pickreq({ drafting, pickreq, selection, expand, ...divprops }: {
         >
           {
             c.pack.map((code, i) => <div key={c.id + '/' + i} className={style.cimg}>
-              <img src={'cimg://' + code} />
+              <img
+                src={'cimg://' + code}
+                title={tooltip(code)}
+              />
               <div className={classnames(style.togglebtnwrapper, Flex)}>
                 <div
                   className={style.togglebtn}
