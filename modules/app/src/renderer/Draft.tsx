@@ -283,7 +283,7 @@ export function Draft() {
 }
 
 function renderTooltip(info: YGOPROCardInfo) {
-  return <div className={classnames(FlexV, style.infopane)}>
+  return <div className={classnames(FlexV, style.tooltip)}>
     {
       info && <>
         <div>
