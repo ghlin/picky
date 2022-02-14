@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Preset } from '@picky/shared'
+import { defined, Preset } from '@picky/shared'
+import { DispatchMode } from '@picky/shared/src/preset'
 import { randomInt } from 'crypto'
 import { readdir, readFile } from 'fs/promises'
 import { join } from 'path'
@@ -74,11 +75,14 @@ export class PresetService {
       segment.mode === 'draft' ? segment.shifts.join('/') : [segment.minpicks, segment.maxpicks].join('~')
     }`)
 
-    const copies = Object.fromEntries(root.uses.map(u => [u.alias, 1]))
+    const rfilter = root.filter ? Preset.parseTagFilterExpr(root.filter) : undefined
+    const copies  = Object.fromEntries(root.uses.map(u => [u.alias, 1]))
+
     const deal: Preset.Deal<DealContext> = {
       ...segment,
       segments: segment.segments.map((p, i) => {
         this.logger.debug(`+ segments[${i}]:`)
+        const sfilter = p.filter ? Preset.parseTagFilterExpr(p.filter) : undefined
 
         const candidates = p.candidates.map((c, j) => {
           this.logger.debug(`| + candidates[${j}]: rate ${c.rate}`)
@@ -93,9 +97,9 @@ export class PresetService {
             })
 
             const fexprs  = Array.isArray(d.filter) ? d.filter : [d.filter]
-            const filters = fexprs.map(Preset.parseTagFilterExpr)
-            const items   = filters.flatMap(filter => uses.filter(item => Preset.matchTags(item.tags, filter)))
+            const filters = fexprs.map(Preset.parseTagFilterExpr).map(f => ({ t: 'every' as const, value: [rfilter, sfilter, f].filter(defined) }))
             const fpath   = join(path, 'segments', i.toString(), 'candidates', j.toString(), 'parts', k.toString())
+            const items   = filters.flatMap(filter => uses.filter(item => Preset.matchTags(item.tags, filter)))
 
             if (items.length < d.n * 5) {
               throw new Error(`No enough items: ${fpath}, filter(s) ${fexprs.join('; ')} (${items.length} - ${d.n})`)
@@ -131,6 +135,25 @@ export class PresetService {
     return new DealDispatcher(deal)
   }
 
+  private _makeFixedDispatcher(
+    root:    Preset.YAMLDispatchSchema,
+    segment: Preset.Fixed,
+    path:    string
+  ) {
+    this.logger.debug(`FixedDispatcher from ${root.id} (${root.name}) - ${path}: ${segment.mode}, ${
+      segment.mode === 'draft' ? segment.shifts.join('/') : [segment.minpicks, segment.maxpicks].join('~')
+    }`)
+
+    if (typeof segment.items === 'string') {
+      const pools  = root.uses.map(p => this.pools.get(p.pool)).filter(defined)
+      const filter = Preset.parseTagFilterExpr(segment.items)
+      const items  = pools.flatMap(p => p.items.filter(item => Preset.matchTags(item.tags, filter)))
+      return new FixedDispatcher(segment, items.flatMap(item => item.pack))
+    } else {
+      return new FixedDispatcher(segment, segment.items)
+    }
+  }
+
   private _fromTemplate(root: Preset.YAMLDispatchSchema): DispatchSchema {
     return root.patterns.length === 1
       ? this._makeSchema(root, root.patterns[0], '<root>')
@@ -154,6 +177,11 @@ export class PresetService {
         tag:      'seql_dispatch',
         children: pattern.seql.map((p, i) => this._makeSchema(root, p, join(path, 'seql', i.toString())))
       }
+    }
+
+    if (`items` in pattern) {
+      const dispatcher = this._makeFixedDispatcher(root, pattern, path)
+      return { tag: 'atom_dispatch', dispatcher }
     }
 
     const dispatcher = this._makeDealDispatcher(root, pattern, path)
@@ -193,8 +221,7 @@ interface DealContext {
 }
 
 class DealDispatcher implements Dispatcher {
-  logger    = new Logger(`DealDispatcher`)
-
+  logger   = new Logger(`DealDispatcher`)
   segments = this.deal.segments.map(p => {
     const roll    = makeSkip(p.candidates.map(c => c.rate))
     return { ...p, roll }
@@ -229,6 +256,28 @@ class DealDispatcher implements Dispatcher {
       `_dispatchPattern: rolled ${idx} - ${candidate.parts.map(p => p.filter.label).join('; ')}`
     )
     return this._deal(candidate)
+  }
+}
+
+class FixedDispatcher implements Dispatcher {
+  logger = new Logger(`FixedDispatcher`)
+
+  constructor(readonly conf: DispatchMode, readonly items: number[]) { }
+
+  async dispatch(nplayer: number) {
+    const dispatches = range(0, nplayer).map(() =>
+      this.items.map((id, idx) => ({ pack: [id], id: ':' + idx }))
+    )
+
+    return this.conf.mode === 'sealed' ? {
+      tag:    'sealed_dispatching' as const,
+      npicks: { min: this.conf.minpicks, max: this.conf.maxpicks },
+      dispatches
+    } : {
+      tag:    'draft_dispatching' as const,
+      shifts: this.conf.shifts,
+      dispatches
+    }
   }
 }
 

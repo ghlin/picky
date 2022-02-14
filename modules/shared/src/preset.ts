@@ -31,6 +31,7 @@ export type DispatchMode = { mode: 'draft';  shifts: number[] }
 export type DealSegment<F> = {
   configs?: DispatchConfigs
   copies?:  Record<string, number>
+  filter?:  string
 
   candidates: Array<{
     rate:  number
@@ -43,6 +44,7 @@ type Fork<F> = { fork: DispatchPattern<F>[] }
 export type DispatchPattern<F> = Seql<F>
                                | Fork<F>
                                | Deal<F>
+                               | Fixed
 
 export type Deal<F> = DispatchMode & {
   repeats?: ({ fork: number } | { seql: number })
@@ -50,10 +52,13 @@ export type Deal<F> = DispatchMode & {
   segments: DealSegment<F>[]
 }
 
+export type Fixed = DispatchMode & { items: number[] | string }
+
 export type DispatchSchema<F = unknown> = {
   name:     string
   uses:     UsePool[]
   configs?: DispatchConfigs
+  filter?:  string
   patterns: DispatchPattern<F>[]
 }
 
