@@ -280,9 +280,7 @@ export function handleSessionState(
         for (const code of c.pack) {
           if (dbcache[code]) { continue }
 
-          console.log(`query card info - ${code}`)
           window.ipc.queryCardInfo(code).then(info => {
-            console.log(`query card info - ${code} done`)
             if (info) { update.cache(info) }
           })
         }

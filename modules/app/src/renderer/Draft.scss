@@ -357,10 +357,8 @@ $cimg_border_width: 0.2rem;
     align-items: center;
 
     > span, p {
-      padding-left: 1em;
-      padding-right: 1em;
-      padding-top: 0.6em;
-      padding-bottom: 0.6em;
+      margin: 0.2em;
+      padding: 0.3em;
     }
   }
 }

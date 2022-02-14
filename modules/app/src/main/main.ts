@@ -112,11 +112,7 @@ async function main() {
   await handleYGOPROPathUpdate(ygoroot as string)
 
   protocol.registerFileProtocol('cimg', async (request, callback) => {
-    log.debug(`protocol.cimg handler: requesting ${request.url}...`)
-
-    if (!storage.ygoroot) {
-      log.error(`ygoroot not load`)
-    }
+    if (!storage.ygoroot) { log.error(`ygoroot not load`) }
 
     const id = atoi10(new URL(request.url).hostname)
     if (!defined(id)) {
