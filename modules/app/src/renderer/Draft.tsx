@@ -2,6 +2,7 @@ import { atoi10, CTypeEnums, defined, Drafting, YGOPROCardInfo } from '@picky/sh
 import classnames from 'classnames'
 import { HTMLAttributes, useContext, useEffect, useState } from 'react'
 import ReactModal from 'react-modal'
+import ReactTooltip from 'react-tooltip'
 import usePromise from 'react-use-promise'
 import { CimgClipButton } from './CimgClip'
 import { AppContext } from './context'
@@ -10,20 +11,6 @@ import style from './Draft.scss'
 import { Flex, FlexV, Full, FullH, FullW, UI } from './style-common'
 
 type DraftingState = AppContext['drafting'] extends (undefined | infer P) ? P : never
-
-function tooltip(code: number) {
-  const info = window.ipc.queryCardInfoSync(code)
-  if (!info) { return '<无数据 需要更新ygopro>' }
-  return [
-    info.name + ' (' + info.types.join('/') + ')',
-    ...info.types.includes('MONSTER') ? [
-      '  ☆ ' + info.mlevel,
-      '  ATK ' + info.matk + '/' + (info.types.includes('LINK') ? '-' : ('DEF ' + info.mdef)),
-    ] : [],
-    '',
-    ...info.desc.split('\r\n')
-  ].join('\r\n')
-}
 
 function Pickreq({ drafting, pickreq, selection, expand, ...divprops }: {
   drafting:  DraftingState
@@ -41,6 +28,7 @@ function Pickreq({ drafting, pickreq, selection, expand, ...divprops }: {
   const hint                 = `已选${picks.length}件, 应选${constraint}件`
 
   useEffect(() => ctx.update.prepick(pickreq.req_id, pickreq.candidates.filter(c => picks.includes(c.id))), [picks.length, picks])
+  useEffect(() => { ReactTooltip.rebuild() }, [])
 
   const progress = drafting.progress[pickreq.req_id] ?? []
   const picking  = progress.filter(p => !p.done && p.uuid !== ctx.session?.bound?.uuid)
@@ -83,11 +71,8 @@ function Pickreq({ drafting, pickreq, selection, expand, ...divprops }: {
           onClick={() => !selection && toggle(c.id)}
         >
           {
-            c.pack.map((code, i) => <div key={c.id + '/' + i} className={style.cimg}>
-              <img
-                src={'cimg://' + code}
-                title={tooltip(code)}
-              />
+            c.pack.map((code, i) => <div key={c.id + '/' + i} className={style.cimg} data-tip={code} data-for='info-tooltip'>
+              <img src={'cimg://' + code} />
               <div className={classnames(style.togglebtnwrapper, Flex)}>
                 <div
                   className={style.togglebtn}
@@ -134,6 +119,7 @@ function PreviewItemLabel({ info }: { info: YGOPROCardInfo }) {
 }
 
 function DeckPreviewItem({ info, ...divprops }: HTMLAttributes<HTMLDivElement> & { info: YGOPROCardInfo }) {
+  useEffect(() => { ReactTooltip.rebuild() }, [])
   return <div {...divprops} className={classnames(style.previewitem, ...(info?.types ?? []))}>
     <CimgClipButton
       code={info.code}
@@ -243,6 +229,8 @@ export function Draft() {
         </div>
         {
           previewitems.map((info, i) => <DeckPreviewItem
+            data-tip={info.code}
+            data-for='info-tooltip'
             info={info}
             key={i}
             onClick={() => setExpand(info.code)}
@@ -280,6 +268,48 @@ export function Draft() {
         </div>
       </>
     }
+
+    <ReactTooltip
+      className={style.tooltipcontainer}
+      border
+      id='info-tooltip'
+      place='right'
+      getContent={
+        data => {
+          const code = atoi10(data)
+          if (!code) { return 'ill code: ' + data }
+          const info = ctx.dbcache[code]
+          if (!info) { return '<loading>' }
+
+          return renderTooltip(info)
+        }
+      }
+    />
   </div>
 }
 
+function renderTooltip(info: YGOPROCardInfo) {
+  return <div className={classnames(FlexV, style.tooltip)}>
+    {
+      info && <>
+        <div>
+          <span>{info.name}</span>
+          <span>
+            {info.types.includes('MONSTER') && info.mlevel}
+          </span>
+        </div>
+        {
+          info.types.includes('MONSTER') && <div>
+            <span>ATK: {info.matk}</span>
+            {!info.types.includes('LINK') && <span>DEF: {info.mdef}</span>}
+            {info.types.includes('PENDULUM') && <span>SCALE: {info.mscale}</span>}
+          </div>
+        }
+        <div><span>{info.types.join(' / ')}</span></div>
+        <div>
+          <div>{ info.desc.split('\r\n').map((seg, i) => <p key={i}>{seg}</p>)}</div>
+        </div>
+      </>
+    }
+  </div>
+}

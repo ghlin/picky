@@ -166,6 +166,7 @@
     "react-hot-toast": "^2.2.0",
     "react-modal": "^3.14.4",
     "react-router-dom": "^6.2.1",
+    "react-tooltip": "^4.2.21",
     "react-transition-group": "^4.4.2",
     "react-use-promise": "^0.4.1",
     "regenerator-runtime": "^0.13.9",
