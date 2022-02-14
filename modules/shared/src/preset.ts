@@ -48,6 +48,7 @@ export type DispatchPattern<F> = Seql<F>
 
 export type Deal<F> = DispatchMode & {
   repeats?: ({ fork: number } | { seql: number })
+  filter?:  string
   configs?: DispatchConfigs
   segments: DealSegment<F>[]
 }
