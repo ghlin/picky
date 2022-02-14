@@ -78,16 +78,18 @@ export class PresetService {
   ) {
     this.logger.debug(`Dispatcher from ${root.id} (${root.name}) - ${path}: ${segment.mode}, ${
       segment.mode === 'draft' ? segment.shifts.join('/') : [segment.minpicks, segment.maxpicks].join('~')
-    }`)
+    } [${root.filter ?? '<no filter>'} & ${segment.filter ?? '<no filter>'}]`)
 
-    const rfilter = root.filter ? Preset.parseTagFilterExpr(root.filter) : undefined
+    const rfilter = root.filter    ? Preset.parseTagFilterExpr(root.filter)    : undefined
+    const sfilter = segment.filter ? Preset.parseTagFilterExpr(segment.filter) : undefined
+
     const copies  = Object.fromEntries(root.uses.map(u => [u.alias, 1]))
 
     const deal: Preset.Deal<DealContext> = {
       ...segment,
       segments: segment.segments.map((p, i) => {
-        this.logger.debug(`+ segments[${i}]:`)
-        const sfilter = p.filter ? Preset.parseTagFilterExpr(p.filter) : undefined
+        this.logger.debug(`+ segments[${i}]: [${p.filter ?? '<no filter>'}]`)
+        const pfilter = p.filter ? Preset.parseTagFilterExpr(p.filter) : undefined
 
         const candidates = p.candidates.map((c, j) => {
           this.logger.debug(`| + candidates[${j}]: rate ${c.rate}`)
@@ -102,7 +104,7 @@ export class PresetService {
             })
 
             const fexprs  = Array.isArray(d.filter) ? d.filter : [d.filter]
-            const filters = fexprs.map(Preset.parseTagFilterExpr).map(f => ({ t: 'every' as const, value: [rfilter, sfilter, f].filter(defined) }))
+            const filters = fexprs.map(Preset.parseTagFilterExpr).map(f => ({ t: 'every' as const, value: [rfilter, sfilter, pfilter, f].filter(defined) }))
             const fpath   = join(path, 'segments', i.toString(), 'candidates', j.toString(), 'parts', k.toString())
             const items   = filters.flatMap(filter => uses.filter(item => Preset.matchTags(item.tags, filter)))
 

@@ -4,6 +4,7 @@ description: 主卡组轮抓(6Χ4) + 额外轮抓(3×4)
 uses:
   - pool: default
     alias: C
+filter: '!FALLBACK'
 patterns:
   - seql:
     # some goooooooooooood stuff.
@@ -22,103 +23,115 @@ patterns:
     - mode: draft
       repeats: { fork: 6 }
       shifts: [1, 1, 1, 1]
+      filter: Main
       segments:
         - candidates:
           - rate: 1
             parts:
               - n: 2
                 filter:
-                  - Main&G1&T3
-                  - Main&G1&T4
-                  - Main&G1&T4
-                  - Main&G1&T4
+                  - G1&T3
+                  - G1&T4
+                  - G1&T4
+                  - G1&T4
               - n: 1
-                filter: Main&G1&!T1&!T2&!T3&(SPELL|TRAP)
+                filter: G1&!T1&!T2&!T3&(SPELL|TRAP)
               - n: 4
-                filter: Main&G1&T5
+                filter: G1&T5
               - n: 2
-                filter: Main&G2
+                filter: G2
 
           - rate: 3
             parts:
               - n: 1
-                filter: Main&G1&T3
+                filter: G1&T3
               - n: 1
-                filter: Main&G1&T4
+                filter: G1&T4
               - n: 1
-                filter: Main&G1&!T1&!T2&(SPELL|TRAP)
+                filter: G1&!T1&!T2&(SPELL|TRAP)
               - n: 4
-                filter: Main&G1&T5
+                filter: G1&T5
               - n: 2
-                filter: Main&G2
+                filter: G2
 
           - rate: 2
             parts:
               - n: 2
-                filter: Main&G1&T4
+                filter: G1&T4
               - n: 5
-                filter: Main&G1&T5
+                filter: G1&T5
               - n: 1
-                filter: Main&!T1&(SPELL|TRAP)
+                filter: (SPELL|TRAP)&!T1
               - n: 1
-                filter: Main&G2
+                filter: G2
 
           - rate: 1
             parts:
               # cool!
               - n: 8
-                filter: Main&(!T1)
+                filter: (!T1)
               - n: 1
-                filter: Main&!T1&(SPELL|TRAP)
+                filter: (SPELL|TRAP)&!T1
 
           - rate: 2
             parts:
               - n: 1
-                filter: Main&G1&T4
+                filter: G1&T4
               - n: 5
-                filter: Main&G1&T5
+                filter: G1&T5
               - n: 1
-                filter: Main&G1&(SPELL|TRAP)
+                filter: G1&(SPELL|TRAP)
               - n: 2
-                filter: Main&G2&(T2|T3|T4)
+                filter: G2&(T2|T3|T4)
 
-    # extra
     - mode: draft
       shifts: [1, 1, 1]
       repeats: { fork: 3 }
       segments:
-        - candidates:
+        - filter: LINK
+          candidates:
           - rate: 1
             parts:
               - n: 2
-                filter: 'LINK&G1'
+                filter: &ex
+                  - G1&T5
+                  - G1&T5
+                  - G1&T5
+                  - G1&T4
+                  - G1&T4
+                  - G1&(T3|T2)
+                  - G1&(T3|T2)
               - n: 2
-                filter: 'LINK&G2'
+                filter: G2
+
           - rate: 2
             parts:
               - n: 3
-                filter: 'LINK&G1'
+                filter: *ex
               - n: 1
-                filter: 'LINK&G2'
+                filter: G2
 
-        - candidates:
+        - filter: SYNCHRO
+          candidates:
           - rate: 1
             parts:
               - n: 3
-                filter: 'SYNCHRO&G1'
+                filter: *ex
               - n: 1
-                filter: 'SYNCHRO&G2'
+                filter: G2
 
-        - candidates:
+        - filter: XYZ
+          candidates:
           - rate: 1
             parts:
               - n: 2
-                filter: 'XYZ&G1'
+                filter: *ex
               - n: 2
-                filter: 'XYZ&G2'
+                filter: G2
+
           - rate: 2
             parts:
               - n: 3
-                filter: 'XYZ&G1'
+                filter: *ex
               - n: 1
-                filter: 'XYZ&G2'
+                filter: G2
