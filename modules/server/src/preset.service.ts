@@ -23,13 +23,8 @@ export class PresetService {
     for (const file of files) {
       try {
         const template = await loadYAMLDispatchSchema(join(presetdir, file))
-        const schema   = this._fromTemplate(template)
-        const preset: DispatchingPreset = {
-          id:          template.id,
-          name:        template.name,
-          description: template.description,
-          schema
-        }
+        const preset   = this.create(template)
+
         this.presets.set(preset.id, preset)
       } catch (e) {
         this.logger.error(`loadPresets: failed to load/parse/build preset: ${file}`)
@@ -59,6 +54,16 @@ export class PresetService {
         this.logger.error(e)
         this.logger.error(e.stack)
       }
+    }
+  }
+
+  create(template: Preset.YAMLDispatchSchema) {
+    const schema   = this._fromTemplate(template)
+    return {
+      id:          template.id,
+      name:        template.name,
+      description: template.description,
+      schema
     }
   }
 

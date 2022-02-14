@@ -30,4 +30,3 @@ export const LOG = winston.createLogger({
     })),
   transports: [new winston.transports.Console()]
 })
-
