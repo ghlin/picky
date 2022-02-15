@@ -1,55 +1,61 @@
-import { atoi10, Model, YGOPROCardInfo } from '@picky/shared'
+import { atoi10, Preset, YGOPROCardInfo } from '@picky/shared'
 import classnames from 'classnames'
 import FileSaver from 'file-saver'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import usePromise from 'react-use-promise'
 import style from './EditPool.scss'
 import { PoolEditorTable } from './PoolEditor'
 import { Flex, FlexV, Full, FullW, UI } from './style-common'
-
-function Tagging(
-  props: {
-    tags:   string[]
-    info:   YGOPROCardInfo,
-    marks:  string[]
-    mark:   (tag: string, tagged: boolean) => void
-  }
-) {
-  return <div className={classnames(FullW, style.taggingcell)}>
-    <div className={classnames(FullW, Flex, style.ctrls)}>
-      {
-        props.tags.map(t => <div className={classnames(style.ctrl)} key={t}>
-          <a
-            onClick={() => props.mark(t, props.marks.includes(t) ? false : true)}
-            className={classnames({ [style.marked]: props.marks.includes(t)})}
-          >
-            {t}
-          </a>
-        </div>)
-      }
-    </div>
-  </div>
-}
 
 export function EditPool() {
   const SERVER_URL        = localStorage.getItem('SERVER_URL') || 'http://49.232.147.104:5003'
   const [database]        = usePromise(() => window.ipc.database(), [])
   const [marks, setMarks] = useState<Record<any, string[]>>({})
   const tags = [
-    'MAIN', 'EXTRA', 'Ex', 'Spec', 'Gen', 'T00', 'T05', 'T10', 'T15', 'T20', 'T*'
+    'Main', 'Ex', 'MONSTER', 'SPELL', 'TRAP',
+    'T1', 'T2', 'T3', 'T4', 'T5',
+    'G1', 'G2', 'FALLBACK', 'DELETE'
   ]
+
   const [targetPoolId, setTargetPoolId] = useState<string>('')
-  const [filterText, setFilterText] = useState<string>()
-  const [filterTags, setFilterTags] = useState<string[]>([])
-  const [pool, setPool] = useState<Model.Pool>()
-  const [filters, setFilters] = useState<Record<any, any>>()
+  const [filterText,   setFilterText]   = useState<string>()
+  const [filterExpr,   setFilterExpr]   = useState<string>()
+  const [pool,         setPool]         = useState<Preset.Pool>()
+  const [filters,      setFilters]      = useState<Record<any, any>>()
+
+  const [holding,     setHolding]     = useState<YGOPROCardInfo>()
+  const [attachments, setAttachments] = useState<Record<any, number[]>>({})
+
+  const attach = (target: number, attachment: number) => setAttachments(a => ({
+    ...a,
+    [target]: (a[target] ?? []).filter(x => x !== attachment).concat(attachment)
+  }))
+  const detach = (target: number, attachment: number) => setAttachments(a => ({
+    ...a,
+    [target]: (a[target] ?? []).filter(x => x !== attachment)
+  }))
+
   const [pools] = usePromise(async () => {
     const response = await fetch(SERVER_URL + '/pool')
     const pools = await response.json()
     if (pools.length === 1) { setTargetPoolId(pools[0].id) }
 
-    return pools as Model.Pool[]
+    return pools as Preset.Pool[]
   }, [])
+
+  const filtered = useMemo(() => {
+    const original = database ?? []
+    const filter   = filterExpr && (() => {
+      try {
+        return Preset.parseTagFilterExpr(filterExpr.toLowerCase())
+      } catch (e) { return undefined }
+    })()
+
+    return original
+      .filter(info => !filters    || filters[info.code])
+      .filter(info => !filterText || info.name.includes(filterText))
+      .filter(info => !filter     || Preset.matchTags(marks[info.code]?.map(x => x.toLowerCase()) ?? [], filter))
+  }, [database, filterText, filterExpr, filters])
 
   useEffect(() => {
     if (!targetPoolId) { return }
@@ -124,11 +130,12 @@ export function EditPool() {
           onClick={
             () => {
               const items = Object.entries(marks)
-                .map(([key, tags]) => ({ id: atoi10(key), tags }))
+                .map(([key, tags]) => ({ pack: [atoi10(key)].concat(attachments[key] ?? []), tags }))
                 .filter(item => item.tags.length)
+
               FileSaver.saveAs(
                 new Blob([JSON.stringify(items, null, 2)], { type: 'text/plain; charset=utf-8' }),
-                'pool.json'
+                'pool.export.json'
               )
             }
           }
@@ -145,38 +152,73 @@ export function EditPool() {
         <input
           id='filter-tags'
           type='text'
-          value={filterTags.join(';')}
+          value={filterExpr}
           className={classnames(UI, FullW)}
           onChange={
-            e => setFilterTags(e.target.value.split(';').map(x => x.trim()))
+            e => setFilterExpr(e.target.value)
           }
         />
       </div>
+      <div className={classnames(Flex, FullW)}>
+        <span style={{ flex: 1 }}>Holding: { holding ? holding.name : '<none>' }</span>
+        <span style={{ flex: 1 }}>Attachments: { holding ? attachments[holding.code]?.join('/') ?? '[]' : '<none>' }</span>
+        <button
+          className={UI}
+          disabled={!holding}
+          onClick={() => setHolding(undefined)}
+        >
+          Release
+        </button>
+      </div>
     </div>
+
     <PoolEditorTable
-      database={
-        (database ?? [])
-          .filter(info => !filters || filters[info.code])
-          .filter(info => !filterText || info.name.includes(filterText))
-        .filter(info => filterTags.length === 0 || filterTags.every(t => !t || marks[info.code]?.some(x => x.toLowerCase() === t.toLowerCase())))
-      }
+      database={filtered}
       columns={
         [
           {
+            // TODO: popup 2022-02-15 15:43:45
             key:    'tags',
             header: () => <span>Tags</span>,
-            render: info => <Tagging
-              tags={tags}
-              info={info}
-              marks={marks[info.code] ?? []}
-              mark={
-                (tag, tagged) => setMarks(prev => {
-                  const mark = (prev[info.code] ?? []).filter(t => t !== tag)
-                  const updated = tagged ? mark.concat(tag) : mark
-                  return { ...prev, [info.code]: updated }
-                })
-              }
-            />
+            render: info => {
+              const cmarks = marks[info.code] ?? []
+              const mark = (tag: string, tagged: boolean) => setMarks(prev => {
+                const mark = (prev[info.code] ?? []).filter(t => t !== tag)
+                const updated = tagged ? mark.concat(tag) : mark
+                return { ...prev, [info.code]: updated }
+              })
+
+              return <div className={classnames(FullW, style.taggingcell)}>
+                <div className={classnames(FullW, Flex, style.ctrls)}>
+                  {
+                    tags.map(t => <div className={classnames(style.ctrl)} key={t}>
+                      <a
+                        onClick={() => mark(t, cmarks.includes(t) ? false : true)}
+                        className={classnames({ [style.marked]: cmarks.includes(t)})}
+                      >
+                        {t}
+                      </a>
+                    </div>)
+                  }
+
+                  <div className={style.ctrl}>
+                    <a onClick={() => setHolding(info)}>+Hold</a>
+                  </div>
+
+                  {
+                    holding && <div className={style.ctrl}>
+                      <a onClick={() => attach(holding.code, info.code)}>+Attach</a>
+                    </div>
+                  }
+
+                  {
+                    holding && (attachments[holding.code]?.includes(info.code)) && <div className={style.ctrl}>
+                      <a onClick={() => detach(holding.code, info.code)}>-Detach</a>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
           }
         ]
       }

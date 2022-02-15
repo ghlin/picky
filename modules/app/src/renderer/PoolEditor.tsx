@@ -23,7 +23,6 @@ export function PoolEditorTable(props: {
           <th><span>Img</span></th>
           <th><span>Name</span></th>
           <th><span>Type</span></th>
-          <th><span>Text</span></th>
           <th><span>Level</span></th>
           <th><span>Scale</span></th>
           <th><span>ATK</span></th>
@@ -36,9 +35,8 @@ export function PoolEditorTable(props: {
         {
           rows.map((r, i) => <tr key={r.code + ':' + i}>
             <td className={style.image}><div><img src={'cimg://' + r.code}/></div></td>
-            <td className={style.name}><span><span title={r.name}>{r.name}</span></span></td>
+            <td className={style.name}><span><span title={r.name + '\n' + r.desc}>{r.name}</span></span></td>
             <td className={style.types}><span><span>{r.types.join('/')}</span></span></td>
-            <td className={style.desc}><span><span title={r.desc}>{r.desc}</span></span></td>
             <td className={style.misc}><span><span>{r.mlevel}</span></span></td>
             <td className={style.misc}><span><span>{r.mscale}</span></span></td>
             <td className={style.misc}><span><span>{r.matk}</span></span></td>
@@ -50,7 +48,7 @@ export function PoolEditorTable(props: {
 
       <tfoot>
         <tr>
-          <td colSpan={8 + props.columns.length} className={FullW}>
+          <td colSpan={7 + props.columns.length} className={FullW}>
             <div className={classnames(Flex, Full)}>
               <span>{props.database.length} items</span>
               {rows.length !== 0 && <span>{rows.length} showing ({pg.startIndex + 1} ~ {pg.endIndex + 1})</span>}

@@ -1,5 +1,6 @@
 div.taggingcell {
-  width: 25rem;
+  width: 100%;
+  min-width: 40rem;
   .ctrls {
     flex-wrap: wrap;
     > .ctrl {
