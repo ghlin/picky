@@ -103,15 +103,6 @@ export class PresetService {
               return range(0, copies).flatMap(() => [...pool.items])
             })
 
-            const fexprs  = Array.isArray(d.filter) ? d.filter : [d.filter]
-            const filters = fexprs.map(Preset.parseTagFilterExpr).map(f => ({ t: 'every' as const, value: [rfilter, sfilter, pfilter, f].filter(defined) }))
-            const fpath   = join(path, 'segments', i.toString(), 'candidates', j.toString(), 'parts', k.toString())
-            const items   = filters.flatMap(filter => uses.filter(item => Preset.matchTags(item.tags, filter)))
-
-            if (!d.fixed && items.length < d.n * 5) {
-              throw new Error(`No enough items: ${fpath}, filter(s) ${fexprs.join('; ')} (${items.length} - ${d.n})`)
-            }
-
             const config = {
               ...d.config        ?? {},
               ...p.configs       ?? {},
@@ -119,7 +110,15 @@ export class PresetService {
               ...root.configs    ?? {}
             }
 
-            const pool  = new SimplePool(items, config)
+            const fexprs  = Array.isArray(d.filter) ? d.filter : [d.filter]
+            const filters = fexprs.map(Preset.parseTagFilterExpr).map(f => d.fixed ? f : { t: 'every' as const, value: [rfilter, sfilter, pfilter, f].filter(defined) })
+            const fpath   = join(path, 'segments', i.toString(), 'candidates', j.toString(), 'parts', k.toString())
+            const items   = filters.flatMap(filter => uses.filter(item => Preset.matchTags(item.tags, filter)))
+
+            if (!d.fixed && items.length < d.n * 5) {
+              throw new Error(`No enough items: ${fpath}, filter(s) ${fexprs.join('; ')} (${items.length} - ${d.n})`)
+            }
+            const pool  = new SimplePool(items, { ...config, fixed: d.fixed })
             const pairs = Object.entries(groupBy(identity, fexprs))
             const src   = pairs.map(([expr, r]) => r.length > 1 ? expr + ' × ' + r.length : expr).join(' + ')
             const label = d.n + ' from ' + src

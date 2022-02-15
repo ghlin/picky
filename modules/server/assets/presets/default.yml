@@ -70,6 +70,9 @@ patterns:
             parts:
               - n:      15
                 filter: G2
+              - n:      0
+                fixed:  true
+                filter: FALLBACK
 
   - mode: draft
     shifts: [1, 1, 1]
