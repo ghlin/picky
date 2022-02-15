@@ -1,0 +1,40 @@
+div.taggingcell {
+  width: 25rem;
+  .ctrls {
+    flex-wrap: wrap;
+    > .ctrl {
+      width: 5rem;
+      a {
+        text-decoration: underline;
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+        cursor: pointer;
+
+        &.marked {
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
+
+div.container {
+  justify-content: flex-start;
+  height: 100%;
+  overflow: hidden;
+  > div {
+    height: 100%;
+    width: 100%;
+    flex: 10;
+    &:first-child {
+      flex: 1;
+      padding-left: 2rem;
+      padding-right: 2rem;
+
+      label {
+        min-width: 6rem;
+      }
+    }
+  }
+}

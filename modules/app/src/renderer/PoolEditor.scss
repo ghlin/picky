@@ -1,0 +1,106 @@
+.container {
+  justify-content: start;
+  height: 100%;
+
+  overflow-y: scroll;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid white;
+    height: 100%;
+
+    thead > tr {
+      background-color: white;
+    }
+    tfoot > tr > td {
+      width: 100%;
+      div > * {
+        margin-left: 0.2rem;
+        margin-right: 0.2rem;
+      }
+    }
+
+    tfoot > tr {
+      position: sticky;
+      bottom: 0;
+      opacity: 1;
+      border: 1px solid white;
+      background-color: grey;
+      min-height: 2.4rem;
+    }
+    thead > tr {
+      position: sticky;
+      top: 0;
+      opacity: 1;
+      border: 1px solid white;
+      background-color: grey;
+      min-height: 2.4rem;
+    }
+
+    th, td, tr {
+      border-collapse: collapse;
+      border: 1px solid white;
+
+      margin: 0;
+      padding: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    .image {
+      >div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      min-width: calc(4.2rem * 322 / 433);
+      img {
+        height: 4.2rem;
+      }
+    }
+    .name {
+      min-width: 13rem;
+    }
+    .types {
+      min-width: 14rem;
+    }
+    .desc {
+      width: 100%;
+    }
+    .misc {
+      min-width: 5rem;
+    }
+    td > span {
+      position: relative;
+      max-width: 100%;
+      padding: 0 !important;
+      display: -webkit-flex;
+      display: -moz-flex;
+      display: flex;
+      vertical-align: text-bottom !important;
+    }
+    td > span > span {
+      position: absolute;
+      white-space: nowrap;
+      overflow-y: visible;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      min-width: 0;
+      width: 100%;
+      top: 0;
+      left: 0;
+    }
+    td > span:after,
+    td > span > span:after {
+      content: '-';
+      display: inline;
+      visibility: hidden;
+      width: 0;
+    }
+
+    .misc > span {
+      text-align: center;
+    }
+  }
+}

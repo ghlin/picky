@@ -4,6 +4,7 @@ import { MemoryRouter as Router, Route, Routes } from 'react-router-dom'
 import useLocalStorage from 'use-local-storage'
 import * as UUID from 'uuid'
 import { AppContext, handleSessionState, initialize, useAppState } from './context'
+import { EditPool } from './EditPool'
 import { MainPage } from './Main'
 import { Keys } from './misc'
 import { Settings } from './Settings'
@@ -30,6 +31,7 @@ export default function App() {
       <Routes>
         <Route path='/'         element={<MainPage />} />
         <Route path='/settings' element={<Settings />} />
+        <Route path='/pooledit' element={<EditPool />} />
       </Routes>
     </Router>
     <Toaster />
