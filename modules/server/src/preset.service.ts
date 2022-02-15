@@ -118,7 +118,8 @@ export class PresetService {
               ...segment.configs ?? {},
               ...root.configs    ?? {}
             }
-            const pool  = new SimplePool(items, config.uniq ?? false)
+
+            const pool  = new SimplePool(items, config)
             const pairs = Object.entries(groupBy(identity, fexprs))
             const src   = pairs.map(([expr, r]) => r.length > 1 ? expr + ' × ' + r.length : expr).join(' + ')
             const label = d.n + ' from ' + src
@@ -203,12 +204,20 @@ export class PresetService {
 
 class SimplePool {
   constructor(
-    readonly items: Preset.PoolItem[],
-    readonly uniq:  boolean
+    readonly items:  Preset.PoolItem[],
+    readonly config: Partial<Preset.DispatchConfig>
   ) {}
 
   deal(n: number) {
-    if (!this.uniq) {
+    const items = this._deal(n)
+
+    return this.config?.bundle === 'free'
+      ? items.flatMap(item => item.pack.map(id => ({ pack: [id] })))
+      : items
+  }
+
+  _deal(n: number) {
+    if (!this.config?.uniq) {
       return range(0, n).map(() => this.items[randomInt(this.items.length)])
     }
 

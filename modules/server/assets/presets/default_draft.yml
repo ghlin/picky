@@ -5,6 +5,8 @@ uses:
   - pool: default
     alias: C
 filter: '!FALLBACK'
+configs:
+  bundle: free
 patterns:
   - seql:
     # some goooooooooooood stuff.

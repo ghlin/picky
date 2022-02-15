@@ -5,6 +5,8 @@ uses:
   - pool: default
     alias: C
 filter: '!FALLBACK'
+configs:
+  bundle: free
 patterns:
   - mode: sealed
     minpicks: 1
