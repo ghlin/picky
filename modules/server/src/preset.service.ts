@@ -108,7 +108,7 @@ export class PresetService {
             const fpath   = join(path, 'segments', i.toString(), 'candidates', j.toString(), 'parts', k.toString())
             const items   = filters.flatMap(filter => uses.filter(item => Preset.matchTags(item.tags, filter)))
 
-            if (items.length < d.n * 5) {
+            if (!d.fixed && items.length < d.n * 5) {
               throw new Error(`No enough items: ${fpath}, filter(s) ${fexprs.join('; ')} (${items.length} - ${d.n})`)
             }
 
@@ -205,7 +205,7 @@ export class PresetService {
 class SimplePool {
   constructor(
     readonly items:  Preset.PoolItem[],
-    readonly config: Partial<Preset.DispatchConfig>
+    readonly config: Partial<Preset.DispatchConfig & { fixed?: boolean }>
   ) {}
 
   deal(n: number) {
@@ -217,6 +217,8 @@ class SimplePool {
   }
 
   _deal(n: number) {
+    if (this.config.fixed) { return this.items }
+
     if (!this.config?.uniq) {
       return range(0, n).map(() => this.items[randomInt(this.items.length)])
     }

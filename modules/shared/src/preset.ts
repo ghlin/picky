@@ -14,7 +14,7 @@ export interface UsePool { pool: string; alias: string }
 export type DealPart<F> = {
   copies?: Record<string, number>
   config?: Partial<DispatchConfig>
-
+  fixed?:  boolean
   n:       number;
   filter:  F;
 }
@@ -28,15 +28,15 @@ export type DispatchConfigs       = Record<string, PartialDispatchConfig>
 export type DispatchMode = { mode: 'draft';  shifts: number[] }
                          | { mode: 'sealed'; minpicks: number; maxpicks: number }
 
+
+export type DealCandidate<F> = { rate: number; parts: DealPart<F>[] }
+
 export type DealSegment<F> = {
   configs?: DispatchConfigs
   copies?:  Record<string, number>
   filter?:  string
 
-  candidates: Array<{
-    rate:  number
-    parts: DealPart<F>[]
-  }>
+  candidates: Array<DealCandidate<F>>
 }
 
 type Seql<F> = { seql: DispatchPattern<F>[] }
