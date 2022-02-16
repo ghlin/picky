@@ -29,31 +29,32 @@ defs:
               filter: ['T1', 'T2', 'T3', 'T3', 'T4', 'T4', 'T4', 'T5', 'T5', 'T5', 'T5', 'T5', 'T5']
 
 patterns:
-  - <<: *rareseg
-    filter: Main
-  - <<: *normalseg
-    filter: Main
-    repeats: { seql: 7 }
-  - <<: *normalseg
-    filter: Ex
-    repeats: { seql: 3 }
+  - seql:
+    - <<: *rareseg
+      filter: Main
+    - <<: *normalseg
+      filter: Main
+      repeats: { seql: 7 }
+    - <<: *normalseg
+      filter: Ex
+      repeats: { seql: 3 }
 
-  - <<: *rareseg
-    filter: Main
-  - <<: *normalseg
-    filter: Main
-    repeats: { seql: 7 }
-  - <<: *normalseg
-    filter: Ex
-    repeats: { seql: 3 }
+    - <<: *rareseg
+      filter: Main
+    - <<: *normalseg
+      filter: Main
+      repeats: { seql: 7 }
+    - <<: *normalseg
+      filter: Ex
+      repeats: { seql: 3 }
 
-  - <<: *rareseg
-    filter: Main
-  - <<: *normalseg
-    filter: Main
-    repeats: { seql: 6 }
-  - <<: *rareseg
-    filter: Main
-  - <<: *normalseg
-    filter: Ex
-    repeats: { seql: 3 }
+    - <<: *rareseg
+      filter: Main
+    - <<: *normalseg
+      filter: Main
+      repeats: { seql: 6 }
+    - <<: *rareseg
+      filter: Main
+    - <<: *normalseg
+      filter: Ex
+      repeats: { seql: 3 }

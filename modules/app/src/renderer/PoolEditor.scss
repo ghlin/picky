@@ -29,6 +29,7 @@
       background-color: grey;
       min-height: 2.4rem;
     }
+
     thead > tr {
       position: sticky;
       top: 0;
@@ -40,10 +41,10 @@
 
     th, td, tr {
       border-collapse: collapse;
-      border: 1px solid white;
+      border: 1px solid grey;
 
       margin: 0;
-      padding: 0.5rem;
+      padding: 0.3rem;
       font-size: 1.1em;
     }
 

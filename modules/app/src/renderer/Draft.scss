@@ -133,12 +133,14 @@ $cimg_border_width: 0.2rem;
       position: sticky;
       top: 0.2rem;
       background-color: rgba(100, 100, 100, 0.6);
-      border: 1px solid rgba(200, 200, 200, 0.9);
+      border-top:    1px solid rgba(200, 200, 200, 0.9);
+      border-bottom: 1px solid rgba(200, 200, 200, 0.9);
       min-width: 5rem;
-      min-height: 3.2rem;
-      margin: 0.1rem;
+      min-height: 3.4rem;
+      height: calc(3.4rem + 2px);
       padding-left: 1rem;
       padding-right: 1rem;
+
       &> span {
         display: block;
         flex: 1;
@@ -339,13 +341,27 @@ $cimg_border_width: 0.2rem;
   }
 }
 
+.overlay {
+  z-index: 200;
+  background-color: rgba(0, 0, 0, 0.3);
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+}
+
+.modal, .overlay {
+  position: fixed;
+}
+// }}}
+
 .tooltipcontainer, .tooltip > div {
   border: 1px solid rgba(200, 200, 200, 0.8);
   border-radius: 2px;
 }
 
 .tooltip {
-  font-size: 1.2em;
+  font-size: 1.4em;
   width: 24rem;
   justify-content: start;
 
@@ -362,17 +378,3 @@ $cimg_border_width: 0.2rem;
     }
   }
 }
-
-.overlay {
-  z-index: 200;
-  background-color: rgba(0, 0, 0, 0.3);
-  width: 100vw;
-  height: 100vh;
-  left: 0;
-  top: 0;
-}
-
-.modal, .overlay {
-  position: fixed;
-}
-// }}}

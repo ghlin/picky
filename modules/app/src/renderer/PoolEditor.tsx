@@ -7,9 +7,10 @@ import { Flex, FlexV, Full, FullW, UI } from './style-common'
 export function PoolEditorTable(props: {
   database: YGOPROCardInfo[]
   columns: Array<{
-    key:    string
-    header: () => JSX.Element,
-    render: (info: YGOPROCardInfo, page: YGOPROCardInfo[]) => JSX.Element
+    key:        string
+    className?: string
+    header:     () => JSX.Element,
+    render:     (info: YGOPROCardInfo, page: YGOPROCardInfo[]) => JSX.Element
   }>
 }) {
   const PAGE_SIZE = 10
@@ -41,7 +42,11 @@ export function PoolEditorTable(props: {
             <td className={style.misc}><span><span>{r.mscale}</span></span></td>
             <td className={style.misc}><span><span>{r.matk}</span></span></td>
             <td className={style.misc}><span><span>{r.mdef}</span></span></td>
-            { props.columns.map(c => <td key={c.key + ':' + i}>{c.render(r, rows)}</td>) }
+            {
+              props.columns.map(c => <td key={c.key + ':' + i} className={c.className}>
+                {c.render(r, rows)}
+              </td>)
+            }
           </tr>)
         }
       </tbody>

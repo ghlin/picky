@@ -28,6 +28,17 @@
     min-width: 10em;
   }
 
+  button.UI {
+    transform: scale(1.0);
+
+    transition: all 70ms linear;
+
+    &:not(:disabled):hover {
+      background-color: rgba(130, 130, 130, 0.7);
+      transform: scale(1.1);
+    }
+  }
+
   input[type="text"], button, select {
     padding: 0.2rem;
     margin: 0.2rem;
@@ -40,15 +51,6 @@
     &:disabled {
       cursor: not-allowed;
       filter: brightness(0.5);
-    }
-
-    transform: scale(1.0);
-
-    transition: all 70ms linear;
-
-    &:not(:disabled):hover {
-      background-color: rgba(130, 130, 130, 0.7);
-      transform: scale(1.1);
     }
   }
 }
