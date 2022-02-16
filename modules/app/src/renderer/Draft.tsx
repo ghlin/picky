@@ -1,4 +1,4 @@
-import { atoi10, CTypeEnums, defined, Drafting, YGOPROCardInfo } from '@picky/shared'
+import { atoi10, CTypeEnums, defined, Drafting, MATTRIBUTE_BY_CODE, MTYPES_BY_CODE, YGOPROCardInfo } from '@picky/shared'
 import classnames from 'classnames'
 import { HTMLAttributes, useContext, useEffect, useState } from 'react'
 import ReactModal from 'react-modal'
@@ -8,6 +8,7 @@ import { CimgClipButton } from './CimgClip'
 import { AppContext } from './context'
 import { DeckView } from './Decks'
 import style from './Draft.scss'
+import { ATTR_TEXTURES } from './misc'
 import { Flex, FlexV, Full, FullH, FullW, UI } from './style-common'
 
 type DraftingState = AppContext['drafting'] extends (undefined | infer P) ? P : never
@@ -182,11 +183,17 @@ export function Draft() {
                 </span>
               </div>
               {
-                info.types.includes('MONSTER') && <div>
-                  <span>ATK: {info.matk}</span>
-                  {!info.types.includes('LINK') && <span>DEF: {info.mdef}</span>}
-                  {info.types.includes('PENDULUM') && <span>SCALE: {info.mscale}</span>}
-                </div>
+                info.types.includes('MONSTER') && <>
+                  <div>
+                    <span>{MTYPES_BY_CODE[info.mtype]}</span>
+                    <span><img src={ATTR_TEXTURES[MATTRIBUTE_BY_CODE[info.mattribute]]} className={style.attr} /></span>
+                  </div>
+                  <div>
+                    <span>ATK: {info.matk}</span>
+                    {!info.types.includes('LINK') && <span>DEF: {info.mdef}</span>}
+                    {info.types.includes('PENDULUM') && <span>SCALE: {info.mscale}</span>}
+                  </div>
+                </>
               }
               <div><span>{info.types.join(' / ')}</span></div>
               <div>
@@ -289,23 +296,38 @@ export function Draft() {
 }
 
 function renderTooltip(info: YGOPROCardInfo) {
+  const attrname  = MATTRIBUTE_BY_CODE[info.mattribute]
+  const attrimg   = ATTR_TEXTURES[attrname]
+  const mtypename = MTYPES_BY_CODE[info.mtype]
+
   return <div className={classnames(FlexV, style.tooltip)}>
     {
       info && <>
         <div>
           <span>{info.name}</span>
-          <span>
-            {info.types.includes('MONSTER') && info.mlevel}
-          </span>
+          {
+            info.types.includes('MONSTER') && <span className={style.mlevel}>
+              {info.mlevel && (info.types.includes('XYZ') ? 'Rank' : info.types.includes('LINK') ? 'Link' : 'Level' ) + '-' + info.mlevel}
+            </span>
+          }
         </div>
-        {
-          info.types.includes('MONSTER') && <div>
-            <span>ATK: {info.matk}</span>
-            {!info.types.includes('LINK') && <span>DEF: {info.mdef}</span>}
-            {info.types.includes('PENDULUM') && <span>SCALE: {info.mscale}</span>}
-          </div>
-        }
+
         <div><span>{info.types.join(' / ')}</span></div>
+
+        {
+          info.types.includes('MONSTER') && <>
+            <div>
+              {mtypename && <span>{mtypename}</span>}
+              {attrimg && <span><img src={attrimg} className={style.attr} /></span>}
+            </div>
+            <div>
+              <span>ATK: {info.matk}</span>
+              {!info.types.includes('LINK') && <span>DEF: {info.mdef}</span>}
+              {info.types.includes('PENDULUM') && <span>SCALE: {info.mscale}</span>}
+            </div>
+          </>
+        }
+
         <div>
           <div>{ info.desc.split('\r\n').map((seg, i) => <p key={i}>{seg}</p>)}</div>
         </div>

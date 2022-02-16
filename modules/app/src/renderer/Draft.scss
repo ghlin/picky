@@ -309,6 +309,11 @@ $cimg_border_width: 0.2rem;
     font-size: 1.3em;
     height: 70vh;
     justify-content: start;
+
+    img {
+      height: 1.2em;
+    }
+
     > div:last-child {
       min-height: 0;
       flex: 1;
@@ -376,5 +381,9 @@ $cimg_border_width: 0.2rem;
       margin: 0.2em;
       padding: 0.3em;
     }
+  }
+
+  img {
+    height: 1.2rem;
   }
 }
