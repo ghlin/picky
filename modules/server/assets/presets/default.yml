@@ -1,122 +1,128 @@
 id:       default
 name:     default
-description: 主卡组现开(50选23~26) + 额外轮抓(3×4)
+description: 主卡组现开(50+保底 选23~26) + 额外轮抓(3×4)
 uses:
   - pool: default
     alias: C
 filter: '!FALLBACK'
+configs:
+  bundle: free
 patterns:
-  - mode: sealed
-    minpicks: 1
-    maxpicks: 1
-    configs:  { uniq: true }
-    segments:
-      - candidates:
-        - rate: 1
-          parts:
-            - n: 3
-              filter: T1&G1
-
-  # main deck...
-  - mode: sealed
-    minpicks: 23
-    maxpicks: 26
-    filter: Main
-    segments:
-      - candidates:
-          - rate: 1
-            parts:
-              - n:      2
-                filter: T2&G1
-              - n:      3
-                filter: T3&G1
-              - n:      5
-                filter: T4&G1
-          - rate: 3
-            parts:
-              - n:      2
-                filter: T2&G1
-              - n:      4
-                filter: T3&G1
-              - n:      4
-                filter: T4&G1
-          - rate: 2
-            parts:
-              - n:      2
-                filter: T2&G1
-              - n:      5
-                filter: T3&G1
-              - n:      3
-                filter: T4&G1
-      - candidates:
-          - rate: 1
-            parts:
-              - n: 2
-                filter: G1&!T1&(SPELL|TRAP)
-      - candidates:
+  - seql:
+    - mode: sealed
+      minpicks: 1
+      maxpicks: 1
+      configs:  { uniq: true }
+      segments:
+        - candidates:
           - rate: 1
             parts:
               - n: 3
-                filter: G2&(SPELL|TRAP)
-      - candidates:
+                filter: T1&G1
+
+    # main deck...
+    - mode: sealed
+      minpicks: 23
+      maxpicks: 26
+      filter: Main
+      segments:
+        - candidates:
+            - rate: 1
+              parts:
+                - n:      2
+                  filter: T2&G1
+                - n:      3
+                  filter: T3&G1
+                - n:      5
+                  filter: T4&G1
+            - rate: 3
+              parts:
+                - n:      2
+                  filter: T2&G1
+                - n:      4
+                  filter: T3&G1
+                - n:      4
+                  filter: T4&G1
+            - rate: 2
+              parts:
+                - n:      2
+                  filter: T2&G1
+                - n:      5
+                  filter: T3&G1
+                - n:      3
+                  filter: T4&G1
+        - candidates:
+            - rate: 1
+              parts:
+                - n: 2
+                  filter: G1&!T1&(SPELL|TRAP)
+        - candidates:
+            - rate: 1
+              parts:
+                - n: 3
+                  filter: G2&(SPELL|TRAP)
+        - candidates:
+            - rate: 1
+              parts:
+                - n:      20
+                  filter: T5&G1
+        - candidates:
+            - rate: 1
+              parts:
+                - n:      15
+                  filter: G2
+                - n:      0
+                  fixed:  true
+                  filter: FALLBACK
+
+    - mode: draft
+      shifts: [1, 1, 1]
+      repeats: { seql: 3 }
+      segments:
+        - filter: LINK
+          candidates:
           - rate: 1
             parts:
-              - n:      20
-                filter: T5&G1
-      - candidates:
-          - rate: 1
-            parts:
-              - n:      15
+              - n: 2
+                filter: &ex
+                  - G1&T5
+                  - G1&T5
+                  - G1&T5
+                  - G1&T4
+                  - G1&T4
+                  - G1&(T3|T2)
+                  - G1&(T3|T2)
+              - n: 2
                 filter: G2
 
-  - mode: draft
-    shifts: [1, 1, 1]
-    repeats: { fork: 3 }
-    segments:
-      - filter: LINK
-        candidates:
-        - rate: 1
-          parts:
-            - n: 2
-              filter: &ex
-                - G1&T5
-                - G1&T5
-                - G1&T5
-                - G1&T4
-                - G1&T4
-                - G1&(T3|T2)
-                - G1&(T3|T2)
-            - n: 2
-              filter: G2
+          - rate: 2
+            parts:
+              - n: 3
+                filter: *ex
+              - n: 1
+                filter: G2
 
-        - rate: 2
-          parts:
-            - n: 3
-              filter: *ex
-            - n: 1
-              filter: G2
+        - filter: SYNCHRO
+          candidates:
+          - rate: 1
+            parts:
+              - n: 3
+                filter: *ex
+              - n: 1
+                filter: G2
 
-      - filter: SYNCHRO
-        candidates:
-        - rate: 1
-          parts:
-            - n: 3
-              filter: *ex
-            - n: 1
-              filter: G2
+        - filter: XYZ
+          candidates:
+          - rate: 1
+            parts:
+              - n: 2
+                filter: *ex
+              - n: 2
+                filter: G2
 
-      - filter: XYZ
-        candidates:
-        - rate: 1
-          parts:
-            - n: 2
-              filter: *ex
-            - n: 2
-              filter: G2
-
-        - rate: 2
-          parts:
-            - n: 3
-              filter: *ex
-            - n: 1
-              filter: G2
+          - rate: 2
+            parts:
+              - n: 3
+                filter: *ex
+              - n: 1
+                filter: G2

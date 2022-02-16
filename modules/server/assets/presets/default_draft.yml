@@ -5,6 +5,8 @@ uses:
   - pool: default
     alias: C
 filter: '!FALLBACK'
+configs:
+  bundle: free
 patterns:
   - seql:
     # some goooooooooooood stuff.
@@ -21,7 +23,7 @@ patterns:
 
     # main deck...
     - mode: draft
-      repeats: { fork: 6 }
+      repeats: { seql: 6 }
       shifts: [1, 1, 1, 1]
       filter: Main
       segments:
@@ -86,7 +88,7 @@ patterns:
 
     - mode: draft
       shifts: [1, 1, 1]
-      repeats: { fork: 3 }
+      repeats: { seql: 3 }
       segments:
         - filter: LINK
           candidates:

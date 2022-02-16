@@ -21,5 +21,6 @@ interface Window {
       passcode: string
       deck:     number[]
     }): Promise<void>
+    database(): Promise<import('@picky/shared').YGOPROCardInfo[]>
   }
 }

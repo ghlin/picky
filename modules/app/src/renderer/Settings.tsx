@@ -13,6 +13,15 @@ export function Settings() {
       </div>
     </div>
 
+    <div className={classnames(style.section, FullW, Flex)}>
+      <span>卡池编辑</span>
+      <div className={classnames(Full, FlexH)}>
+        <Link to='/pooledit'>
+          <button className={UI}>打开卡池编辑器</button>
+        </Link>
+      </div>
+    </div>
+
     <div className={classnames(style.section, style.complete, Full, Flex)}>
       <Link to='/'><button className={UI}>完成</button></Link>
     </div>

@@ -103,22 +103,22 @@ export class PresetService {
               return range(0, copies).flatMap(() => [...pool.items])
             })
 
-            const fexprs  = Array.isArray(d.filter) ? d.filter : [d.filter]
-            const filters = fexprs.map(Preset.parseTagFilterExpr).map(f => ({ t: 'every' as const, value: [rfilter, sfilter, pfilter, f].filter(defined) }))
-            const fpath   = join(path, 'segments', i.toString(), 'candidates', j.toString(), 'parts', k.toString())
-            const items   = filters.flatMap(filter => uses.filter(item => Preset.matchTags(item.tags, filter)))
-
-            if (items.length < d.n * 5) {
-              throw new Error(`No enough items: ${fpath}, filter(s) ${fexprs.join('; ')} (${items.length} - ${d.n})`)
-            }
-
             const config = {
               ...d.config        ?? {},
               ...p.configs       ?? {},
               ...segment.configs ?? {},
               ...root.configs    ?? {}
             }
-            const pool  = new SimplePool(items, config.uniq ?? false)
+
+            const fexprs  = Array.isArray(d.filter) ? d.filter : [d.filter]
+            const filters = fexprs.map(Preset.parseTagFilterExpr).map(f => d.fixed ? f : { t: 'every' as const, value: [rfilter, sfilter, pfilter, f].filter(defined) })
+            const fpath   = join(path, 'segments', i.toString(), 'candidates', j.toString(), 'parts', k.toString())
+            const items   = filters.flatMap(filter => uses.filter(item => Preset.matchTags(item.tags, filter)))
+
+            if (!d.fixed && items.length < d.n * 5) {
+              throw new Error(`No enough items: ${fpath}, filter(s) ${fexprs.join('; ')} (${items.length} - ${d.n})`)
+            }
+            const pool  = new SimplePool(items, { ...config, fixed: d.fixed })
             const pairs = Object.entries(groupBy(identity, fexprs))
             const src   = pairs.map(([expr, r]) => r.length > 1 ? expr + ' × ' + r.length : expr).join(' + ')
             const label = d.n + ' from ' + src
@@ -203,12 +203,22 @@ export class PresetService {
 
 class SimplePool {
   constructor(
-    readonly items: Preset.PoolItem[],
-    readonly uniq:  boolean
+    readonly items:  Preset.PoolItem[],
+    readonly config: Partial<Preset.DispatchConfig & { fixed?: boolean }>
   ) {}
 
   deal(n: number) {
-    if (!this.uniq) {
+    const items = this._deal(n)
+
+    return this.config?.bundle === 'free'
+      ? items.flatMap(item => item.pack.map(id => ({ pack: [id] })))
+      : items
+  }
+
+  _deal(n: number) {
+    if (this.config.fixed) { return this.items }
+
+    if (!this.config?.uniq) {
       return range(0, n).map(() => this.items[randomInt(this.items.length)])
     }
 

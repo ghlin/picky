@@ -64,6 +64,8 @@ ipcMain.handle('write-clipboard', (_, text) => {
   clipboard.writeText(text)
 })
 
+ipcMain.handle('database', () => storage.list)
+
 ipcMain.handle('start-ygopro', async (_, args: {
   draft_id: string
   server:   string
@@ -139,11 +141,6 @@ async function main() {
   log.transports.file.level = 'info'
   autoUpdater.logger        = log
   autoUpdater.checkForUpdatesAndNotify()
-
-  // register schema
-  protocol.registerFileProtocol('cimg', (request, callback) => {
-    void request, callback
-  })
 
   mainWindow.on('ready-to-show', () => {
     if (process.env.START_MINIMIZED) {
