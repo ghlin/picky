@@ -1,0 +1,59 @@
+id:          jjc-mimic
+name:        jjc-mimic
+description: '1/3 Χ 24 + 1/3 Χ 9'
+
+uses:
+  - pool: default
+    alias: C
+filter: '!RITUAL' # rituals are bundled.
+defs:
+  merge_mode: &mode
+    mode: sealed
+    minpicks: 1
+    maxpicks: 1
+  rareseg: &rareseg
+    <<: *mode
+    segments:
+      - candidates:
+        - rate: 1
+          parts:
+            - n:      3
+              filter: ['T1', 'T2', 'T3', 'T3']
+  normalseg: &normalseg
+    <<: *mode
+    segments:
+      - candidates:
+        - rate: 1
+          parts:
+            - n:      3
+              filter: ['T1', 'T2', 'T3', 'T3', 'T4', 'T4', 'T4', 'T5', 'T5', 'T5', 'T5', 'T5', 'T5']
+
+patterns:
+  - <<: *rareseg
+    filter: Main
+  - <<: *normalseg
+    filter: Main
+    repeats: { seql: 7 }
+  - <<: *normalseg
+    filter: Ex
+    repeats: { seql: 3 }
+
+  - <<: *rareseg
+    filter: Main
+  - <<: *normalseg
+    filter: Main
+    repeats: { seql: 7 }
+  - <<: *normalseg
+    filter: Ex
+    repeats: { seql: 3 }
+
+  - <<: *rareseg
+    filter: Main
+  - <<: *normalseg
+    filter: Main
+    repeats: { seql: 6 }
+  - <<: *rareseg
+    filter: Main
+  - <<: *normalseg
+    filter: Ex
+    repeats: { seql: 3 }
