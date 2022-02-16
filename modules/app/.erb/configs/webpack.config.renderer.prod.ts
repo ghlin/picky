@@ -114,6 +114,7 @@ const configuration: webpack.Configuration = {
 
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.ANALYZE === 'true' ? 'server' : 'disabled',
+      analyzerHost: '0.0.0.0'
     }),
 
     new HtmlWebpackPlugin({
