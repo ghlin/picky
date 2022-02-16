@@ -52,14 +52,6 @@ ipcMain.handle('random-avatar-card', (_, tags: { includes: CTypeEnums[], exclude
   return fits[randomInt(fits.length)]
 })
 
-ipcMain.handle('select-ygopro-path', async () => {
-  const dir = await promptYGOPROPathSelect()
-  if (dir) {
-    await handleYGOPROPathUpdate(dir)
-  }
-  return dir
-})
-
 ipcMain.handle('write-clipboard', (_, text) => {
   clipboard.writeText(text)
 })
@@ -112,6 +104,15 @@ async function main() {
 
   store.set('ygoroot', ygoroot)
   await handleYGOPROPathUpdate(ygoroot as string)
+
+  ipcMain.handle('select-ygopro-path', async () => {
+    const dir = await promptYGOPROPathSelect()
+    if (dir) {
+      store.set('ygoroot', dir)
+      await handleYGOPROPathUpdate(dir)
+    }
+    return dir
+  })
 
   protocol.registerFileProtocol('cimg', async (request, callback) => {
     if (!storage.ygoroot) { log.error(`ygoroot not load`) }
