@@ -72,7 +72,11 @@ ipcMain.handle('start-ygopro', async (_, args: {
   const [host, port] = args.server.split(':')
   const ygoargs = ['-h', host, '-p', port, '-w', args.passcode, '-j']
 
-  spawn('ygopro.exe', ygoargs, { detached: true, cwd: storage.ygoroot })
+  const prog = process.platform === 'win32'
+    ? 'ygopro.exe'
+    : path.join(storage.ygoroot, 'ygopro')
+
+  spawn(prog, ygoargs, { detached: true, cwd: storage.ygoroot })
     .on('error', e => log.error(e))
 })
 
@@ -181,15 +185,17 @@ async function promptYGOPROPathSelect() {
     : result.filePaths[0]
 }
 
+const LINE_ENDING   = process.platform === 'win32' ? '\r\n' : '\n'
+
 // TODO: eh... 2021-12-05 15:07:41
 async function setLastDeck(draft_id: string) {
   const conffile = path.join(storage.ygoroot, 'system.conf')
-  const content = await readFile(conffile).then(s => s.toString())
-  const lines = content.split('\r\n')
+  const content  = await readFile(conffile).then(s => s.toString())
+  const lines    = content.split(LINE_ENDING)
   const modified = lines.map(line => {
     const [key] = line.split('=')
     return key.trim() === 'lastdeck' ? `lastdeck = picky.${draft_id}` : line
-  }).join('\r\n')
+  }).join(LINE_ENDING)
   await writeFile(conffile, modified)
 }
 
