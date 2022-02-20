@@ -21,7 +21,7 @@ function Pickreq({ drafting, pickreq, selection, expand, ...divprops }: {
 } & HTMLAttributes<HTMLDivElement>) {
   const ctx                  = useContext(AppContext)
   const [picks, updatePicks] = useState<string[]>([])
-  const [packid]             = pickreq.req_id.split(':')[0]
+  const [packid]             = pickreq.req_id.split(':')
   const prefix               = `第${packid}包${pickreq.ptype === 'draft' ? ` 第${pickreq.meta.shift.index + 1}轮 (共${pickreq.meta.shift.total}轮)` : ''}`
   const min                  = pickreq.ptype === 'draft' ? pickreq.npicks : pickreq.npicks.min
   const max                  = pickreq.ptype === 'draft' ? pickreq.npicks : pickreq.npicks.max

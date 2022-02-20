@@ -1,6 +1,6 @@
 {
   "name": "picky",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "draft/unsealed duel for ygopro",
   "main": "./dist/main/main.js",
   "author": {
