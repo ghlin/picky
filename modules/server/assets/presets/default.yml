@@ -29,28 +29,15 @@ patterns:
         - candidates:
             - rate: 1
               parts:
-                - n:      2
-                  filter: T2&G1
-                - n:      3
-                  filter: T3&G1
-                - n:      5
-                  filter: T4&G1
-            - rate: 3
-              parts:
-                - n:      2
-                  filter: T2&G1
-                - n:      4
-                  filter: T3&G1
-                - n:      4
-                  filter: T4&G1
-            - rate: 2
-              parts:
-                - n:      2
-                  filter: T2&G1
-                - n:      5
-                  filter: T3&G1
-                - n:      3
-                  filter: T4&G1
+                - n: 8
+                  filter:
+                    - T2&G1
+                    - T3&G1
+                    - T3&G1
+                    - T4&G1
+                    - T4&G1
+                    - T4&G1
+                    - T4&G1
         - candidates:
             - rate: 1
               parts:
@@ -69,11 +56,23 @@ patterns:
         - candidates:
             - rate: 1
               parts:
-                - n:      15
+                - n:      17
                   filter: G2
+
                 - n:      0
                   fixed:  true
-                  filter: FALLBACK
+                  filter: FALLBACK&Main
+
+    - mode: sealed
+      minpicks: 3
+      maxpicks: 3
+      segments:
+        - candidates:
+            - rate: 1
+              parts:
+                - n:      0
+                  fixed:  true
+                  filter: FALLBACK&Ex
 
     - mode: draft
       shifts: [1, 1, 1]
@@ -83,7 +82,7 @@ patterns:
           candidates:
           - rate: 1
             parts:
-              - n: 2
+              - n: 3
                 filter: &ex
                   - G1&T5
                   - G1&T5
@@ -92,13 +91,6 @@ patterns:
                   - G1&T4
                   - G1&(T3|T2)
                   - G1&(T3|T2)
-              - n: 2
-                filter: G2
-
-          - rate: 2
-            parts:
-              - n: 3
-                filter: *ex
               - n: 1
                 filter: G2
 
@@ -114,13 +106,6 @@ patterns:
         - filter: XYZ
           candidates:
           - rate: 1
-            parts:
-              - n: 2
-                filter: *ex
-              - n: 2
-                filter: G2
-
-          - rate: 2
             parts:
               - n: 3
                 filter: *ex
