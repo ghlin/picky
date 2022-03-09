@@ -4676,6 +4676,80 @@
     },
     {
       "pack": [
+        1639384
+      ],
+      "tags": [
+        "G2",
+        "T4",
+        "Ex",
+        "L8",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "XYZ"
+      ]
+    },
+    {
+      "pack": [
+        1566817
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L2",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        1249315
+      ],
+      "tags": [
+        "G2",
+        "T5",
+        "Ex",
+        "L2",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "XYZ"
+      ]
+    },
+    {
+      "pack": [
+        494922
+      ],
+      "tags": [
+        "G2",
+        "T5",
+        "Ex",
+        "L10",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "SYNCHRO"
+      ]
+    },
+    {
+      "pack": [
+        109401
+      ],
+      "tags": [
+        "T3",
+        "G1",
+        "Ex",
+        "L5",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "SYNCHRO"
+      ]
+    },
+    {
+      "pack": [
         8836329,
         44221928
       ],
@@ -44464,6 +44538,392 @@
         "S0",
         "MONSTER",
         "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        3040496
+      ],
+      "tags": [
+        "T3",
+        "G1",
+        "Ex",
+        "L8",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "SYNCHRO"
+      ]
+    },
+    {
+      "pack": [
+        1686814
+      ],
+      "tags": [
+        "T2",
+        "G2",
+        "Ex",
+        "L12",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "SYNCHRO"
+      ]
+    },
+    {
+      "pack": [
+        3167573
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L7",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        3233859
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L3",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "TUNER"
+      ]
+    },
+    {
+      "pack": [
+        4423206
+      ],
+      "tags": [
+        "T4",
+        "G2",
+        "Ex",
+        "L3",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "XYZ"
+      ]
+    },
+    {
+      "pack": [
+        4632019
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L1",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "TUNER"
+      ]
+    },
+    {
+      "pack": [
+        4779823
+      ],
+      "tags": [
+        "T3",
+        "G2",
+        "Ex",
+        "L7",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "SYNCHRO"
+      ]
+    },
+    {
+      "pack": [
+        5041348
+      ],
+      "tags": [
+        "T2",
+        "G1",
+        "Ex",
+        "L8",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "SYNCHRO"
+      ]
+    },
+    {
+      "pack": [
+        5916510
+      ],
+      "tags": [
+        "T5",
+        "G2",
+        "Ex",
+        "L4",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "XYZ"
+      ]
+    },
+    {
+      "pack": [
+        7672244
+      ],
+      "tags": [
+        "T5",
+        "G2",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL"
+      ]
+    },
+    {
+      "pack": [
+        8198712
+      ],
+      "tags": [
+        "G1",
+        "T3",
+        "L8",
+        "MONSTER",
+        "EFFECT",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "RITUAL"
+      ]
+    },
+    {
+      "pack": [
+        8763963
+      ],
+      "tags": [
+        "T5",
+        "G2",
+        "Ex",
+        "L10",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "SYNCHRO"
+      ]
+    },
+    {
+      "pack": [
+        8955148
+      ],
+      "tags": [
+        "G2",
+        "T4",
+        "L8",
+        "MONSTER",
+        "EFFECT",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "RITUAL"
+      ]
+    },
+    {
+      "pack": [
+        21082832
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "L8",
+        "MONSTER",
+        "EFFECT",
+        "T3",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "RITUAL"
+      ]
+    },
+    {
+      "pack": [
+        34767865
+      ],
+      "tags": [
+        "T5",
+        "G2",
+        "L7",
+        "MONSTER",
+        "EFFECT",
+        "T4",
+        "L4",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "RITUAL"
+      ]
+    },
+    {
+      "pack": [
+        41426869
+      ],
+      "tags": [
+        "G1",
+        "T3",
+        "L1",
+        "MONSTER",
+        "EFFECT",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "RITUAL"
+      ]
+    },
+    {
+      "pack": [
+        44221928
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "L9",
+        "MONSTER",
+        "EFFECT",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "RITUAL"
+      ]
+    },
+    {
+      "pack": [
+        45410988
+      ],
+      "tags": [
+        "T3",
+        "G1",
+        "L8",
+        "MONSTER",
+        "EFFECT",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "RITUAL"
+      ]
+    },
+    {
+      "pack": [
+        47435107
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "L8",
+        "MONSTER",
+        "EFFECT",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "RITUAL"
+      ]
+    },
+    {
+      "pack": [
+        52913738
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "L7",
+        "MONSTER",
+        "EFFECT",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "RITUAL"
+      ]
+    },
+    {
+      "pack": [
+        58827995
+      ],
+      "tags": [
+        "T5",
+        "G2",
+        "L4",
+        "MONSTER",
+        "EFFECT",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "RITUAL"
+      ]
+    },
+    {
+      "pack": [
+        60234913
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "L7",
+        "MONSTER",
+        "EFFECT",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "RITUAL"
+      ]
+    },
+    {
+      "pack": [
+        60369732
+      ],
+      "tags": [
+        "T4",
+        "G1",
+        "L8",
+        "MONSTER",
+        "EFFECT",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "RITUAL"
+      ]
+    },
+    {
+      "pack": [
+        96420087
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "L8",
+        "MONSTER",
+        "EFFECT",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "RITUAL"
       ]
     },
     {
