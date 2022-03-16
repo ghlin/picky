@@ -12,9 +12,9 @@ import { Settings } from './Settings'
 const { socket, request, rx$ } = initialize()
 
 export default function App() {
-  const [uuid]     = useLocalStorage(Keys.UUID, UUID.v1())
+  const [uuid]     = useLocalStorage(Keys.UUID,   UUID.v1())
   const [secret]   = useLocalStorage(Keys.SECRET, UUID.v1())
-  const [image_id] = useLocalStorage(Keys.AVATAR, 0)
+  const [image_id] = useLocalStorage(Keys.AVATAR, 24154052  /* 原型机灵 */)
 
   const handle     = (e: Error) => toast.error(e.message)
   const context    = useAppState({ socket, request, rx$, handle })

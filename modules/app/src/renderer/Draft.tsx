@@ -52,7 +52,16 @@ function Pickreq({ drafting, pickreq, selection, expand, ...divprops }: {
   const over = picks.length > max
   const lack = picks.length < min
   const fine = !over && !lack
-  const toggle = (id: string) => updatePicks(ps => ps.includes(id) ? ps.filter(p => p !== id) : ps.concat([id]))
+  const toggle = (id: string) => {
+    if (max === 1) {
+      updatePicks(ps => ps
+        .filter(p => pickreq.candidates.every(c => c.id !== p))
+        .concat([id])
+      )
+    } else {
+      updatePicks(ps => ps.includes(id) ? ps.filter(p => p !== id) : ps.concat([id]))
+    }
+  }
 
   const center = selection?.state === 'pending' ? <button disabled>提交中</button> : <button
     className={UI}
