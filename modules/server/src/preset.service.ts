@@ -512,18 +512,19 @@ export class ProgressiveDispatcher implements Dispatcher {
   }
 
   private _dispatch(ctx: Drafting.PickCandidate[]) {
-    const spec = this._makefilter(ctx)
+    const spec = this._filtersFromPicked(ctx)
     const candidates = this.deals.flatMap(d => {
-      const items = (d.islink && spec) ? d.items.filter(i => i.pack.some(spec)) : d.items
-      const pool = new SimplePool(items.length < 100 ? d.items : items, { uniq: true })
+      const items = (d.islink && spec)
+        ? spec.flatMap(pred => d.items.filter(i => i.pack.some(pred)))
+        : d.items
+
+      const pool = new SimplePool(items.length < 100 ? d.items.concat(items) : items, { uniq: true })
       return pool.deal(d.n)
     })
     return candidates
   }
 
-  private _makefilter(ctx: Drafting.PickCandidate[]) {
-    const filters = ctx.flatMap(c => c.pack).map(c => this.config.links.get(c)).filter(defined)
-    if (filters.length === 0) { return undefined }
-    return (c: number) => filters.some(f => f(c))
+  private _filtersFromPicked(ctx: Drafting.PickCandidate[]) {
+    return ctx.flatMap(c => c.pack).map(c => this.config.links.get(c)).filter(defined)
   }
 }
