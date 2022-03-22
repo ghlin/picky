@@ -77,7 +77,11 @@ export class PresetService {
   }
 
   createFromProgressive(template: YAMLProgressiveDispatchSchema) {
-    const links = new Map<number, (code: number) => boolean>()
+    const links = new Map<number, Array<{
+      expects: string
+      predict: (code: number) => boolean
+    }>>()
+
     const lfilters = groupBy(l => l.id.toString(), template.links.map(
       link => {
         const l = compileLink(link.expects)
@@ -86,16 +90,21 @@ export class PresetService {
           return undefined
         }
 
-        return { filter: l.filter, id: link.id }
+        return { filter: l.filter, id: link.id, expects: link.expects }
       }
     ).filter(defined))
+
     for (const [idstr, filters] of Object.entries(lfilters)) {
       const id = atoi10(idstr)!
-      links.set(id, code => {
-        const info = this.db.get(code)
-        if (!info) { return false }
-        return filters.some(f => f.filter(info))
-      })
+      links.set(id, filters.map(f => ({
+          expects: f.expects,
+          predict: code => {
+            const info = this.db.get(code)
+            if (!info) { return false }
+            return filters.some(f => f.filter(info))
+          }
+        }
+      )))
     }
 
     const gfilter = mkFilter(mkArray(template.filter))
@@ -113,7 +122,8 @@ export class PresetService {
             const dfilter = mkArray(d.filter)
             const islink  = dfilter.some(s => s === '_link')
             const filter  = dfilter.filter(s => s !== '_link')
-            return { n: d.n, islink, filter, rawfilter: dfilter }
+            const fallback = mkArray(d.fallback ?? [])
+            return { n: d.n, islink, filter, fallback, rawfilter: dfilter }
           })
         }
         this.logger.log(`${template.id}: round ${idx + 1}`)
@@ -421,6 +431,7 @@ export interface YAMLProgressiveDispatchSchema {
     repeats?: number
     deals: Array<{
       n:      number
+      fallback: string | string[]
       filter: '_link'
             | string
             | ['_link', ...string[]]
@@ -431,11 +442,15 @@ export interface YAMLProgressiveDispatchSchema {
 
 export interface ProgressiveDispatcherConfig {
   items: Preset.PoolItem[]
-  links: Map<number, (code: number) => boolean>
+  links: Map<number, Array<{
+    expects: string
+    predict: (code: number) => boolean
+  }>>
   deals: Array<{
-    n:      number
-    islink: boolean
-    filter: string[]
+    n:        number
+    islink:   boolean
+    filter:   string[]
+    fallback: string[]
   }>
 }
 
@@ -497,9 +512,11 @@ export function compileLink(src: string) {
 export class ProgressiveDispatcher implements Dispatcher {
   logger = new Logger('ProgressiveDispatcher')
   deals  = this.config.deals.map(d => {
-    const filters = d.filter.map(Preset.parseTagFilterExpr)
-    const items   = filters.flatMap(f => this.config.items.filter(item => Preset.matchTags(item.tags, f)))
-    return { ...d, items }
+    const filters   = d.filter.map(Preset.parseTagFilterExpr)
+    const items     = filters.flatMap(f => this.config.items.filter(item => Preset.matchTags(item.tags, f)))
+    const ffilters  = d.fallback.map(Preset.parseTagFilterExpr)
+    const fallbacks = ffilters.flatMap(f => this.config.items.filter(item => Preset.matchTags(item.tags, f)))
+    return { ...d, items, fallbacks }
   })
 
   constructor(
@@ -520,18 +537,25 @@ export class ProgressiveDispatcher implements Dispatcher {
 
   private _dispatch(ctx: Drafting.PickCandidate[]) {
     const spec = this._filtersFromPicked(ctx)
+
+    this.logger.debug(`spec: ${spec.length}`)
+    this.logger.debug(spec.map(s => s.expects))
+
     const candidates = this.deals.flatMap(d => {
-      const items = (d.islink && spec)
-        ? spec.flatMap(pred => d.items.filter(i => i.pack.some(pred)))
+      const items = (d.islink && spec.length)
+        ? spec.flatMap(pred => d.items.filter(i => i.pack.some(pred.predict)))
         : d.items
 
-      const pool = new SimplePool(items.length < 100 ? d.items.concat(items) : items, { uniq: true })
+      const uses = items.length < 100 ? d.fallbacks.concat(items) : items
+      this.logger.debug(`deal: ${d.n}/${d.islink}/${d.filter.join(';')}: ${items.length}/${uses.length}`)
+
+      const pool = new SimplePool(uses, { uniq: true })
       return pool.deal(d.n)
     })
     return candidates
   }
 
   private _filtersFromPicked(ctx: Drafting.PickCandidate[]) {
-    return ctx.flatMap(c => c.pack).map(c => this.config.links.get(c)).filter(defined)
+    return ctx.flatMap(c => c.pack).flatMap(c => this.config.links.get(c) ?? [])
   }
 }
