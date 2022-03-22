@@ -1,0 +1,536 @@
+_type:       progressive
+id:          progressive_demo
+name:        non-stupid-dispatch
+description: 根据之前的选择来分配后续的候选, 测试版本
+pools:
+  - default
+filter: "!DELETE & !FALLBACK"
+links:
+  - { id: 1003028,  expects: "MATCH_LEVEL_EQ_4 RACE_WARRIOR TYPE_XYZ"                                   }
+  - { id: 10239627, expects: "RACE_SPELLCASTER MATCH_LEVEL_EQ_1"                                        }
+  - { id: 10239627, expects: "TYPE_PENDULUM"                                                            }
+  - { id: 10321588, expects: "TYPE_EQUIP"                                                               }
+  - { id: 10375182, expects: "RACE_WARRIOR"                                                             }
+  - { id: 10667321, expects: "MATCH_LEVEL_GT_5 TYPE_MONSTER TYPE_NORMAL"                                             }
+  - { id: 10802915, expects: "MATCH_LEVEL_EQ_3 RACE_FIEND"                                              }
+  - { id: 11232355, expects: "RACE_PSYCHO"                                                              }
+  - { id: 11260714, expects: "RACE_FAIRY"                                                               }
+  - { id: 11366199, expects: "ATTRIBUTE_WIND"                                                           }
+  - { id: 11366199, expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 11373345, expects: "MATCH_LEVEL_GT_7"                                                         }
+  - { id: 11747708, expects: "RACE_PLANT"                                                               }
+  - { id: 11908584, expects: "TYPE_MONSTER TYPE_NORMAL RACE_DRAGON MATCH_LEVEL_LT_4"                                 }
+  - { id: 123709,   expects: "ATTRIBUTE_FIRE"                                                           }
+  - { id: 12435193, expects: "TYPE_MONSTER RACE_DRAGON"                                                 }
+  - { id: 12451640, expects: "ATTRIBUTE_EARTH"                                                          }
+  - { id: 12451640, expects: "TYPE_PENDULUM ATTRIBUTE_EARTH"                                            }
+  - { id: 1249315,  expects: "TYPE_MONSTER MATCH_LEVEL_EQ_2"                                            }
+  - { id: 12503902, expects: "RACE_MACHINE"                                                             }
+  - { id: 12766474, expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 12766474, expects: "MATCH_LEVEL_GT_5 ATTRIBUTE_DARK"                                          }
+  - { id: 13090893, expects: "TYPE_LINK"                                                                }
+  - { id: 13093792, expects: "TYPE_SPELL TYPE_NORMAL"                                                   }
+  - { id: 13117073, expects: "TYPE_SPELL TYPE_CONTINUOUS"                                               }
+  - { id: 13117073, expects: "TYPE_FIELD TYPE_SPELL"                                                    }
+  - { id: 13166648, expects: "RACE_DRAGON ATTRIBUTE_LIGHT TYPE_XYZ"                                     }
+  - { id: 13220032, expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 13220032, expects: "TYPE_EQUIP"                                                          }
+  - { id: 13235258, expects: "RACE_INSECT"                                                              }
+  - { id: 13513663, expects: "RACE_DRAGON"                                                              }
+  - { id: 13522325, expects: "ATTRIBUTE_FIRE"                                                           }
+  - { id: 1353770,  expects: "RACE_FAIRY"                                                               }
+  - { id: 135598,   expects: "MATCH_LEVEL_LT_3 RACE_BEAST"                                              }
+  - { id: 13758665, expects: "RACE_SPELLCASTER"                                                         }
+  - { id: 13959634, expects: "ATTRIBUTE_WATER"                                                          }
+  - { id: 1409474,  expects: "ATTRIBUTE_FIRE"                                                           }
+  - { id: 14198496, expects: "MATCH_LEVEL_EQ_1"                                                         }
+  - { id: 14235211, expects: "RACE_DRAGON TYPE_MONSTER TYPE_NORMAL"                                                  }
+  - { id: 14309486, expects: "TYPE_MONSTER RACE_ROCK"                                                   }
+  - { id: 14462257, expects: "RACE_SPELLCASTER"                                                         }
+  - { id: 14505685, expects: "RACE_CYBERSE"                                                             }
+  - { id: 1475311,  expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 14761450, expects: "ATTRIBUTE_WATER TYPE_SYNCHRO"                                             }
+  - { id: 14821890, expects: "RACE_WYRM"                                                                }
+  - { id: 14821890, expects: "TYPE_SYNCHRO"                                                             }
+  - { id: 14878871, expects: "MATCH_LEVEL_LT_3 RACE_BEAST"                                              }
+  - { id: 14882493, expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 14882493, expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 14882493, expects: "MATCH_LEVEL_EQ_4 RACE_WARRIOR ATTRIBUTE_LIGHT"                            }
+  - { id: 14886469, expects: "MATCH_LEVEL_LT_3 RACE_FIEND TYPE_TUNER"                                   }
+  - { id: 15305240, expects: "TYPE_MONSTER TYPE_NORMAL"                                                              }
+  - { id: 15305240, expects: "TYPE_MONSTER TYPE_DUAL"                                                              }
+  - { id: 15381421, expects: "RACE_DRAGON"                                                              }
+  - { id: 15381421, expects: "RACE_DRAGON ATTRIBUTE_DARK MATCH_LEVEL_EQ_8 TYPE_MONSTER" }
+  - { id: 15381421, expects: "RACE_DRAGON ATTRIBUTE_LIGHT MATCH_LEVEL_EQ_8 TYPE_MONSTER" }
+  - { id: 15613529, expects: "TYPE_MONSTER TYPE_NORMAL MATCH_LEVEL_GT_5"                                             }
+  - { id: 15767889, expects: "TYPE_EQUIP"                                                               }
+  - { id: 16165939, expects: "TYPE_MONSTER TYPE_NORMAL"                                                              }
+  - { id: 16165939, expects: "TYPE_DUAL"                                                                }
+  - { id: 16188701, expects: "MATCH_LEVEL_LT_3 RACE_CYBERSE"                                            }
+  - { id: 16278116, expects: "RACE_DRAGON MATCH_ATK_LT_2500 MATCH_DEF_LT_2500"                          }
+  - { id: 16306932, expects: "RACE_DRAGON TYPE_XYZ"                            }
+  - { id: 16306932, expects: "RACE_DRAGON TYPE_SYNCHRO"                            }
+  - { id: 16306932, expects: "TYPE_PENDULUM RACE_DRAGON MATCH_LEVEL_LT_8"                               }
+  - { id: 16556849, expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 16598965, expects: "RACE_FAIRY"                                                               }
+  - { id: 16598965, expects: "RACE_FIEND"                                                               }
+  - { id: 16684346, expects: "RACE_CYBERSE"                                                             }
+  - { id: 16684346, expects: "TYPE_LINK"                                                                }
+  - { id: 17257342, expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 17259470, expects: "MATCH_LEVEL_LT_4 RACE_ZOMBIE"                                             }
+  - { id: 17266660, expects: "RACE_FAIRY"                                                               }
+  - { id: 17427333, expects: "RACE_MACHINE"                                                             }
+  - { id: 17490535, expects: "RACE_REPTILE"                                                             }
+  - { id: 18161786, expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 18210764, expects: "TYPE_PENDULUM"                                                            }
+  - { id: 18210764, expects: "TYPE_PENDULUM MATCH_LEVEL_EQ_1"                                           }
+  - { id: 18318842, expects: "ATTRIBUTE_WATER"                                                          }
+  - { id: 18756904, expects: "TYPE_MONSTER TYPE_NORMAL"                                                              }
+  - { id: 18756904, expects: "TYPE_DUAL"                                                              }
+  - { id: 18809562, expects: "MATCH_LEVEL_EQ_7 ATTRIBUTE_DARK"                                          }
+  - { id: 18809562, expects: "MATCH_LEVEL_EQ_8 ATTRIBUTE_DARK"                                          }
+  - { id: 18940556, expects: "RACE_DINOSAUR"                                                            }
+  - { id: 19019586, expects: "TYPE_NORMAL TYPE_NORMAL"                                                              }
+  - { id: 19028307, expects: "RACE_MACHINE"                                           }
+  - { id: 19028307, expects: "RACE_BEASTWARRIOR"                                           }
+  - { id: 19163116, expects: "MATCH_LEVEL_LT_4 TYPE_MONSTER TYPE_NORMAL"                                             }
+  - { id: 19163116, expects: "MATCH_LEVEL_LT_4 TYPE_DUAL"                                             }
+  - { id: 19182751, expects: "RACE_MACHINE TYPE_TUNER"                                                  }
+  - { id: 19420830, expects: "ATTRIBUTE_WIND"                                                           }
+  - { id: 19847532, expects: "ATTRIBUTE_FIRE"                                                           }
+  - { id: 20001443, expects: "RACE_WYRM TYPE_MONSTER"                                                   }
+  - { id: 20001443, expects: "TYPE_SYNCHRO"                                                             }
+  - { id: 20050865, expects: "RACE_MACHINE TYPE_SYNCHRO"                                                }
+  - { id: 20050865, expects: "RACE_MACHINE"                                                             }
+  - { id: 20140382, expects: "MATCH_LEVEL_GT_7"                                                         }
+  - { id: 20799347, expects: "RACE_PSYCHO"                                                    }
+  - { id: 20799347, expects: "RACE_WYRM"                                                    }
+  - { id: 20951752, expects: "RACE_FAIRY"                                                               }
+  - { id: 20951752, expects: "TYPE_COUNTER"                                                             }
+  - { id: 21834870, expects: "TYPE_MONSTER TYPE_NORMAL"                                                              }
+  - { id: 21834870, expects: "TYPE_MONSTER TYPE_DUAL"                                                              }
+  - { id: 218704,   expects: "ATTRIBUTE_WATER"                                                          }
+  - { id: 2204140,  expects: "RACE_ZOMBIE"                                                              }
+  - { id: 22586618, expects: "ATTRIBUTE_DARK"                                            }
+  - { id: 22586618, expects: "ATTRIBUTE_WIND"                                                           }
+  - { id: 22586618, expects: "RACE_WINDBEAST ATTRIBUTE_WIND"                                            }
+  - { id: 23171610, expects: "RACE_MACHINE"                                                             }
+  - { id: 23323812, expects: "RACE_PSYCHO"                                                              }
+  - { id: 23672629, expects: "ATTRIBUTE_WATER TYPE_XYZ"                                                 }
+  - { id: 24062258, expects: "MATCH_LEVEL_EQ_4 ATTRIBUTE_DARK MATCH_DEF_EQ_0"            }
+  - { id: 24062258, expects: "MATCH_LEVEL_EQ_4 ATTRIBUTE_DARK MATCH_ATK_EQ_0"            }
+  - { id: 24721709, expects: "RACE_SPELLCASTER TYPE_EFFECT"                                             }
+  - { id: 25460258, expects: "ATTRIBUTE_LIGHT"                                           }
+  - { id: 25460258, expects: "ATTRIBUTE_DARK"                                           }
+  - { id: 25460258, expects: "RACE_DRAGON"                                                              }
+  - { id: 2572890,  expects: "RACE_SPELLCASTER ATTRIBUTE_WIND"                                          }
+  - { id: 2625939,  expects: "RACE_CYBERSE"                                                             }
+  - { id: 269510,   expects: "RACE_DRAGON"                                                              }
+  - { id: 269510,   expects: "TYPE_LINK"                                                                }
+  - { id: 2732323,  expects: "MATCH_LEVEL_GT_7 RACE_DRAGON"                                             }
+  - { id: 2743001,  expects: "TYPE_SYNCHRO TYPE_TUNER"                                                }
+  - { id: 2779999,  expects: "RACE_PLANT"                                                               }
+  - { id: 27827272, expects: "RACE_THUNDER"                                                             }
+  - { id: 28348537, expects: "RACE_SPELLCASTER"                                                         }
+  - { id: 28593329, expects: "RACE_FAIRY"                                                               }
+  - { id: 28981598, expects: "MATCH_LEVEL_EQ_9"                                                         }
+  - { id: 29311166, expects: "RACE_DRAGON"                                                              }
+  - { id: 29374928, expects: "RACE_CYBERSE"                                                             }
+  - { id: 29603180, expects: "RACE_FIEND"                                                               }
+  - { id: 29687169, expects: "MATCH_ATK_LT_1500 RACE_SPELLCASTER"                                       }
+  - { id: 29876529, expects: "ATTRIBUTE_DARK MATCH_ATK_GT_1500"                                         }
+  - { id: 30126992, expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 3136426,  expects: "MATCH_LEVEL_LT_3"                                                         }
+  - { id: 31423101, expects: "RACE_WARRIOR"                                                             }
+  - { id: 31550470, expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 32491822, expects: "TYPE_CONTINUOUS TYPE_SPELL"                                    }
+  - { id: 32588805, expects: "TYPE_SPELL TYPE_CONTINUOUS"                                               }
+  - { id: 32588805, expects: "TYPE_TRAP TYPE_CONTINUOUS"                                                }
+  - { id: 32750510, expects: "ATTRIBUTE_WATER"                                                          }
+  - { id: 32764863, expects: "ATTRIBUTE_WATER TYPE_XYZ"                                                 }
+  - { id: 32965616, expects: "TYPE_MONSTER"                                                             }
+  - { id: 33282498, expects: "MATCH_LEVEL_EQ_7 RACE_DRAGON"                                             }
+  - { id: 33347467, expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 33460840, expects: "RACE_DRAGON MATCH_LEVEL_EQ_7"                                             }
+  - { id: 33460840, expects: "RACE_DRAGON MATCH_LEVEL_EQ_8"                                             }
+  - { id: 33622465, expects: "TYPE_NORMAL"                                                              }
+  - { id: 33622465, expects: "TYPE_DUAL"                                                              }
+  - { id: 3395226,  expects: "RACE_FAIRY ATTRIBUTE_LIGHT"                                               }
+  - { id: 34408491, expects: "ATTRIBUTE_DARK TYPE_TUNER"                                                           }
+  - { id: 35842855, expects: "ATTRIBUTE_FIRE"                                                           }
+  - { id: 35848254, expects: "MATCH_LEVEL_LT_4 ATTRIBUTE_LIGHT"                                         }
+  - { id: 3603242,  expects: "RACE_MACHINE"                                                             }
+  - { id: 36407615, expects: "RACE_FIEND TYPE_TUNER"                                                               }
+  - { id: 37880706, expects: "ATTRIBUTE_FIRE"                                                           }
+  - { id: 37955049, expects: "RACE_FIEND"                                                               }
+  - { id: 38107923, expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 38173725, expects: "MATCH_LEVEL_LT_8 RACE_MACHINE"                                            }
+  - { id: 38173725, expects: "RACE_MACHINE TYPE_XYZ"                                                    }
+  - { id: 38250531, expects: "RACE_ZOMBIE MATCH_LEVEL_EQ_5"                                                              }
+  - { id: 38572779, expects: "RACE_DINOSAUR"                                                            }
+  - { id: 3891471,  expects: "RACE_PSYCHO"                                                              }
+  - { id: 39191307, expects: "MATCH_ATK_LT_1500 RACE_DRAGON"                                            }
+  - { id: 39284521, expects: "RACE_MACHINE"                                                             }
+  - { id: 39701395, expects: "TYPE_TUNER RACE_DRAGON MATCH_ATK_LT_1000"                                 }
+  - { id: 39730727, expects: "TYPE_MONSTER TYPE_NORMAL"                                                             }
+  - { id: 39730727, expects: "TYPE_DUAL"                                                             }
+  - { id: 3987233,  expects: "ATTRIBUTE_EARTH"                                                          }
+  - { id: 403847,   expects: "RACE_WARRIOR"                                                             }
+  - { id: 403847,   expects: "RACE_SPELLCASTER"                                            }
+  - { id: 4064256,  expects: "RACE_ZOMBIE"                                                              }
+  - { id: 40916023, expects: "ATTRIBUTE_WATER"                                                          }
+  - { id: 41089128, expects: "ATTRIBUTE_FIRE"                                                           }
+  - { id: 41175645, expects: "RACE_SPELLCASTER"                                                         }
+  - { id: 41431329, expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 41431329, expects: "TYPE_EQUIP"                                                               }
+  - { id: 41620959, expects: "RACE_DRAGON"                                                              }
+  - { id: 41620959, expects: "RACE_DRAGON TYPE_NORMAL"                                                  }
+  - { id: 41639001, expects: "TYPE_NORMAL RACE_DRAGON"                                                  }
+  - { id: 41639001, expects: "TYPE_DUAL RACE_DRAGON"                                                  }
+  - { id: 41722932, expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 41925941, expects: "RACE_FIEND"                                                               }
+  - { id: 42233477, expects: "RACE_WARRIOR"                                                             }
+  - { id: 42945701, expects: "ATTRIBUTE_FIRE"                                                           }
+  - { id: 43813459, expects: "ATTRIBUTE_LIGHT RACE_DRAGON"                                              }
+  - { id: 44097050, expects: "RACE_MACHINE"                                                             }
+  - { id: 4423206,  expects: "MATCH_LEVEL_EQ_4 ATTRIBUTE_EARTH RACE_WARRIOR"                                            }
+  - { id: 4423206,  expects: "MATCH_LEVEL_EQ_4 ATTRIBUTE_EARTH RACE_BEASTWARRIOR"                                            }
+
+  - { id: 45420955, expects: "RACE_FIEND"                                                               }
+  - { id: 45420955, expects: "TYPE_MONSTER"                                                             }
+  - { id: 45420955, expects: "TYPE_MONSTER RACE_FIEND"                                                  }
+  - { id: 45420955, expects: "TYPE_MONSTER TYPE_TRAPMONSTER"                                            }
+  - { id: 45420955, expects: "TYPE_TRAPMONSTER"                                                         }
+  - { id: 45452224, expects: "MATCH_LEVEL_EQ_1"                                                         }
+  - { id: 4545683,  expects: "TYPE_MONSTER"                                                             }
+  - { id: 4545683,  expects: "TYPE_SYNCHRO"                                                             }
+  - { id: 4545854,  expects: "TYPE_XYZ"                                                                 }
+  - { id: 45667991, expects: "RACE_DRAGON"                                                              }
+  - { id: 45667991, expects: "TYPE_EFFECT"                                                              }
+  - { id: 45742626, expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 4722253,  expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 4722253,  expects: "RACE_WARRIOR"                                                             }
+  - { id: 47393199, expects: "RACE_DRAGON"                                                              }
+  - { id: 4779823,  expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 4779823,  expects: "TYPE_MONSTER"                                                             }
+  - { id: 48783998, expects: "MATCH_ATK_LT_1500 ATTRIBUTE_LIGHT RACE_FAIRY"                             }
+  - { id: 4931121,  expects: "ATTRIBUTE_DARK MATCH_DEF_GT_2000"                                         }
+  - { id: 4931121,  expects: "MATCH_DEF_LT_1500"                                                        }
+  - { id: 4931121,  expects: "TYPE_MONSTER MATCH_DEF_LT_1500"                                           }
+  - { id: 49366157, expects: "RACE_SPELLCASTER ATTRIBUTE_WIND"                                          }
+  - { id: 494922,   expects: "RACE_MACHINE"                                                             }
+  - { id: 494922,   expects: "TYPE_SPELL TYPE_TRAP"                                                     }
+  - { id: 494922,   expects: "TYPE_SPELL TYPE_TRAP TYPE_FIELD"                                          }
+  - { id: 5037726,  expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 5037726,  expects: "TYPE_TRAP"                                                                }
+  - { id: 50755,    expects: "MATCH_ATK_LT_2000 RACE_SPELLCASTER"                                       }
+  - { id: 50755,    expects: "RACE_SPELLCASTER"                                                         }
+  - { id: 50793215, expects: "ATTRIBUTE_WATER MATCH_LEVEL_LT_4"                                         }
+  - { id: 50793215, expects: "TYPE_MONSTER"                                                             }
+  - { id: 51126152, expects: "MATCH_LEVEL_GT_5"                                                         }
+  - { id: 5183693,  expects: "TYPE_NORMAL"                                                              }
+  - { id: 5220687,  expects: "MATCH_LEVEL_LT_3 RACE_BEAST"                                              }
+  - { id: 5237827,  expects: "TYPE_EQUIP"                                                               }
+  - { id: 53027855, expects: "ATTRIBUTE_WIND"                                                           }
+  - { id: 53027855, expects: "TYPE_SPELL TYPE_TRAP"                                                     }
+  - { id: 53567095, expects: "RACE_WINDBEAST"                                                           }
+  - { id: 53573406, expects: "MATCH_DEF_EQ_0"                                                           }
+  - { id: 53573406, expects: "MATCH_LEVEL_GT_5"                                                         }
+  - { id: 5376159,  expects: "MATCH_LEVEL_GT_1"                                                         }
+  - { id: 5376159,  expects: "RACE_DRAGON ATTRIBUTE_DARK TYPE_SYNCHRO"                                  }
+  - { id: 5376159,  expects: "TYPE_SYNCHRO MATCH_LEVEL_GT_8"                                            }
+  - { id: 54360049, expects: "TYPE_MONSTER"                                                             }
+  - { id: 5479217,  expects: "MATCH_ATK_GT_2500 RACE_DINOSAUR"                                          }
+  - { id: 55465441, expects: "MATCH_LEVEL_GT_0"                                                         }
+  - { id: 5562461,  expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 5562461,  expects: "TYPE_MONSTER"                                                             }
+  - { id: 57031794, expects: "TYPE_XYZ"                                                                 }
+  - { id: 57354389, expects: "RACE_ROCK"                                                                }
+  - { id: 5795980,  expects: "MATCH_LEVEL_GT_5"                                                         }
+  - { id: 5795980,  expects: "TYPE_TRAPMONSTER"                                                         }
+  - { id: 58464739, expects: "RACE_MACHINE"                                                             }
+  - { id: 5916510,  expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 5916510,  expects: "ATTRIBUTE_LIGHT RACE_FAIRY MATCH_LEVEL_EQ_4"                              }
+  - { id: 5969957,  expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 5990062,  expects: "TYPE_MONSTER"                                                             }
+  - { id: 5990062,  expects: "TYPE_SPELL"                                                               }
+  - { id: 5990062,  expects: "TYPE_TRAP"                                                                }
+  - { id: 59934749, expects: "RACE_WARRIOR"                                                             }
+  - { id: 59934749, expects: "TYPE_SPELL TYPE_EQUIP"                                                    }
+  - { id: 6007213,  expects: "TYPE_TRAP"                                                                }
+  - { id: 6007213,  expects: "TYPE_TRAP TYPE_CONTINUOUS"                                                }
+  - { id: 60195675, expects: "TYPE_LINK RACE_MACHINE"                                                   }
+  - { id: 60195675, expects: "TYPE_MONSTER"                                                             }
+  - { id: 60195675, expects: "TYPE_XYZ"                                                                 }
+  - { id: 6061630,  expects: "RACE_SPELLCASTER"                                                         }
+  - { id: 6061630,  expects: "TYPE_SPELL"                                                               }
+  - { id: 6075801,  expects: "RACE_DRAGON MATCH_LEVEL_EQ_7"                                             }
+  - { id: 6075801,  expects: "TYPE_MONSTER"                                                             }
+  - { id: 61344030, expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 61641818, expects: "TYPE_MONSTER"                                                             }
+  - { id: 62034800, expects: "RACE_MACHINE ATTRIBUTE_EARTH"                                             }
+  - { id: 62034800, expects: "RACE_MACHINE MATCH_LEVEL_GT_0"                                            }
+  - { id: 62437430, expects: "ATTRIBUTE_WATER"                                                          }
+  - { id: 62850093, expects: "ATTRIBUTE_WATER"                                                          }
+  - { id: 63300440, expects: "RACE_DRAGON"                                                              }
+  - { id: 63767246, expects: "TYPE_SPELL"                                                               }
+  - { id: 63767246, expects: "TYPE_XYZ"                                                                 }
+  - { id: 6442944,  expects: "RACE_SEASERPENT MATCH_LEVEL_EQ_8"                                         }
+  - { id: 64554883, expects: "MATCH_LEVEL_GT_5"                                                         }
+  - { id: 65170459, expects: "ATTRIBUTE_FIRE"                                                           }
+  - { id: 65170459, expects: "ATTRIBUTE_WATER"                                                          }
+  - { id: 65170459, expects: "TYPE_MONSTER ATTRIBUTE_WATER"                                             }
+  - { id: 6540606,  expects: "ATTRIBUTE_WATER"                                                          }
+  - { id: 66547759, expects: "TYPE_MONSTER"                                                             }
+  - { id: 674561,   expects: "MATCH_ATK_LT_1500 ATTRIBUTE_DARK"                                         }
+  - { id: 67511500, expects: "RACE_DRAGON"                                                              }
+  - { id: 67547370, expects: "TYPE_NORMAL MATCH_LEVEL_EQ_1"                                             }
+  - { id: 68084557, expects: "TYPE_EQUIP"                                                               }
+  - { id: 68295149, expects: "TYPE_MONSTER"                                                             }
+  - { id: 68295149, expects: "TYPE_MONSTER TYPE_RITUAL TYPE_FUSION TYPE_SYNCHRO TYPE_XYZ"               }
+  - { id: 68295149, expects: "TYPE_RITUAL TYPE_FUSION TYPE_SYNCHRO TYPE_XYZ"                            }
+  - { id: 6849042,  expects: "MATCH_LEVEL_GT_7"                                                         }
+  - { id: 6849042,  expects: "RACE_DINOSAUR"                                                            }
+  - { id: 69112325, expects: "RACE_PLANT RACE_BEAST RACE_BEASTWARRIOR"                                  }
+  - { id: 69145169, expects: "TYPE_EFFECT"                                                              }
+  - { id: 69145169, expects: "TYPE_MONSTER TYPE_EFFECT"                                                 }
+  - { id: 69145169, expects: "TYPE_NORMAL MATCH_LEVEL_GT_7"                                             }
+  - { id: 69514125, expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 69757518, expects: "TYPE_XYZ"                                                                 }
+  - { id: 69840739, expects: "TYPE_MONSTER"                                                             }
+  - { id: 69840739, expects: "TYPE_SPELL TYPE_TRAP"                                                     }
+  - { id: 69933858, expects: "RACE_WARRIOR"                                                             }
+  - { id: 69933858, expects: "TYPE_EQUIP"                                                               }
+  - { id: 70156997, expects: "ATTRIBUTE_EARTH"                                                          }
+  - { id: 70156997, expects: "MATCH_LEVEL_LT_4 ATTRIBUTE_EARTH"                                         }
+  - { id: 70335319, expects: "RACE_DRAGON TYPE_PENDULUM"                                                }
+  - { id: 70335319, expects: "TYPE_SPELL TYPE_TRAP"                                                     }
+  - { id: 70406920, expects: "RACE_MACHINE"                                                             }
+  - { id: 70406920, expects: "RACE_MACHINE ATTRIBUTE_EARTH"                                             }
+  - { id: 70406920, expects: "TYPE_EFFECT TYPE_TRAP"                                                    }
+  - { id: 71175527, expects: "ATTRIBUTE_WIND"                                                           }
+  - { id: 71175527, expects: "ATTRIBUTE_WIND TYPE_TUNER"                                                }
+  - { id: 71384012, expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 71384012, expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 71384012, expects: "TYPE_MONSTER ATTRIBUTE_DARK"                                              }
+  - { id: 7198399,  expects: "RACE_SPELLCASTER"                                                         }
+  - { id: 72497366, expects: "MATCH_LEVEL_GT_5 RACE_FIEND"                                              }
+  - { id: 72497366, expects: "RACE_FIEND MATCH_LEVEL_GT_5"                                              }
+  - { id: 72566043, expects: "TYPE_TRAP"                                                                }
+  - { id: 72710085, expects: "TYPE_MONSTER"                                                             }
+  - { id: 72896720, expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 73082255, expects: "MATCH_LEVEL_GT_1"                                                         }
+  - { id: 73082255, expects: "TYPE_MONSTER"                                                             }
+  - { id: 73431236, expects: "TYPE_EQUIP"                                                               }
+  - { id: 7445307,  expects: "RACE_CYBERSE"                                                             }
+  - { id: 74926274, expects: "TYPE_PENDULUM"                                                            }
+  - { id: 75081613, expects: "RACE_INSECT"                                                              }
+  - { id: 75083197, expects: "MATCH_LEVEL_LT_5"                                                         }
+  - { id: 75220074, expects: "RACE_DRAGON ATTRIBUTE_WIND MATCH_LEVEL_LT_5"                              }
+  - { id: 75901113, expects: "RACE_DRAGON MATCH_LEVEL_GT_5 ATTRIBUTE_WIND"                              }
+  - { id: 76066541, expects: "TYPE_PENDULUM ATTRIBUTE_EARTH"                                            }
+  - { id: 7634581,  expects: "TYPE_NORMAL"                                                              }
+  - { id: 7634581,  expects: "TYPE_NORMAL MATCH_LEVEL_EQ_4"                                             }
+  - { id: 77590412, expects: "RACE_WARRIOR ATTRIBUTE_EARTH"                                             }
+  - { id: 77590412, expects: "RACE_WARRIOR ATTRIBUTE_EARTH MATCH_LEVEL_GT_6"                            }
+  - { id: 7778726,  expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 7778726,  expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 7778726,  expects: "TYPE_MONSTER ATTRIBUTE_LIGHT"                                             }
+  - { id: 7811875,  expects: "TYPE_SYNCHRO"                                                             }
+  - { id: 78144171, expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 78144171, expects: "RACE_DRAGON ATTRIBUTE_DARK MATCH_LEVEL_GT_5"                              }
+  - { id: 79266769, expects: "TYPE_EFFECT"                                                              }
+  - { id: 79266769, expects: "TYPE_LINK"                                                                }
+  - { id: 79890560, expects: "RACE_SPELLCASTER"                                                         }
+  - { id: 80163754, expects: "RACE_DRAGON"                                                              }
+  - { id: 80513550, expects: "TYPE_SPELL TYPE_CONTINUOUS"                                               }
+  - { id: 80896940, expects: "TYPE_PENDULUM"                                                            }
+  - { id: 80896940, expects: "TYPE_SYNCHRO"                                                             }
+  - { id: 80896940, expects: "TYPE_TUNER TYPE_PENDULUM"                                                 }
+  - { id: 81020646, expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 8192327,  expects: "ATTRIBUTE_LIGHT"                                                          }
+  - { id: 82404868, expects: "RACE_SPELLCASTER ATTRIBUTE_DARK"                                          }
+  - { id: 84339249, expects: "TYPE_MONSTER RACE_FAIRY"                                                  }
+  - { id: 85216896, expects: "TYPE_MONSTER"                                                             }
+  - { id: 85216896, expects: "TYPE_PENDULUM"                                                            }
+  - { id: 85590798, expects: "ATTRIBUTE_LIGHT MATCH_LEVEL_EQ_7 RACE_DRAGON"                             }
+  - { id: 85590798, expects: "ATTRIBUTE_LIGHT RACE_DRAGON"                                              }
+  - { id: 85590798, expects: "ATTRIBUTE_LIGHT RACE_FAIRY"                                               }
+  - { id: 85590798, expects: "MATCH_LEVEL_EQ_7"                                                         }
+  - { id: 86401517, expects: "RACE_CYBERSE MATCH_LEVEL_GT_5"                                            }
+  - { id: 8763963,  expects: "ATTRIBUTE_DARK"                                                           }
+  - { id: 879958,   expects: "TYPE_LINK"                                                                }
+  - { id: 88120966, expects: "TYPE_XYZ"                                                                 }
+  - { id: 88581108, expects: "TYPE_MONSTER"                                                             }
+  - { id: 90126061, expects: "TYPE_MONSTER"                                                             }
+  - { id: 90126061, expects: "TYPE_XYZ"                                                                 }
+  - { id: 9028399,  expects: "ATTRIBUTE_EARTH"                                                          }
+  - { id: 9028399,  expects: "TYPE_MONSTER"                                                             }
+  - { id: 90512490, expects: "ATTRIBUTE_EARTH"                                                          }
+  - { id: 90512490, expects: "ATTRIBUTE_WIND"                                                           }
+  - { id: 90512490, expects: "TYPE_MONSTER ATTRIBUTE_WIND"                                              }
+  - { id: 911883,   expects: "TYPE_NORMAL MATCH_LEVEL_LT_4"                                             }
+  - { id: 9190563,  expects: "RACE_CYBERSE"                                                             }
+  - { id: 92015800, expects: "TYPE_MONSTER"                                                             }
+  - { id: 92661479, expects: "TYPE_MONSTER"                                                             }
+  - { id: 9287078,  expects: "RACE_SPELLCASTER"                                                         }
+  - { id: 9287078,  expects: "RACE_SPELLCASTER ATTRIBUTE_DARK"                                          }
+  - { id: 94689206, expects: "ATTRIBUTE_EARTH"                                                          }
+  - { id: 94689206, expects: "RACE_ROCK"                                                                }
+  - { id: 94730900, expects: "RACE_WARRIOR"                                                             }
+  - { id: 94730900, expects: "RACE_WARRIOR ATTRIBUTE_FIRE"                                              }
+  - { id: 94798725, expects: "TYPE_TRAPMONSTER"                                                         }
+  - { id: 9523599,  expects: "MATCH_LEVEL_LT_4 RACE_CYBERSE"                                            }
+  - { id: 95239444, expects: "RACE_PLANT"                                                               }
+  - { id: 95239444, expects: "RACE_PLANT"                                                               }
+  - { id: 9596126,  expects: "ATTRIBUTE_LIGHT ATTRIBUTE_DARK"                                           }
+  - { id: 96214561, expects: "RACE_WINDBEAST"                                                           }
+  - { id: 9715126,  expects: "RACE_MACHINE"                                                             }
+  - { id: 97854941, expects: "MATCH_LEVEL_LT_8"                                                         }
+  - { id: 97854941, expects: "TYPE_SPELL TYPE_TRAP"                                                     }
+  - { id: 9794980,  expects: "MATCH_LEVEL_EQ_9"                                                         }
+  - { id: 9794980,  expects: "TYPE_LINK"                                                                }
+  - { id: 9831539,  expects: "MATCH_LEVEL_GT_1 MATCH_ATK_LT_1000"                                       }
+  - { id: 98700941, expects: "TYPE_MONSTER"                                                             }
+  - { id: 99348756, expects: "MATCH_LEVEL_GT_5"                                                         }
+  - { id: 99348756, expects: "RACE_WARRIOR"                                                             }
+  - { id: 99641328, expects: "RACE_PLANT"                                                               }
+  - { id: 99641328, expects: "TYPE_SPELL TYPE_TRAP"                                                     }
+  - { id: 99666430, expects: "TYPE_TRAP"                                                                }
+  - { id: 99792080, expects: "TYPE_MONSTER"                                                             }
+  - { id: 99885917, expects: "TYPE_SPELL TYPE_TRAP"                                                     }
+
+defs:
+  mf: &mf
+    filter:
+      - G1&Main&T2
+      - G1&Main&T3
+      - G1&Main&T4
+      - G1&Main&T4
+      - G1&Main&T5
+      - G1&Main&T5
+      - G1&Main&T5
+  sync: &syncf
+    filter:
+      - G1&SYNCHRO&T2
+      - G1&SYNCHRO&T3
+      - G1&SYNCHRO&T4
+      - G1&SYNCHRO&T4
+      - G1&SYNCHRO&T5
+      - G1&SYNCHRO&T5
+      - G1&SYNCHRO&T5
+  xyz: &xyzf
+    filter:
+      - G1&XYZ&T2
+      - G1&XYZ&T3
+      - G1&XYZ&T4
+      - G1&XYZ&T4
+      - G1&XYZ&T5
+      - G1&XYZ&T5
+      - G1&XYZ&T5
+  link: &linkf
+    filter:
+      - G1&LINK&T2
+      - G1&LINK&T3
+      - G1&LINK&T4
+      - G1&LINK&T4
+      - G1&LINK&T5
+      - G1&LINK&T5
+      - G1&LINK&T5
+
+rounds:
+  - repeats: 3
+    deals:
+      - n:      5
+        filter: G2
+  - repeats: 5
+    deals:
+      - n:  3
+        <<: *mf
+      - n:  2
+        filter: _link
+      - n:  1
+        filter: G2
+
+  - repeats: 3
+    deals:
+      - n:      1
+        <<:     *syncf
+      - n:      1
+        <<:     *xyzf
+      - n:      1
+        <<:     *linkf
+      - n:      2
+        filter:
+          - _link
+          - Ex&T2
+          - Ex&T3
+          - Ex&T4
+          - Ex&T4
+          - Ex&T5
+          - Ex&T5
+          - Ex&T5
+
+  - repeats: 2
+    deals:
+      - n:      5
+        filter: G2
+  - repeats: 6
+    deals:
+      - n:  3
+        <<: *mf
+      - n:  2
+        filter: _link
+      - n:  1
+        filter: G2
+
+  - repeats: 3
+    deals:
+      - n:      1
+        <<:     *syncf
+      - n:      1
+        <<:     *xyzf
+      - n:      1
+        <<:     *linkf
+      - n:      2
+        filter:
+          - _link
+          - Ex&T2
+          - Ex&T3
+          - Ex&T4
+          - Ex&T4
+          - Ex&T5
+          - Ex&T5
+          - Ex&T5
+
+  - repeats: 1
+    deals:
+      - n:      5
+        filter: G2
+  - repeats: 7
+    deals:
+      - n:  3
+        <<: *mf
+      - n:  2
+        filter: _link
+      - n:  1
+        filter: G2
+
+  - repeats: 3
+    deals:
+      - n:      1
+        <<:     *syncf
+      - n:      1
+        <<:     *xyzf
+      - n:      1
+        <<:     *linkf
+      - n:      2
+        filter:
+          - _link
+          - Ex&T2
+          - Ex&T3
+          - Ex&T4
+          - Ex&T4
+          - Ex&T5
+          - Ex&T5
+          - Ex&T5
