@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { defined, Preset } from '@picky/shared'
+import { atoi10, CTYPES, defined, Drafting, MATTRIBUTES, MTYPES, Preset, tuple, YGOPROCardInfo } from '@picky/shared'
 import { DispatchMode } from '@picky/shared/src/preset'
 import { randomInt } from 'crypto'
 import { readdir, readFile } from 'fs/promises'
@@ -13,8 +13,24 @@ export class PresetService {
   logger  = new Logger('PresetService')
   presets = new Map<string, DispatchingPreset>()
   pools   = new Map<string, Preset.Pool>()
+  db      = new Map<number, YGOPROCardInfo>()
 
-  initialized = this.loadPools().then(() => this.loadPresets())
+  initialized = this.loadDB().then(() => this.loadPools()).then(() => this.loadPresets())
+
+  async loadDB() {
+    const dbfile  = join(G_CONFIG.dirs?.assets ?? join(__dirname, '..', 'assets'), 'db.json')
+    const entries = await readFile(dbfile).then(c => JSON.parse(c.toString()))
+    const tykeys  = Object.keys(CTYPES)
+
+    for (const entry of entries) {
+      this.db.set(entry.id, {
+        ...entry,
+        types: tykeys.filter(k => entry['_' + k])
+      })
+    }
+
+    this.logger.log(`${this.db.size} entries loaded`)
+  }
 
   async loadPresets() {
     const presetdir = G_CONFIG.dirs?.preset ?? join(__dirname, '..', 'assets', 'presets')
@@ -23,7 +39,10 @@ export class PresetService {
     for (const file of files) {
       try {
         const template = await loadYAMLDispatchSchema(join(presetdir, file))
-        const preset   = this.create(template)
+
+        const preset = ('_type' in template)
+          ? this.createFromProgressive(template)
+          : this.createFromTemplate(template)
 
         this.presets.set(preset.id, preset)
       } catch (e) {
@@ -57,7 +76,61 @@ export class PresetService {
     }
   }
 
-  create(template: Preset.YAMLDispatchSchema) {
+  createFromProgressive(template: YAMLProgressiveDispatchSchema) {
+    const links = new Map<number, (code: number) => boolean>()
+    for (const link of template.links) {
+      const l = compileLink(link.expects)
+
+      if (Object.values(l.context).every(f => f.length === 0)) {
+        continue
+      }
+
+      links.set(link.id, code => {
+        const info = this.db.get(code)
+        return defined(info) && l.filter(info)
+      })
+    }
+
+    const gfilter = mkFilter(mkArray(template.filter))
+    const items   = template.pools
+      .flatMap(p => this.pools.get(p)?.items ?? [])
+      .filter(item => Preset.matchTags(item.tags, gfilter))
+
+    const schema: DispatchSchema = {
+      tag:      'seql_dispatch',
+      children: template.rounds.flatMap(r => range(0, r.repeats ?? 1).map(() => r)).map((round, idx)=> {
+        const config = {
+          items,
+          links,
+          deals: round.deals.map(d => {
+            const dfilter = mkArray(d.filter)
+            const islink  = dfilter.some(s => s === '_link')
+            const filter  = dfilter.filter(s => s !== '_link')
+            return { n: d.n, islink, filter, rawfilter: dfilter }
+          })
+        }
+        this.logger.log(`${template.id}: round ${idx + 1}`)
+
+        for (const d of config.deals) {
+          const pairs = Object.entries(groupBy(identity, d.rawfilter))
+          const src   = pairs.map(([expr, r]) => r.length > 1 ? expr + ' × ' + r.length : expr).join(' + ')
+          this.logger.log(`  ${d.n} from ${src} (islink: ${d.islink})`)
+        }
+
+        const dispatcher = new ProgressiveDispatcher(config)
+        return { tag: 'atom_dispatch', dispatcher }
+      })
+    }
+
+    return {
+      id:          template.id,
+      name:        template.name,
+      description: template.description,
+      schema
+    }
+  }
+
+  createFromTemplate(template: Preset.YAMLDispatchSchema) {
     const schema   = this._fromTemplate(template)
     return {
       id:          template.id,
@@ -246,8 +319,8 @@ class DealDispatcher implements Dispatcher {
 
   constructor(readonly deal: Preset.Deal<DealContext>) { }
 
-  async dispatch(nplayer: number) {
-    const dispatches = range(0, nplayer).map(() =>
+  async dispatch(players: unknown[]) {
+    const dispatches = range(0, players.length).map(() =>
       this.segments.flatMap(pattern => this._dispatchPattern(pattern))
       .map((item, idx) => ({ id: ':' + idx, pack: item.pack })))
 
@@ -281,8 +354,8 @@ class FixedDispatcher implements Dispatcher {
 
   constructor(readonly conf: DispatchMode, readonly items: number[]) { }
 
-  async dispatch(nplayer: number) {
-    const dispatches = range(0, nplayer).map(() =>
+  async dispatch(players: unknown[]) {
+    const dispatches = range(0, players.length).map(() =>
       this.items.map((id, idx) => ({ pack: [id], id: ':' + idx }))
     )
 
@@ -302,7 +375,7 @@ async function loadYAMLDispatchSchema(path: string) {
   const content = await readFile(path)
   const data    = YAML.parse(content.toString(), { merge: true, prettyErrors: true })
 
-  return data as Preset.YAMLDispatchSchema
+  return data as Preset.YAMLDispatchSchema | YAMLProgressiveDispatchSchema
 }
 
 interface Roll {
@@ -322,4 +395,135 @@ function makeSkip(rates: number[]) {
     skips[i] = (totalrate += rates[i])
   }
   return { totalrate, skips }
+}
+
+export interface YAMLProgressiveDispatchSchema {
+  _type:       'progressive'
+  id:          string
+  name:        string
+  description: string
+  pools:       string[]
+  filter:      string | []
+
+  links:  Array<{
+    id:      number
+    expects: string
+  }>
+
+  rounds: Array<{
+    repeats?: number
+    deals: Array<{
+      n:      number
+      filter: '_link'
+            | string
+            | ['_link', ...string[]]
+            | string[]
+    }>
+  }>
+}
+
+export interface ProgressiveDispatcherConfig {
+  items: Preset.PoolItem[]
+  links: Map<number, (code: number) => boolean>
+  deals: Array<{
+    n:      number
+    islink: boolean
+    filter: string[]
+  }>
+}
+
+function mkArray(s: string | string[]) {
+  return Array.isArray(s) ? s : [s]
+}
+
+function mkFilter(s: string[]): Preset.TagFilterExpr {
+  return s.length === 1 ? Preset.parseTagFilterExpr(s[0]) : {
+    t: 'every',
+    value: s.map(Preset.parseTagFilterExpr)
+  }
+}
+
+export function compileLink(src: string) {
+  const filters = src.split(' ')
+  const tfilters = filters.filter(f => f.startsWith('TYPE_')).map(f => f.slice('TYPE_'.length))
+  const rfilters = filters.filter(f => f.startsWith('RACE_')).map(f => f.slice('RACE_'.length))
+  const afilters = filters.filter(f => f.startsWith('ATTRIBUTE_')).map(f => f.slice('ATTRIBUTE_'.length))
+
+  const vkeys = ['LEVEL', 'ATK', 'DEF'] as const
+  const ops   = ['LT', 'GT', 'EQ'] as const
+  const vfilters = vkeys.flatMap(vk => ops.flatMap(opk => {
+    const prefix = `MATCH_${vk}_${opk}_`
+    const fs     = filters.filter(f => f.startsWith(prefix)).map(f => f.slice(prefix.length))
+    return fs.map(atoi10).filter(defined).map(val => tuple(vk, opk, val))
+  }))
+
+  const filter = (info: YGOPROCardInfo) => {
+    for (const tf of tfilters) {
+      if (!info.types.includes(tf as any)) {
+        return false
+      }
+    }
+    for (const rf of rfilters) {
+      if (info.mtype !== (MTYPES as any)[rf]) {
+        return false
+      }
+    }
+    for (const af of afilters) {
+      if (info.mattribute !== (MATTRIBUTES as any)[af]) {
+        return false
+      }
+    }
+    for (const [vk, opk, val] of vfilters) {
+      const key = vk === 'DEF' ? 'mdef' : vk === 'ATK' ? 'matk' : 'mlevel'
+      const lhs = info[key]
+      if (opk === 'EQ' && lhs !== val) { return false }
+      if (opk === 'LT' && lhs >   val) { return false }
+      if (opk === 'GT' && lhs <   val) { return false }
+    }
+
+    return true
+  }
+
+  return { filter, context: { tfilters, rfilters, afilters, vfilters } }
+}
+
+export class ProgressiveDispatcher implements Dispatcher {
+  logger = new Logger('ProgressiveDispatcher')
+  deals  = this.config.deals.map(d => {
+    const filters = d.filter.map(Preset.parseTagFilterExpr)
+    const items   = filters.flatMap(f => this.config.items.filter(item => Preset.matchTags(item.tags, f)))
+    return { ...d, items }
+  })
+
+  constructor(
+    readonly config: ProgressiveDispatcherConfig
+  ) {
+  }
+
+  async dispatch(players: Array<{
+    id:     number
+    picked: Drafting.PickCandidate[]
+  }>) {
+    return {
+      tag:        'sealed_dispatching' as const,
+      npicks:     { min: 1, max: 1 },
+      dispatches: players.map(p => this._dispatch(p.picked).map((item, idx) => ({ id: ':' + idx, pack: item.pack })))
+    }
+  }
+
+  private _dispatch(ctx: Drafting.PickCandidate[]) {
+    const spec = this._makefilter(ctx)
+    const candidates = this.deals.flatMap(d => {
+      const items = (d.islink && spec) ? d.items.filter(i => i.pack.some(spec)) : d.items
+      const pool = new SimplePool(items.length < 100 ? d.items : items, { uniq: true })
+      return pool.deal(d.n)
+    })
+    return candidates
+  }
+
+  private _makefilter(ctx: Drafting.PickCandidate[]) {
+    const filters = ctx.flatMap(c => c.pack).map(c => this.config.links.get(c)).filter(defined)
+    if (filters.length === 0) { return undefined }
+    return (c: number) => filters.some(f => f(c))
+  }
 }

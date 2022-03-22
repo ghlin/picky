@@ -1,6 +1,6 @@
 import { flatten, Logger } from '@nestjs/common'
 import { Drafting, tuple } from '@picky/shared'
-import { firstValueFrom, Subject } from 'rxjs'
+import { firstValueFrom, identity, Subject } from 'rxjs'
 import { inspect } from 'util'
 import { DispatchingPreset, DispatchSchema, DraftDispatching, SealedDispatching } from './dispatching.interface'
 
@@ -82,7 +82,10 @@ export class DraftingSession {
 
     if (d.tag === 'atom_dispatch') {
       const req_id = (++this.supplier).toString()
-      const dispatching = await d.dispatcher.dispatch(this.participants.length)
+      const dispatching = await d.dispatcher.dispatch(
+        this.participants.map((p, id) => ({ id, picked: Object.values(p.selections).flatMap(identity) }))
+      )
+
       if (dispatching.tag === 'draft_dispatching') {
         await this._draft(dispatching, req_id)
       } else {

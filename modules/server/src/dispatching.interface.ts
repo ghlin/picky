@@ -16,7 +16,10 @@ export type Dispatching = ({ tag: 'draft_dispatching'  } & DraftDispatching)
                         | ({ tag: 'sealed_dispatching' } & SealedDispatching)
 
 export interface Dispatcher {
-  dispatch: (nplayers: number) => Promise<
+  dispatch: (players: Array<{
+    id:     number
+    picked: Drafting.PickCandidate[]
+  }>) => Promise<
     Dispatching /* .dispatches.length = nplayers */
   >
 }

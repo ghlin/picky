@@ -54,7 +54,7 @@ export class PoolController {
   @UseGuards(AuthGuard)
   createPreset(@Body() template: string) {
     const root   = YAML.parse(template, { merge: true, prettyErrors: true })
-    const preset = this.preset.create(root)
+    const preset = this.preset.createFromTemplate(root)
     if (this.preset.presets.has(root)) { throw new ConflictException() }
 
     this.preset.presets.set(preset.id, preset)
@@ -63,7 +63,7 @@ export class PoolController {
   @Put('/preset/:id')
   updatePreset(@Param('id') id: string, @Body() template: string) {
     const root   = YAML.parse(template, { merge: true, prettyErrors: true })
-    const preset = this.preset.create(root)
+    const preset = this.preset.createFromTemplate(root)
     this.preset.presets.set(id, preset)
   }
 
