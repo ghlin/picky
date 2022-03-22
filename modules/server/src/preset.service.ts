@@ -78,16 +78,23 @@ export class PresetService {
 
   createFromProgressive(template: YAMLProgressiveDispatchSchema) {
     const links = new Map<number, (code: number) => boolean>()
-    for (const link of template.links) {
-      const l = compileLink(link.expects)
+    const lfilters = groupBy(l => l.id.toString(), template.links.map(
+      link => {
+        const l = compileLink(link.expects)
 
-      if (Object.values(l.context).every(f => f.length === 0)) {
-        continue
+        if (Object.values(l.context).every(f => f.length === 0)) {
+          return undefined
+        }
+
+        return { filter: l.filter, id: link.id }
       }
-
-      links.set(link.id, code => {
+    ).filter(defined))
+    for (const [idstr, filters] of Object.entries(lfilters)) {
+      const id = atoi10(idstr)!
+      links.set(id, code => {
         const info = this.db.get(code)
-        return defined(info) && l.filter(info)
+        if (!info) { return false }
+        return filters.some(f => f.filter(info))
       })
     }
 
