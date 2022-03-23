@@ -245,7 +245,7 @@ export class DraftGateway implements OnGatewayDisconnect, OnGatewayConnection {
           if (!response) {
             const alloffline = session.participants.every(p => {
               const id = this.clients.get(p.uuid)?.socket_id
-              return !id || (this.server.sockets.sockets.get(id)?.connected ?? false)
+              return !id || !this.server.sockets.sockets.get(id)?.connected
             })
 
             if (alloffline) { throw new DSError('ALL_OFFLINE') }
