@@ -301,7 +301,7 @@ class SimplePool {
     const items = this._deal(n)
 
     return this.config?.bundle === 'free'
-      ? items.flatMap(item => item.pack.map(id => ({ pack: [id] })))
+      ? items.flatMap(item => item.pack.map(id => ({ ...item, pack: [id] })))
       : items
   }
 
@@ -538,16 +538,15 @@ export class ProgressiveDispatcher implements Dispatcher {
   private _dispatch(ctx: Drafting.PickCandidate[]) {
     const spec = this._filtersFromPicked(ctx)
 
-    this.logger.debug(`spec: ${spec.length}`)
-    this.logger.debug(spec.map(s => s.expects))
-
     const candidates = this.deals.flatMap(d => {
-      const items = (d.islink && spec.length)
-        ? spec.flatMap(pred => d.items.filter(i => i.pack.some(pred.predict)))
-        : d.items
+      const items = !(d.islink && spec.length) ? d.items : spec.flatMap(pred => {
+        const subpoolitems = d.items.filter(i => i.pack.some(pred.predict))
+        this.logger.debug(`_dispatch: ${pred.expects} selects ${subpoolitems.length} items (limit to 15)`)
 
-      const uses = items.length < 100 ? d.fallbacks.concat(items) : items
-      this.logger.debug(`deal: ${d.n}/${d.islink}/${d.filter.join(';')}: ${items.length}/${uses.length}`)
+        return subpoolitems.length < 15 ? subpoolitems : new SimplePool(subpoolitems, { uniq: true }).deal(15)
+      })
+
+      const uses = items.length < 50 ? new SimplePool(d.fallbacks, { uniq: true }).deal(50 - items.length).concat(items) : items
 
       const pool = new SimplePool(uses, { uniq: true })
       return pool.deal(d.n)
