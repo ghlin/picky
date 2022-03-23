@@ -90,7 +90,7 @@ links:
   - { id: 18809562, expects: "MATCH_LEVEL_EQ_7 ATTRIBUTE_DARK"                           }
   - { id: 18809562, expects: "MATCH_LEVEL_EQ_8 ATTRIBUTE_DARK"                           }
   - { id: 18940556, expects: "RACE_DINOSAUR"                                             }
-  - { id: 19019586, expects: "TYPE_NORMAL TYPE_NORMAL"                                   }
+  - { id: 19019586, expects: "TYPE_MONSTER TYPE_NORMAL"                                  }
   - { id: 19028307, expects: "RACE_MACHINE"                                              }
   - { id: 19028307, expects: "RACE_BEASTWARRIOR"                                         }
   - { id: 19163116, expects: "MATCH_LEVEL_LT_4 TYPE_MONSTER TYPE_NORMAL"                 }
@@ -153,7 +153,7 @@ links:
   - { id: 33347467, expects: "ATTRIBUTE_LIGHT"                                           }
   - { id: 33460840, expects: "RACE_DRAGON MATCH_LEVEL_EQ_7"                              }
   - { id: 33460840, expects: "RACE_DRAGON MATCH_LEVEL_EQ_8"                              }
-  - { id: 33622465, expects: "TYPE_NORMAL"                                               }
+  - { id: 33622465, expects: "TYPE_MONSTER TYPE_NORMAL"                                  }
   - { id: 33622465, expects: "TYPE_DUAL"                                                 }
   - { id: 3395226,  expects: "RACE_FAIRY ATTRIBUTE_LIGHT"                                }
   - { id: 34408491, expects: "ATTRIBUTE_DARK TYPE_TUNER"                                 }
@@ -367,11 +367,7 @@ defs:
       - G1&LINK&T5
 
 rounds:
-  - repeats: 3
-    deals:
-      - n:      5
-        filter: G2&Main
-  - repeats: 5
+  - repeats: 8
     deals:
       - n:  3
         <<: *mf
@@ -408,11 +404,7 @@ rounds:
           - Ex&T5
           - Ex&T5
 
-  - repeats: 2
-    deals:
-      - n:      5
-        filter: G2&Main
-  - repeats: 6
+  - repeats: 8
     deals:
       - n:  3
         <<: *mf
@@ -450,11 +442,7 @@ rounds:
           - Ex&T5
           - Ex&T5
 
-  - repeats: 1
-    deals:
-      - n:      5
-        filter: G2&Main
-  - repeats: 7
+  - repeats: 8
     deals:
       - n:  3
         <<: *mf
