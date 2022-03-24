@@ -564,14 +564,17 @@ export class ProgressiveDispatcher implements Dispatcher {
     const candidates = this.deals.flatMap(d => {
       const items = !(d.islink && spec.length) ? d.items : spec.flatMap(pred => {
         const subpoolitems = d.items.filter(i => i.pack.some(pred.predict))
-        this.logger.debug(`_dispatch: ${pred.expects} selects ${subpoolitems.length} items (limit to 15)`)
+        this.logger.debug(`_dispatch.flatmap: ${pred.expects} selects ${subpoolitems.length} items (limit to 15)`)
 
-        return subpoolitems.length < 15 ? subpoolitems : new SimplePool(subpoolitems, { uniq: true }).deal(15)
+        return subpoolitems.length <= 15 ? subpoolitems : new SimplePool(subpoolitems, { }).deal(15)
       })
 
+      this.logger.debug(`_dispatch: poolsize (pass 1) ${items.length}`)
       const uses = items.length < 50 ? new SimplePool(d.fallbacks, { uniq: true }).deal(50 - items.length).concat(items) : items
 
-      const pool = new SimplePool(uses, { uniq: true })
+      this.logger.debug(`_dispatch: poolsize (pass 2) ${uses.length}`)
+      const pool = new SimplePool(uses, {})
+
       return pool.deal(d.n)
     })
 

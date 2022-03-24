@@ -292,13 +292,17 @@ export function Draft() {
       place='right'
       getContent={
         data => {
-          const [codestr, desc] = data.split(':')
-          const code = atoi10(codestr)
+          if (!data) { return <></> }
+
+          const colon = data.indexOf(':')
+          const code = atoi10(data.slice(0, colon === -1 ? undefined : colon))
+
           if (!code) { return 'ill code: ' + data }
+
           const info = ctx.dbcache[code]
           if (!info) { return '<loading>' }
 
-          const extra = desc.split('\n')
+          const extra = colon === -1 ? [] : data.slice(colon + 1).split('\n').map(s => s.trim()).filter(s => s)
           return renderTooltip(info, extra)
         }
       }

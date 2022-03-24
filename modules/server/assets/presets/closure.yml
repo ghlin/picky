@@ -403,6 +403,14 @@ rounds:
           - Ex&T5
           - Ex&T5
           - Ex&T5
+        fallback:
+          - Ex&T2
+          - Ex&T3
+          - Ex&T4
+          - Ex&T4
+          - Ex&T5
+          - Ex&T5
+          - Ex&T5
 
   - repeats: 8
     deals:
@@ -441,6 +449,14 @@ rounds:
           - Ex&T5
           - Ex&T5
           - Ex&T5
+        fallback:
+          - Ex&T2
+          - Ex&T3
+          - Ex&T4
+          - Ex&T4
+          - Ex&T5
+          - Ex&T5
+          - Ex&T5
 
   - repeats: 8
     deals:
@@ -471,6 +487,14 @@ rounds:
       - n:      2
         filter:
           - _link
+          - Ex&T2
+          - Ex&T3
+          - Ex&T4
+          - Ex&T4
+          - Ex&T5
+          - Ex&T5
+          - Ex&T5
+        fallback:
           - Ex&T2
           - Ex&T3
           - Ex&T4
