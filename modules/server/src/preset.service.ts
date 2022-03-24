@@ -552,7 +552,9 @@ export class ProgressiveDispatcher implements Dispatcher {
     return {
       tag:        'sealed_dispatching' as const,
       npicks:     { min: 1, max: 1 },
-      dispatches: players.map(p => this._dispatch(p.picked).map((item, idx) => ({ id: ':' + idx, pack: item.pack })))
+      dispatches: players.map(
+        p => this._dispatch(p.picked).map((item, idx) => this._attachMeta(':' + idx, item.pack))
+      )
     }
   }
 
@@ -573,11 +575,13 @@ export class ProgressiveDispatcher implements Dispatcher {
       return pool.deal(d.n)
     })
 
-    return candidates.map(c => {
-      const linked = c.pack.flatMap(code => this.config.links.get(code) ?? [])
-      const hint   = linked.map(l => 'reveals: ' + l.hints.join(' & '))
-      return linked.length === 0 ? c : { ...c, meta: { desc: hint.join('\n') } }
-    })
+    return candidates
+  }
+
+  private _attachMeta(id: string, pack: number[]) {
+    const linked = pack.flatMap(code => this.config.links.get(code) ?? [])
+    const hint   = linked.map(l => 'reveals: ' + l.hints.join(' & '))
+    return linked.length === 0 ? { id, pack } : { id, pack, meta: { desc: hint.join('\n') } }
   }
 
   private _filtersFromPicked(ctx: Drafting.PickCandidate[]) {
