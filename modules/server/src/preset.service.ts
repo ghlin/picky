@@ -312,12 +312,25 @@ class SimplePool {
       return range(0, n).map(() => this.items[randomInt(this.items.length)])
     }
 
+    const rolls   = [] as Preset.PoolItem[]
     const uniques = new Set<number>()
-    while (uniques.size < n) {
-      uniques.add(randomInt(this.items.length))
+
+    while (rolls.length < n) {
+      const roll = randomInt(this.items.length)
+      const item = this.items[roll]
+
+      if (item.pack.some(code => uniques.has(code))) {
+        continue
+      }
+
+      for (const code of item.pack) {
+        uniques.add(code)
+      }
+
+      rolls.push(item)
     }
 
-    return Array.from(uniques.values()).map(i => this.items[i])
+    return rolls
   }
 }
 
