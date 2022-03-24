@@ -66,8 +66,8 @@ export type PickID = string
 
 export interface PickCandidate {
   id:    PickID
-  meta?: { tier: number }
   pack:  number[]
+  meta?: { desc: string }
 }
 
 export interface DraftPickCandidates {

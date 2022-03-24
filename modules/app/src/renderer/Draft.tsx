@@ -81,7 +81,7 @@ function Pickreq({ drafting, pickreq, selection, expand, ...divprops }: {
           onClick={() => !selection && toggle(c.id)}
         >
           {
-            c.pack.map((code, i) => <div key={c.id + '/' + i} className={style.cimg} data-tip={code} data-for='info-tooltip'>
+            c.pack.map((code, i) => <div key={c.id + '/' + i} className={style.cimg} data-tip={code + ':' + (c.meta?.desc ?? '')} data-for='info-tooltip'>
               <img src={'cimg://' + code} />
               <div className={classnames(style.togglebtnwrapper, Flex)}>
                 <div
@@ -292,19 +292,21 @@ export function Draft() {
       place='right'
       getContent={
         data => {
-          const code = atoi10(data)
+          const [codestr, desc] = data.split(':')
+          const code = atoi10(codestr)
           if (!code) { return 'ill code: ' + data }
           const info = ctx.dbcache[code]
           if (!info) { return '<loading>' }
 
-          return renderTooltip(info)
+          const extra = desc.split('\n')
+          return renderTooltip(info, extra)
         }
       }
     />
   </div>
 }
 
-function renderTooltip(info: YGOPROCardInfo) {
+function renderTooltip(info: YGOPROCardInfo, extra: string[]) {
   const attrname  = MATTRIBUTE_BY_CODE[info.mattribute]
   const attrimg   = ATTR_TEXTURES[attrname]
   const mtypename = MTYPES_BY_CODE[info.mtype]
@@ -340,6 +342,12 @@ function renderTooltip(info: YGOPROCardInfo) {
         <div>
           <div>{ info.desc.split('\r\n').map((seg, i) => <p key={i}>{seg}</p>)}</div>
         </div>
+
+        {
+          extra.length !== 0 ? <div>
+            <div>{ extra.map((seg, i) => <p key={i}>* {seg}</p>) }</div>
+          </div> : <></>
+        }
       </>
     }
   </div>

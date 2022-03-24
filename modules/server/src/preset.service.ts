@@ -79,6 +79,7 @@ export class PresetService {
   createFromProgressive(template: YAMLProgressiveDispatchSchema) {
     const links = new Map<number, Array<{
       expects: string
+      hints:   string[]
       predict: (code: number) => boolean
     }>>()
 
@@ -90,7 +91,7 @@ export class PresetService {
           return undefined
         }
 
-        return { filter: l.filter, id: link.id, expects: link.expects }
+        return { filter: l.filter, id: link.id, expects: link.expects, hints: l.hints }
       }
     ).filter(defined))
 
@@ -98,6 +99,7 @@ export class PresetService {
       const id = atoi10(idstr)!
       links.set(id, filters.map(f => ({
           expects: f.expects,
+          hints:   f.hints,
           predict: code => {
             const info = this.db.get(code)
             if (!info) { return false }
@@ -457,6 +459,7 @@ export interface ProgressiveDispatcherConfig {
   items: Preset.PoolItem[]
   links: Map<number, Array<{
     expects: string
+    hints:   string[]
     predict: (code: number) => boolean
   }>>
   deals: Array<{
@@ -519,7 +522,12 @@ export function compileLink(src: string) {
     return true
   }
 
-  return { filter, context: { tfilters, rfilters, afilters, vfilters } }
+  const hints = tfilters.concat(rfilters).concat(afilters).concat(vfilters.map(([k, o, v]) => {
+    const rel = o === 'GT' ? '>=' : o === 'LT' ? '<=' : '=='
+    return k + rel + v
+  }))
+
+  return { filter, hints, context: { tfilters, rfilters, afilters, vfilters } }
 }
 
 export class ProgressiveDispatcher implements Dispatcher {
@@ -564,7 +572,12 @@ export class ProgressiveDispatcher implements Dispatcher {
       const pool = new SimplePool(uses, { uniq: true })
       return pool.deal(d.n)
     })
-    return candidates
+
+    return candidates.map(c => {
+      const linked = c.pack.flatMap(code => this.config.links.get(code) ?? [])
+      const hint   = linked.map(l => 'reveals: ' + l.hints.join(' & '))
+      return linked.length === 0 ? c : { ...c, meta: { desc: hint.join('\n') } }
+    })
   }
 
   private _filtersFromPicked(ctx: Drafting.PickCandidate[]) {
