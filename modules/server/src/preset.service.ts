@@ -570,12 +570,12 @@ export class ProgressiveDispatcher implements Dispatcher {
   }
 
   private _dispatch(ctx: Drafting.PickCandidate[]) {
-    const spec = this._filtersFromPicked(ctx)
+    const specs = this._filtersFromPicked(ctx)
 
     const candidates = this.deals.flatMap(d => {
-      const items = !(d.islink && spec.length) ? d.items : spec.flatMap(pred => {
-        const subpoolitems = d.items.filter(i => i.pack.some(pred.predict))
-        this.logger.debug(`_dispatch.flatmap: ${pred.expects} selects ${subpoolitems.length} items (limit to 15)`)
+      const items = !(d.islink && specs.length) ? d.items : specs.flatMap(spec => {
+        const subpoolitems = d.items.filter(i => spec.some(s => i.pack.some(s.predict)))
+        this.logger.debug(`_dispatch.flatmap: ${spec.map(s => s.expects).join(' / ')} selects ${subpoolitems.length} items (limit to 15)`)
 
         return subpoolitems.length <= 15 ? subpoolitems : new SimplePool(subpoolitems, { }).deal(15)
       })
@@ -599,6 +599,6 @@ export class ProgressiveDispatcher implements Dispatcher {
   }
 
   private _filtersFromPicked(ctx: Drafting.PickCandidate[]) {
-    return ctx.flatMap(c => c.pack).flatMap(c => this.config.links.get(c) ?? [])
+    return ctx.flatMap(c => c.pack).map(c => this.config.links.get(c) ?? []).filter(c => c.length !== 0)
   }
 }
