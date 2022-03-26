@@ -22,11 +22,12 @@ export function CimgClip(props: HTMLAttributes<HTMLDivElement> & {
 }
 
 export function CimgClipButton(props: HTMLAttributes<HTMLDivElement> & {
-  code:   number
-  info?:  YGOPROCardInfo,
-  label:  JSX.Element
+  code:        number
+  info?:       YGOPROCardInfo,
+  renderTitle: (info?: YGOPROCardInfo) => JSX.Element
+  renderLabel: (info?: YGOPROCardInfo) => JSX.Element
 }) {
-  const { code, info,  label, ...divprops } = props
+  const { code, info, renderTitle, renderLabel, ...divprops } = props
   const [ci] = usePromise(async () => {
     return info ?? window.ipc.queryCardInfo(code)
   }, [code])
@@ -34,8 +35,8 @@ export function CimgClipButton(props: HTMLAttributes<HTMLDivElement> & {
   return <div className={style.cimgclipbtn + ' cimgclipbtn'} {...divprops}>
     <CimgClip code={props.code} />
     <div className={style.cimgclipbtnlbl}>
-      <div>{ci?.name ?? 'loading...'}</div>
-      <div>{props.label}</div>
+      <div>{renderTitle(ci)}</div>
+      <div>{renderLabel(ci)}</div>
     </div>
   </div>
 }

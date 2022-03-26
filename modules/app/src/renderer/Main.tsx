@@ -47,7 +47,8 @@ export function MainPage() {
                 }
               }
             }
-            label={<span>Join</span>}
+            renderTitle={info => <span>{info?.name ?? '...loading...'}</span>}
+            renderLabel={() => <span>Join</span>}
           />)
         }
       </div>

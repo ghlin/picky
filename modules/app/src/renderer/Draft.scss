@@ -81,11 +81,18 @@ $cimg_border_width: 0.2rem;
       display: flex;
       padding-left: 0.3rem;
       padding-right: 0.3rem;
+      align-items: center;
 
+      justify-content: space-between;
       &.previewitemmonster { justify-content: space-between; }
       &.previewitemspell   { justify-content: space-around;  }
 
       align-items: center;
+
+      .attr {
+        height: 1.3rem;
+        width: auto;
+      }
     }
 
     &> div:first-child {
@@ -385,5 +392,6 @@ $cimg_border_width: 0.2rem;
 
   img {
     height: 1.2rem;
+    width:  auto;
   }
 }

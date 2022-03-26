@@ -69,7 +69,8 @@ export function Room() {
           room?.participants.map(p => <CimgClipButton
             key={p.uuid}
             code={p.image_id}
-            label={<span>{p.ready ? '已准备好' : '! 未准备好'}</span>}
+            renderTitle={info => <span>{info?.name ?? '...loading...'}</span>}
+            renderLabel={() => <span>{p.ready ? '已准备好' : '! 未准备好'}</span>}
           />)
         }
         <button

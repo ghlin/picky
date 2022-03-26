@@ -1,4 +1,4 @@
-import { atoi10, CTypeEnums, defined, Drafting, MATTRIBUTE_BY_CODE, MTYPES_BY_CODE, YGOPROCardInfo } from '@picky/shared'
+import { atoi10, CTypeEnums, defined, Drafting, MATTRIBUTE_BY_CODE, MTYPES_BY_CODE, PRETTY_CTYPES, PRETTY_MTYPES, YGOPROCardInfo } from '@picky/shared'
 import classnames from 'classnames'
 import { HTMLAttributes, useContext, useEffect, useState } from 'react'
 import ReactModal from 'react-modal'
@@ -118,8 +118,8 @@ function PreviewItemLabel({ info }: { info: YGOPROCardInfo }) {
     return <div className={classnames(style.previewitemlabel, style.previewitemmonster)}>
       <span>{aster}-{info.mlevel}</span>
       {ispend && <span>S.{info.mscale}</span>}
-      <span>ATK:{info.matk}</span>
-      {islink ? <span>-</span> : <span>DEF:{info.mdef}</span>}
+      <span>ATK:{normalizeADValue(info.matk)}</span>
+      {islink ? <span>-</span> : <span>DEF:{normalizeADValue(info.mdef)}</span>}
     </div>
   } else {
     return <div className={classnames(style.previewitemlabel, style.previewitemspell)}>
@@ -128,12 +128,23 @@ function PreviewItemLabel({ info }: { info: YGOPROCardInfo }) {
   }
 }
 
+function PreviewItemTitle({ info }: { info: YGOPROCardInfo }) {
+  const attrname = MATTRIBUTE_BY_CODE[info.mattribute]
+  const attrimg  = ATTR_TEXTURES[attrname]
+
+  return <div className={style.previewitemlabel}>
+    <span>{info.name}</span>
+    {attrimg && <span><img src={attrimg} className={style.attr} /></span>}
+  </div>
+}
+
 function DeckPreviewItem({ info, ...divprops }: HTMLAttributes<HTMLDivElement> & { info: YGOPROCardInfo }) {
   useEffect(() => { ReactTooltip.rebuild() }, [])
   return <div {...divprops} className={classnames(style.previewitem, ...(info?.types ?? []))}>
     <CimgClipButton
       code={info.code}
-      label={info ? <PreviewItemLabel info={info} /> : <></>}
+      renderLabel={info => info ? <PreviewItemLabel info={info} /> : <div />}
+      renderTitle={info => info ? <PreviewItemTitle info={info} /> : <span>loading...</span>}
     />
   </div>
 }
@@ -198,8 +209,8 @@ export function Draft() {
                     <span><img src={ATTR_TEXTURES[MATTRIBUTE_BY_CODE[info.mattribute]]} className={style.attr} /></span>
                   </div>
                   <div>
-                    <span>ATK: {info.matk}</span>
-                    {!info.types.includes('LINK') && <span>DEF: {info.mdef}</span>}
+                    <span>ATK: {normalizeADValue(info.matk)}</span>
+                    {!info.types.includes('LINK') && <span>DEF: {normalizeADValue(info.mdef)}</span>}
                     {info.types.includes('PENDULUM') && <span>SCALE: {info.mscale}</span>}
                   </div>
                 </>
@@ -310,10 +321,17 @@ export function Draft() {
   </div>
 }
 
+function normalizeADValue(v: number) {
+  if (v === -2) { return '?'    }
+  if (v === -1) { return 'X000' }
+  return v.toString()
+}
+
 function renderTooltip(info: YGOPROCardInfo, extra: string[]) {
   const attrname  = MATTRIBUTE_BY_CODE[info.mattribute]
   const attrimg   = ATTR_TEXTURES[attrname]
-  const mtypename = MTYPES_BY_CODE[info.mtype]
+  const mtypename = PRETTY_MTYPES[MTYPES_BY_CODE[info.mtype]] + '族'
+  const ismonster = info.types.includes('MONSTER')
 
   return <div className={classnames(FlexV, style.tooltip)}>
     {
@@ -327,20 +345,20 @@ function renderTooltip(info: YGOPROCardInfo, extra: string[]) {
           }
         </div>
 
-        <div><span>{info.types.join(' / ')}</span></div>
-
         {
-          info.types.includes('MONSTER') && <>
+          ismonster ? <>
             <div>
-              {mtypename && <span>{mtypename}</span>}
+              {mtypename && <span>{[mtypename, ...info.types.map(t => PRETTY_CTYPES[t])].join(' / ')}</span>}
               {attrimg && <span><img src={attrimg} className={style.attr} /></span>}
             </div>
             <div>
-              <span>ATK: {info.matk}</span>
-              {!info.types.includes('LINK') && <span>DEF: {info.mdef}</span>}
+              <span>ATK: {normalizeADValue(info.matk)}</span>
+              {!info.types.includes('LINK') && <span>DEF: {normalizeADValue(info.mdef)}</span>}
               {info.types.includes('PENDULUM') && <span>SCALE: {info.mscale}</span>}
             </div>
-          </>
+          </> : <div>
+            <span>{info.types.map(t => PRETTY_CTYPES[t]).join(' / ')}</span>
+          </div>
         }
 
         <div>
