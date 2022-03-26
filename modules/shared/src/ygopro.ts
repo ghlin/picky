@@ -52,6 +52,7 @@ export const MATTRIBUTES = {
   DARK:   0x000000000020,
   DEVINE: 0x000000000040,
 }
+
 export const MATTRIBUTE_BY_CODE: Record<number, keyof typeof MATTRIBUTES> = {
   [0x000000000001]: 'EARTH',
   [0x000000000002]: 'WATER',
@@ -118,3 +119,70 @@ export const MTYPES_BY_CODE: Record<number, keyof typeof MTYPES> = {
 }
 
 export type CTypeEnums = keyof typeof CTYPES
+
+export const PRETTY_CTYPES = {
+    MONSTER:     '怪兽',
+    SPELL:       '魔法',
+    TRAP:        '陷阱',
+    NORMAL:      '通常',
+    EFFECT:      '效果',
+    FUSION:      '融合',
+    RITUAL:      '仪式',
+    TRAPMONSTER: '陷阱怪兽',
+    SPIRIT:      '灵魂',
+    UNION:       '同盟',
+    DUAL:        '二重',
+    TUNER:       '调整',
+    SYNCHRO:     '同调',
+    TOKEN:       '衍生物',
+    QUICKPLAY:   '速攻',
+    CONTINUOUS:  '永续',
+    EQUIP:       '装备',
+    FIELD:       '场地',
+    COUNTER:     '反击',
+    FLIP:        '翻转',
+    TOON:        '卡通',
+    XYZ:         '超量',
+    PENDULUM:    '灵摆',
+    SPSUMMON:    '特殊召唤',
+    LINK:        '连接',
+}
+
+export const PRETTY_MTYPES = {
+  WARRIOR:      '战士',
+  SPELLCASTER:  '魔法使',
+  FAIRY:        '天使',
+  FIEND:        '恶魔',
+  ZOMBIE:       '不死',
+  MACHINE:      '机械',
+  AQUA:         '水',
+  PYRO:         '炎',
+  ROCK:         '岩石',
+  WINDBEAST:    '鸟兽',
+  PLANT:        '植物',
+  INSECT:       '昆虫',
+  THUNDER:      '雷',
+  DRAGON:       '龙',
+  BEAST:        '兽',
+  BEASTWARRIOR: '兽战士',
+  DINOSAUR:     '恐龙',
+  FISH:         '鱼',
+  SEASERPENT:   '海龙',
+  REPTILE:      '爬虫类',
+  PSYCHO:       '念动力',
+  DEVINE:       '幻神兽',
+  CREATORGOD:   '创造神',
+  WYRM:         '幻龙',
+  CYBERSE:      '电子界',
+}
+
+export const PRETTY_MATTRIBUTES = {
+  EARTH:  '地',
+  WATER:  '水',
+  FIRE:   '炎',
+  WIND:   '风',
+  LIGHT:  '光',
+  DARK:   '暗',
+  DEVINE: '神',
+}
+

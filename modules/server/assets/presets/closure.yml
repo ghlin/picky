@@ -1,12 +1,15 @@
 _type:       progressive
 id:          progressive_demo
-name:        non-stupid-dispatch
-description: 根据之前的选择来分配后续的候选, 测试版本
+name:        non-stupid(I hope) dispatch
+description: 根据之前的选择来分配后续的候选, 测试版本2
 pools:
   - default
 filter: "!DELETE & !(FALLBACK & RITUAL)"
 links:
   - { id: 1003028,  expects: "MATCH_LEVEL_EQ_4 RACE_WARRIOR TYPE_XYZ"                    }
+  - { id: 81385346, expects: "RACE_DRAGON TYPE_MONSTER"                                  }
+  - { id: 96872283, expects: "TYPE_EQUIP"                                                }
+  - { id: 10802915, expects: "RACE_FIEND MATCH_LEVEL_EQ_3"                               }
   - { id: 10239627, expects: "RACE_SPELLCASTER MATCH_LEVEL_EQ_1"                         }
   - { id: 10239627, expects: "TYPE_PENDULUM"                                             }
   - { id: 10321588, expects: "TYPE_EQUIP"                                                }
@@ -27,6 +30,11 @@ links:
   - { id: 1249315,  expects: "TYPE_MONSTER MATCH_LEVEL_EQ_2"                             }
   - { id: 12503902, expects: "RACE_MACHINE"                                              }
   - { id: 12766474, expects: "ATTRIBUTE_DARK"                                            }
+  - { id: 75672051, expects: "ATTRIBUTE_DARK RACE_SPELLCASTER"                           }
+  - { id: 13521194, expects: "RACE_FIEND MATCH_ATK_LT_2000"                              }
+  - { id: 71645242, expects: "MATCH_ATK_EQ_800"                                          }
+  - { id: 71645242, expects: "MATCH_ATK_EQ_1600"                                         }
+  - { id: 71645242, expects: "MATCH_ATK_EQ_2400"                                         }
   - { id: 12766474, expects: "MATCH_LEVEL_GT_5 ATTRIBUTE_DARK"                           }
   - { id: 13090893, expects: "TYPE_LINK"                                                 }
   - { id: 13093792, expects: "TYPE_SPELL TYPE_NORMAL"                                    }
@@ -150,6 +158,9 @@ links:
   - { id: 32764863, expects: "ATTRIBUTE_WATER TYPE_XYZ"                                  }
   - { id: 32965616, expects: "TYPE_MONSTER"                                              }
   - { id: 33282498, expects: "MATCH_LEVEL_EQ_7 RACE_DRAGON"                              }
+  - { id: 33282498, expects: "MATCH_LEVEL_EQ_8 RACE_DRAGON"                              }
+  - { id: 87835759, expects: "MATCH_LEVEL_EQ_7 RACE_DRAGON"                              }
+  - { id: 87835759, expects: "MATCH_LEVEL_EQ_8 RACE_DRAGON"                              }
   - { id: 33347467, expects: "ATTRIBUTE_LIGHT"                                           }
   - { id: 33460840, expects: "RACE_DRAGON MATCH_LEVEL_EQ_7"                              }
   - { id: 33460840, expects: "RACE_DRAGON MATCH_LEVEL_EQ_8"                              }
@@ -311,14 +322,8 @@ links:
 
 defs:
   mf: &mf
-    filter:
-      - G1&Main&T2
-      - G1&Main&T3
-      - G1&Main&T4
-      - G1&Main&T4
-      - G1&Main&T5
-      - G1&Main&T5
-      - G1&Main&T5
+  mfs: &mfs
+  mft: &mft
   fbk: &fbkf
     filter:
       - G1&Main&T3
@@ -338,167 +343,110 @@ defs:
       - G2&Main
       - G2&Main
 
-  sync: &syncf
-    filter:
-      - G1&SYNCHRO&T2
-      - G1&SYNCHRO&T3
-      - G1&SYNCHRO&T4
-      - G1&SYNCHRO&T4
-      - G1&SYNCHRO&T5
-      - G1&SYNCHRO&T5
-      - G1&SYNCHRO&T5
-  xyz: &xyzf
-    filter:
-      - G1&XYZ&T2
-      - G1&XYZ&T3
-      - G1&XYZ&T4
-      - G1&XYZ&T4
-      - G1&XYZ&T5
-      - G1&XYZ&T5
-      - G1&XYZ&T5
-  link: &linkf
-    filter:
-      - G1&LINK&T2
-      - G1&LINK&T3
-      - G1&LINK&T4
-      - G1&LINK&T4
-      - G1&LINK&T5
-      - G1&LINK&T5
-      - G1&LINK&T5
+  main: &main
+    deals:
+      - n:  3
+        filter:
+          - G1&Main&MONSTER&T2
+          - G1&Main&MONSTER&T3
+          - G1&Main&MONSTER&T4
+          - G1&Main&MONSTER&T4
+          - G1&Main&MONSTER&T5
+          - G1&Main&MONSTER&T5
+          - G1&Main&MONSTER&T5
+      - n:  1
+        filter:
+          - G1&Main&SPELL&T2
+          - G1&Main&SPELL&T3
+          - G1&Main&SPELL&T4
+          - G1&Main&SPELL&T4
+          - G1&Main&SPELL&T5
+          - G1&Main&SPELL&T5
+          - G1&Main&SPELL&T5
+      - n:  1
+        filter:
+          - G1&Main&TRAP&T2
+          - G1&Main&TRAP&T3
+          - G1&Main&TRAP&T4
+          - G1&Main&TRAP&T4
+          - G1&Main&TRAP&T5
+          - G1&Main&TRAP&T5
+          - G1&Main&TRAP&T5
+      - n:  2
+        filter:
+          - _link
+          - G1&Main&T3
+          - G1&Main&T4
+          - G1&Main&T4
+          - G1&Main&T5
+          - G1&Main&T5
+          - G1&Main&T5
+        fallback:
+          - G2&Main
+      - n:      1
+        filter: G2&Main
+  ex: &ex
+    deals:
+      - n: 2
+        filter:
+          - G1&SYNCHRO&T2
+          - G1&SYNCHRO&T3
+          - G1&SYNCHRO&T4
+          - G1&SYNCHRO&T4
+          - G1&SYNCHRO&T5
+          - G1&SYNCHRO&T5
+          - G1&SYNCHRO&T5
+      - n: 2
+        filter:
+          - G1&XYZ&T2
+          - G1&XYZ&T3
+          - G1&XYZ&T4
+          - G1&XYZ&T4
+          - G1&XYZ&T5
+          - G1&XYZ&T5
+          - G1&XYZ&T5
+      - n: 2
+        filter:
+          - G1&LINK&T2
+          - G1&LINK&T3
+          - G1&LINK&T4
+          - G1&LINK&T4
+          - G1&LINK&T5
+          - G1&LINK&T5
+          - G1&LINK&T5
+      - n: 2
+        filter:
+          - _link
+          - Ex&T2
+          - Ex&T3
+          - Ex&T4
+          - Ex&T4
+          - Ex&T5
+          - Ex&T5
+          - Ex&T5
+        fallback:
+          - Ex&T2
+          - Ex&T3
+          - Ex&T4
+          - Ex&T4
+          - Ex&T5
+          - Ex&T5
+          - Ex&T5
 
+# 15 / 9
 rounds:
-  - repeats: 8
-    deals:
-      - n:  3
-        <<: *mf
-      - n:  2
-        filter:
-          - _link
-          - G1&Main&T3
-          - G1&Main&T4
-          - G1&Main&T4
-          - G1&Main&T5
-          - G1&Main&T5
-          - G1&Main&T5
-        fallback:
-          - G2&Main
-      - n:  1
-        filter: G2&Main
-
+  - repeats: 5
+    npicks:  2
+    <<: *main
   - repeats: 3
-    deals:
-      - n:      1
-        <<:     *syncf
-      - n:      1
-        <<:     *xyzf
-      - n:      1
-        <<:     *linkf
-      - n:      2
-        filter:
-          - _link
-          - Ex&T2
-          - Ex&T3
-          - Ex&T4
-          - Ex&T4
-          - Ex&T5
-          - Ex&T5
-          - Ex&T5
-        fallback:
-          - Ex&T2
-          - Ex&T3
-          - Ex&T4
-          - Ex&T4
-          - Ex&T5
-          - Ex&T5
-          - Ex&T5
-
-  - repeats: 8
-    deals:
-      - n:  3
-        <<: *mf
-      - n:  2
-        filter:
-          - _link
-          - G1&Main&T3
-          - G1&Main&T4
-          - G1&Main&T4
-          - G1&Main&T5
-          - G1&Main&T5
-          - G1&Main&T5
-        fallback:
-          - G2&Main
-
-      - n:  1
-        filter: G2&Main
-
+    <<: *ex
+  - repeats: 5
+    npicks:  2
+    <<: *main
   - repeats: 3
-    deals:
-      - n:      1
-        <<:     *syncf
-      - n:      1
-        <<:     *xyzf
-      - n:      1
-        <<:     *linkf
-      - n:      2
-        filter:
-          - _link
-          - Ex&T2
-          - Ex&T3
-          - Ex&T4
-          - Ex&T4
-          - Ex&T5
-          - Ex&T5
-          - Ex&T5
-        fallback:
-          - Ex&T2
-          - Ex&T3
-          - Ex&T4
-          - Ex&T4
-          - Ex&T5
-          - Ex&T5
-          - Ex&T5
-
-  - repeats: 8
-    deals:
-      - n:  3
-        <<: *mf
-      - n:  2
-        filter:
-          - _link
-          - G1&Main&T3
-          - G1&Main&T4
-          - G1&Main&T4
-          - G1&Main&T5
-          - G1&Main&T5
-          - G1&Main&T5
-        fallback:
-          - G2&Main
-      - n:  1
-        filter: G2&Main
-
+    <<: *ex
+  - repeats: 5
+    npicks:  2
+    <<: *main
   - repeats: 3
-    deals:
-      - n:      1
-        <<:     *syncf
-      - n:      1
-        <<:     *xyzf
-      - n:      1
-        <<:     *linkf
-      - n:      2
-        filter:
-          - _link
-          - Ex&T2
-          - Ex&T3
-          - Ex&T4
-          - Ex&T4
-          - Ex&T5
-          - Ex&T5
-          - Ex&T5
-        fallback:
-          - Ex&T2
-          - Ex&T3
-          - Ex&T4
-          - Ex&T4
-          - Ex&T5
-          - Ex&T5
-          - Ex&T5
+    <<: *ex

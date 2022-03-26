@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { atoi10, CTYPES, defined, Drafting, MATTRIBUTES, MTYPES, Preset, tuple, YGOPROCardInfo } from '@picky/shared'
+import { atoi10, CTYPES, defined, Drafting, MATTRIBUTES, MTYPES, Preset, PRETTY_CTYPES, PRETTY_MATTRIBUTES, PRETTY_MTYPES, tuple, YGOPROCardInfo } from '@picky/shared'
 import { DispatchMode } from '@picky/shared/src/preset'
 import { randomInt } from 'crypto'
 import { readdir, readFile } from 'fs/promises'
@@ -118,6 +118,7 @@ export class PresetService {
       tag:      'seql_dispatch',
       children: template.rounds.flatMap(r => range(0, r.repeats ?? 1).map(() => r)).map((round, idx)=> {
         const config = {
+          round,
           items,
           links,
           deals: round.deals.map(d => {
@@ -444,6 +445,7 @@ export interface YAMLProgressiveDispatchSchema {
 
   rounds: Array<{
     repeats?: number
+    npicks:   number
     deals: Array<{
       n:      number
       fallback: string | string[]
@@ -456,6 +458,7 @@ export interface YAMLProgressiveDispatchSchema {
 }
 
 export interface ProgressiveDispatcherConfig {
+  round: YAMLProgressiveDispatchSchema['rounds'][number]
   items: Preset.PoolItem[]
   links: Map<number, Array<{
     expects: string
@@ -522,12 +525,20 @@ export function compileLink(src: string) {
     return true
   }
 
-  const hints = tfilters.concat(rfilters).concat(afilters).concat(vfilters.map(([k, o, v]) => {
-    const rel = o === 'GT' ? '>=' : o === 'LT' ? '<=' : '=='
-    return k + rel + v
-  }))
+  const hints = tfilters.map(mkIdx(PRETTY_CTYPES))
+    .concat(rfilters.map(mkIdx(PRETTY_MTYPES, '族')))
+    .concat(afilters.map(mkIdx(PRETTY_MATTRIBUTES, '属性')))
+    .concat(vfilters.map(([k, o, v]) => {
+      const key = k === 'ATK' ? '攻击力' : k === 'DEF' ? '守备力' : '等级'
+      const rel = o === 'GT' ? '≥' : o === 'LT' ? '≤' : '='
+      return key + rel + v
+    }))
 
   return { filter, hints, context: { tfilters, rfilters, afilters, vfilters } }
+}
+
+function mkIdx(dict: Record<string, string>, postfix = '') {
+  return (tag: string) => (dict[tag] ?? '<??>') + postfix
 }
 
 export class ProgressiveDispatcher implements Dispatcher {
@@ -551,7 +562,7 @@ export class ProgressiveDispatcher implements Dispatcher {
   }>) {
     return {
       tag:        'sealed_dispatching' as const,
-      npicks:     { min: 1, max: 1 },
+      npicks:     { min: this.config.round.npicks ?? 1, max: this.config.round.npicks ?? 1 },
       dispatches: players.map(
         p => this._dispatch(p.picked).map((item, idx) => this._attachMeta(':' + idx, item.pack))
       )
