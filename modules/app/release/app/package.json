@@ -1,6 +1,6 @@
 {
   "name": "picky",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "draft/unsealed duel for ygopro",
   "main": "./dist/main/main.js",
   "author": {
@@ -13,8 +13,6 @@
     "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts",
     "postinstall": "yarn electron-rebuild && yarn link-modules"
   },
-  "dependencies": {
-    "sql.js": "^1.6.2"
-  },
+  "dependencies": { },
   "license": "MIT"
 }

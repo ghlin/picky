@@ -177,7 +177,6 @@
     "regenerator-runtime": "^0.13.9",
     "rxjs": "^7.1.0",
     "socket.io-client": "^4.4.1",
-    "sql.js": "^1.6.2",
     "use-local-storage": "^2.2.6",
     "uuid": "^8.3.2"
   },

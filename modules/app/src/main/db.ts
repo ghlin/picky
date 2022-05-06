@@ -1,9 +1,9 @@
 import { CTYPES, YGOPROCardInfo } from '@picky/shared'
 import { readFile } from 'fs/promises'
-import initSqlJs from 'sql.js'
 import { getAssetPath } from './util'
 
-const instance = initSqlJs({ locateFile: () => getAssetPath('sqljs.wasm') })
+const initSqlJs = (require)('./sql.js')
+const instance  = initSqlJs({ locateFile: () => getAssetPath('sqljs.wasm') })
 
 export async function loadCDB(path: string) {
   const SQL = await instance
