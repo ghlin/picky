@@ -152,6 +152,7 @@ export class DraftGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
     c_use_preset: async ({ asserts, data }) => {
       const { room, room_id } = asserts.room()
+      // FIXME: update preset.{name,description} as well. 2022-05-04 16:16:04
       room.preset.id = data.id
       this.server.to(room_id).emit('M', Drafting.mkmsg('s_room_info', this._makeRoomInfo(room_id, room)))
       return {}

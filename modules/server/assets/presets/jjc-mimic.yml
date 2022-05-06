@@ -6,6 +6,8 @@ uses:
   - pool: default
     alias: C
 filter: '!RITUAL' # rituals are bundled.
+configs:
+  uniq: true
 defs:
   merge_mode: &mode
     mode: sealed
@@ -18,7 +20,7 @@ defs:
         - rate: 1
           parts:
             - n:      4
-              filter: ['T1', 'T2', 'T3', 'T3']
+              filter: ['T1', 'T2', 'T3', 'T3', 'T3']
   normalseg: &normalseg
     <<: *mode
     segments:
@@ -26,7 +28,22 @@ defs:
         - rate: 1
           parts:
             - n:      4
-              filter: ['T1', 'T2', 'T3', 'T3', 'T4', 'T4', 'T4', 'T5', 'T5', 'T5', 'T5', 'T5', 'T5']
+              filter:
+                - T1
+                - T1
+                - T1
+                - T2
+                - T2
+                - T2
+                - T3
+                - T3
+                - T3
+                - T4
+                - T4
+                - T4
+                - T5
+                - T5
+                - T5
 
 patterns:
   - seql:

@@ -75,6 +75,12 @@ export function hasCode(e: Error): e is ErrorWithCode {
 }
 
 export function initialize() {
+  // fix <loading> for older version
+  const image_id = +localStorage.getItem(Keys.AVATAR)!
+  if (!image_id) {
+    localStorage.setItem(Keys.AVATAR, '24154052' /* 原型机灵 */)
+  }
+
   const socket = io(localStorage.getItem('SERVER_URL') || 'http://49.232.147.104:5003')
   const rx$    = new Subject<Drafting.S_Msg>()
 

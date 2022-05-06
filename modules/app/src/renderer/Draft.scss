@@ -74,6 +74,10 @@ $cimg_border_width: 0.2rem;
       &:global(.PENDULUM.EFFECT)  { border-image: linear-gradient(180deg, $ti_effect  0%, $ti_effect  40%, $ti_spell 60%, $ti_spell 100%) 1; }
       &:global(.PENDULUM.SYNCHRO) { border-image: linear-gradient(180deg, $ti_synchro 0%, $ti_synchro 40%, $ti_spell 60%, $ti_spell 100%) 1; }
       &:global(.PENDULUM.XYZ)     { border-image: linear-gradient(180deg, $ti_xyz     0%, $ti_xyz     40%, $ti_spell 60%, $ti_spell 100%) 1; }
+
+      &:global(.TUNER) > :global(.cimgclipbtn) > div > div:first-child {
+        color: cyan;
+      }
     }
 
     .previewitemlabel {
@@ -377,6 +381,14 @@ $cimg_border_width: 0.2rem;
   width: 24rem;
   justify-content: start;
 
+  &:global(.TUNER) {
+    .mlevel, .name { color: cyan; }
+  }
+
+  :global(.TUNER).tttypes {
+    color: cyan;
+  }
+
   > div {
     margin: 0.3rem;
     width: 100%;
@@ -387,6 +399,25 @@ $cimg_border_width: 0.2rem;
     > span, p {
       margin: 0.2em;
       padding: 0.3em;
+    }
+
+    span.tttypes {
+      padding-top: 0.7em;
+      padding-bottom: 0.7em;
+      padding-right: 0.3em;
+      margin-top: 0.2em;
+      margin-bottom: 0.2em;
+
+      &:first-child {
+        padding-left: 0.5em;
+      }
+
+      &:not(:last-child) {
+        &::after {
+          padding-left: 0.3em;
+          content: '/';
+        }
+      }
     }
   }
 

@@ -113,7 +113,7 @@ export class DraftingSession {
       })
 
       do {
-        const selection = await this.emit<Drafting.PickSelection>(p.uuid, pickreq)
+        const selection = await this._emitPickReq(p.uuid, pickreq)
         const picks     = pickreq.candidates.filter(c => selection.picks.includes(c.id))
 
         if (picks.length > d.npicks.max || picks.length < d.npicks.min) {
@@ -155,7 +155,7 @@ export class DraftingSession {
         })
 
         do {
-          const selection = await this.emit<Drafting.PickSelection>(p.uuid, pickreq)
+          const selection = await this._emitPickReq(p.uuid, pickreq)
           const picks     = candidates.filter(c =>  selection.picks.includes(c.id))
 
           if (picks.length !== pickreq.npicks) {
@@ -167,11 +167,20 @@ export class DraftingSession {
           p.selections[req_id] = picks
           dispatches[index]    = candidates.filter(c => !selection.picks.includes(c.id))
 
-          this._picked(p.uuid, req_id)
-          return
+          return this._picked(p.uuid, req_id)
         } while (true)
       }))
     }
+  }
+
+  private async _emitPickReq(whom: string, pickreq: Drafting.MsgOf<'s_pick_request'>) {
+    const pickreqP = this.emit<Drafting.PickSelection>(whom, pickreq)
+    this._emit(whom, Drafting.mkmsg('s_pick_progress', {
+      draft_id:     this.id,
+      req_id:       pickreq.req_id,
+      participants: this.participants.map(p => ({ uuid: p.uuid, image_id: p.image_id, done: !!p.selections[pickreq.req_id] }))
+    }))
+    return pickreqP
   }
 
   private async _picked(who: string, req_id: string) {

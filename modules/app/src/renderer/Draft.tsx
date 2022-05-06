@@ -35,15 +35,14 @@ function Pickreq({ drafting, pickreq, selection, expand, ...divprops }: {
   const picking  = progress.filter(p => !p.done && p.uuid !== ctx.session?.bound?.uuid)
 
   const [slowpickers] = usePromise(() => Promise.all(picking.map(p => window.ipc.queryCardInfo(p.image_id))), [picking.length])
+  const slownames = (slowpickers ?? []).map(whom => whom?.name ?? 'loading').map(s => '[' + s + ']').join(', ')
 
   if (selection?.state === 'confirmed') {
     if (picking.length === 0) { return <></> }
     return <div {...divprops} className={classnames(style.section, style.picking, FlexV, FullW)}>
       <div className={classnames(Flex, FullW)}>
         <span>{prefix}</span>
-        <span className={classnames(style.slowpickers, Flex)}>
-          等待{ (slowpickers ?? []).map(whom => whom?.name ?? 'loading').map(s => '[' + s + ']').join(', ')}选择...
-        </span>
+        <span className={classnames(style.slowpickers, Flex)}>等待{slownames}选择...</span>
         <span />
       </div>
     </div>
@@ -63,14 +62,14 @@ function Pickreq({ drafting, pickreq, selection, expand, ...divprops }: {
     }
   }
 
-  const center = selection?.state === 'pending' ? <button disabled>提交中</button> : <button
+  const confirming = selection?.state === 'pending' ? <button disabled>提交中</button> : <button
     className={UI}
     disabled={!fine}
     onClick={() => ctx.update.select(drafting.id, pickreq.req_id, pickreq.candidates.filter(c => picks.includes(c.id)))}
   >
     确认选择
   </button>
-
+  const hinting = picking.length === 0 ? '对手已确认' : `选择中: ${slownames}`
   const pile = <div className={classnames(style.pile, FullW, Flex, fine ? style.fine : lack ? style.lack : style.over)} >
     {
       pickreq.candidates.map(c => {
@@ -104,7 +103,7 @@ function Pickreq({ drafting, pickreq, selection, expand, ...divprops }: {
   </div>
 
   return <div {...divprops} className={classnames(style.section, style.picking, FlexV, FullW)}>
-    <div className={classnames(Flex, FullW)}><span>{prefix} / {hint}</span>{center}<span /></div>
+    <div className={classnames(Flex, FullW)}><span>{prefix} / {hint}, {hinting}</span>{confirming}<span /></div>
     {pile}
   </div>
 }
@@ -333,11 +332,11 @@ function renderTooltip(info: YGOPROCardInfo, extra: string[]) {
   const mtypename = PRETTY_MTYPES[MTYPES_BY_CODE[info.mtype]] + '族'
   const ismonster = info.types.includes('MONSTER')
 
-  return <div className={classnames(FlexV, style.tooltip)}>
+  return <div className={classnames(FlexV, style.tooltip, info.types)}>
     {
       info && <>
         <div>
-          <span>{info.name}</span>
+          <span className={style.name}>{info.name}</span>
           {
             info.types.includes('MONSTER') && <span className={style.mlevel}>
               {info.mlevel && (info.types.includes('XYZ') ? 'Rank' : info.types.includes('LINK') ? 'Link' : 'Level' ) + '-' + info.mlevel}
