@@ -1130,22 +1130,6 @@
     },
     {
       "pack": [
-        1992816
-      ],
-      "tags": [
-        "T5",
-        "G2",
-        "P9",
-        "Ex",
-        "L9",
-        "S0",
-        "MONSTER",
-        "EFFECT",
-        "XYZ"
-      ]
-    },
-    {
-      "pack": [
         2009101
       ],
       "tags": [
@@ -1564,22 +1548,6 @@
     },
     {
       "pack": [
-        2609443
-      ],
-      "tags": [
-        "T5",
-        "P7",
-        "G2",
-        "Ex",
-        "L5",
-        "S0",
-        "MONSTER",
-        "EFFECT",
-        "XYZ"
-      ]
-    },
-    {
-      "pack": [
         2618045
       ],
       "tags": [
@@ -1606,22 +1574,6 @@
         "S0",
         "SPELL",
         "QUICKPLAY"
-      ]
-    },
-    {
-      "pack": [
-        2665273
-      ],
-      "tags": [
-        "T5",
-        "P7",
-        "G2",
-        "Ex",
-        "L9",
-        "S0",
-        "MONSTER",
-        "EFFECT",
-        "XYZ"
       ]
     },
     {
@@ -4462,22 +4414,6 @@
     },
     {
       "pack": [
-        8165596
-      ],
-      "tags": [
-        "T5",
-        "G1",
-        "P7",
-        "Ex",
-        "L8",
-        "S0",
-        "MONSTER",
-        "EFFECT",
-        "XYZ"
-      ]
-    },
-    {
-      "pack": [
         8192327
       ],
       "tags": [
@@ -6332,20 +6268,6 @@
     },
     {
       "pack": [
-        11830996
-      ],
-      "tags": [
-        "T5",
-        "G1",
-        "P7",
-        "Main",
-        "L0",
-        "S0",
-        "SPELL"
-      ]
-    },
-    {
-      "pack": [
         11908584
       ],
       "tags": [
@@ -6402,21 +6324,6 @@
         "MONSTER",
         "EFFECT",
         "XYZ"
-      ]
-    },
-    {
-      "pack": [
-        12021072
-      ],
-      "tags": [
-        "T5",
-        "G2",
-        "P9",
-        "Main",
-        "L0",
-        "S0",
-        "SPELL",
-        "CONTINUOUS"
       ]
     },
     {
@@ -8097,21 +8004,6 @@
     },
     {
       "pack": [
-        15397015
-      ],
-      "tags": [
-        "T3",
-        "G1",
-        "P5",
-        "Main",
-        "L4",
-        "S0",
-        "MONSTER",
-        "EFFECT"
-      ]
-    },
-    {
-      "pack": [
         15419596
       ],
       "tags": [
@@ -9348,21 +9240,6 @@
     },
     {
       "pack": [
-        17626381
-      ],
-      "tags": [
-        "T3",
-        "G1",
-        "P5",
-        "Main",
-        "L0",
-        "S0",
-        "SPELL",
-        "CONTINUOUS"
-      ]
-    },
-    {
-      "pack": [
         17649753
       ],
       "tags": [
@@ -10062,22 +9939,6 @@
     },
     {
       "pack": [
-        18963306
-      ],
-      "tags": [
-        "T5",
-        "P7",
-        "G2",
-        "Ex",
-        "L8",
-        "S0",
-        "MONSTER",
-        "EFFECT",
-        "XYZ"
-      ]
-    },
-    {
-      "pack": [
         18964575
       ],
       "tags": [
@@ -10425,21 +10286,6 @@
         "MONSTER",
         "EFFECT",
         "TUNER"
-      ]
-    },
-    {
-      "pack": [
-        19508728
-      ],
-      "tags": [
-        "T1",
-        "G1",
-        "P3",
-        "Main",
-        "L0",
-        "S0",
-        "SPELL",
-        "EQUIP"
       ]
     },
     {
@@ -14312,21 +14158,6 @@
     },
     {
       "pack": [
-        28486799
-      ],
-      "tags": [
-        "T4",
-        "G1",
-        "P6",
-        "Main",
-        "L0",
-        "S0",
-        "SPELL",
-        "CONTINUOUS"
-      ]
-    },
-    {
-      "pack": [
         28565527
       ],
       "tags": [
@@ -15785,22 +15616,6 @@
         "S0",
         "MONSTER",
         "EFFECT"
-      ]
-    },
-    {
-      "pack": [
-        31801517
-      ],
-      "tags": [
-        "T5",
-        "G2",
-        "P9",
-        "Ex",
-        "L8",
-        "S0",
-        "MONSTER",
-        "EFFECT",
-        "XYZ"
       ]
     },
     {
@@ -20641,21 +20456,6 @@
         "L0",
         "S0",
         "SPELL"
-      ]
-    },
-    {
-      "pack": [
-        42560034
-      ],
-      "tags": [
-        "T5",
-        "G1",
-        "P7",
-        "Main",
-        "L0",
-        "S0",
-        "SPELL",
-        "QUICKPLAY"
       ]
     },
     {
@@ -33737,21 +33537,6 @@
     },
     {
       "pack": [
-        76375976
-      ],
-      "tags": [
-        "T3",
-        "G1",
-        "P5",
-        "Main",
-        "L0",
-        "S0",
-        "SPELL",
-        "FIELD"
-      ]
-    },
-    {
-      "pack": [
         76403456
       ],
       "tags": [
@@ -39269,20 +39054,6 @@
     },
     {
       "pack": [
-        87669904
-      ],
-      "tags": [
-        "T5",
-        "G1",
-        "P7",
-        "Main",
-        "L0",
-        "S0",
-        "SPELL"
-      ]
-    },
-    {
-      "pack": [
         87742943
       ],
       "tags": [
@@ -39434,22 +39205,6 @@
     {
       "pack": [
         88120966
-      ],
-      "tags": [
-        "T5",
-        "G2",
-        "P9",
-        "Ex",
-        "L8",
-        "S0",
-        "MONSTER",
-        "EFFECT",
-        "XYZ"
-      ]
-    },
-    {
-      "pack": [
-        88177324
       ],
       "tags": [
         "T5",
@@ -44670,6 +44425,675 @@
         "S0",
         "MONSTER",
         "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        10851853
+      ],
+      "tags": [
+        "T4",
+        "G1",
+        "Main",
+        "L4",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "SPSUMMON"
+      ]
+    },
+    {
+      "pack": [
+        12527118
+      ],
+      "tags": [
+        "T4",
+        "G1",
+        "Main",
+        "L3",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        16475473
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L5",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        17008760
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL"
+      ]
+    },
+    {
+      "pack": [
+        19739265
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "QUICKPLAY"
+      ]
+    },
+    {
+      "pack": [
+        2263869
+      ],
+      "tags": [
+        "T3",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL"
+      ]
+    },
+    {
+      "pack": [
+        27104921
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "TRAP",
+        "CONTINUOUS"
+      ]
+    },
+    {
+      "pack": [
+        28827503
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL"
+      ]
+    },
+    {
+      "pack": [
+        29508347
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "QUICKPLAY"
+      ]
+    },
+    {
+      "pack": [
+        30037118
+      ],
+      "tags": [
+        "T3",
+        "G2",
+        "Main",
+        "L4",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        30068121
+      ],
+      "tags": [
+        "T3",
+        "G1",
+        "Main",
+        "L3",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        3103067
+      ],
+      "tags": [
+        "T3",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "TRAP"
+      ]
+    },
+    {
+      "pack": [
+        31213049
+      ],
+      "tags": [
+        "T4",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "TRAP",
+        "COUNTER"
+      ]
+    },
+    {
+      "pack": [
+        31259606
+      ],
+      "tags": [
+        "T5",
+        "G2",
+        "Main",
+        "L4",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        32335697
+      ],
+      "tags": [
+        "T5",
+        "G2",
+        "Main",
+        "L0",
+        "S0",
+        "TRAP"
+      ]
+    },
+    {
+      "pack": [
+        35283277
+      ],
+      "tags": [
+        "T5",
+        "G2",
+        "Main",
+        "L4",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        35405755
+      ],
+      "tags": [
+        "T3",
+        "G1",
+        "Main",
+        "L1",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "SPSUMMON"
+      ]
+    },
+    {
+      "pack": [
+        35479109
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "TRAP"
+      ]
+    },
+    {
+      "pack": [
+        38105306
+      ],
+      "tags": [
+        "T3",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "TRAP",
+        "CONTINUOUS"
+      ]
+    },
+    {
+      "pack": [
+        43940008
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "FIELD"
+      ]
+    },
+    {
+      "pack": [
+        44092304
+      ],
+      "tags": [
+        "T3",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "EQUIP"
+      ]
+    },
+    {
+      "pack": [
+        45154513
+      ],
+      "tags": [
+        "T4",
+        "G2",
+        "Main",
+        "L8",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        4825390
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "TRAP"
+      ]
+    },
+    {
+      "pack": [
+        49658464
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "CONTINUOUS"
+      ]
+    },
+    {
+      "pack": [
+        50699850
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L3",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        5168381
+      ],
+      "tags": [
+        "T3",
+        "G2",
+        "Main",
+        "L0",
+        "S0",
+        "TRAP"
+      ]
+    },
+    {
+      "pack": [
+        52253888
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L2",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        56099748
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L6",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "TUNER"
+      ]
+    },
+    {
+      "pack": [
+        57946551
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L5",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        5833312
+      ],
+      "tags": [
+        "T3",
+        "G2",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "FIELD"
+      ]
+    },
+    {
+      "pack": [
+        60465049
+      ],
+      "tags": [
+        "T2",
+        "G1",
+        "Ex",
+        "L11",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "SYNCHRO"
+      ]
+    },
+    {
+      "pack": [
+        63086455
+      ],
+      "tags": [
+        "T3",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "TRAP"
+      ]
+    },
+    {
+      "pack": [
+        64211118
+      ],
+      "tags": [
+        "T5",
+        "G2",
+        "Ex",
+        "L5",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "LINK"
+      ]
+    },
+    {
+      "pack": [
+        65187687
+      ],
+      "tags": [
+        "T4",
+        "G2",
+        "Ex",
+        "L8",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "SYNCHRO"
+      ]
+    },
+    {
+      "pack": [
+        65433790
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "CONTINUOUS"
+      ]
+    },
+    {
+      "pack": [
+        66156348
+      ],
+      "tags": [
+        "T5",
+        "G2",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "QUICKPLAY"
+      ]
+    },
+    {
+      "pack": [
+        67248304
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L3",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "FLIP"
+      ]
+    },
+    {
+      "pack": [
+        67378935
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL",
+        "CONTINUOUS"
+      ]
+    },
+    {
+      "pack": [
+        76352503
+      ],
+      "tags": [
+        "T5",
+        "G2",
+        "Main",
+        "L6",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        77672444
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L6",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        78360952
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L6",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        80993256
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Ex",
+        "L3",
+        "S0",
+        "MONSTER",
+        "EFFECT",
+        "XYZ"
+      ]
+    },
+    {
+      "pack": [
+        9070454
+      ],
+      "tags": [
+        "T3",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "TRAP",
+        "COUNTER"
+      ]
+    },
+    {
+      "pack": [
+        91706817
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "SPELL"
+      ]
+    },
+    {
+      "pack": [
+        93953933
+      ],
+      "tags": [
+        "T3",
+        "G1",
+        "Main",
+        "L1",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        94076521
+      ],
+      "tags": [
+        "T5",
+        "G2",
+        "Main",
+        "L2",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        98898163
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L8",
+        "S0",
+        "MONSTER",
+        "EFFECT"
+      ]
+    },
+    {
+      "pack": [
+        7608148
+      ],
+      "tags": [
+        "T5",
+        "G1",
+        "Main",
+        "L0",
+        "S0",
+        "TRAP"
       ]
     }
   ]
