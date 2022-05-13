@@ -2,12 +2,9 @@
  * Base webpack config used across other specific configs
  */
 
-import path from 'path';
-import webpack from 'webpack';
-import { dependencies as externals } from '../../release/app/package.json';
-import webpackPaths from './webpack.paths';
-
-const typeormshim = path.resolve(__dirname, '../../src/renderer/typeorm-model-shim')
+import webpack from 'webpack'
+import { dependencies as externals } from '../../release/app/package.json'
+import webpackPaths from './webpack.paths'
 
 const configuration: webpack.Configuration = {
   externals: [...Object.keys(externals || {})],
@@ -42,9 +39,8 @@ const configuration: webpack.Configuration = {
    * Determine the array of extensions that should be used to resolve modules.
    */
   resolve: {
-    alias: { typeorm: typeormshim },
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
-    modules: [webpackPaths.srcPath, 'node_modules'],
+    modules:    [webpackPaths.srcPath, 'node_modules'],
   },
 
   plugins: [
@@ -52,6 +48,6 @@ const configuration: webpack.Configuration = {
       NODE_ENV: 'production',
     }),
   ],
-};
+}
 
-export default configuration;
+export default configuration
