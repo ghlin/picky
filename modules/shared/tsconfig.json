@@ -1,5 +1,5 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": { "outDir": "dist", "composite": true },
-  "include": ["src/**/*.ts", "src/**/*.json"]
+  "compilerOptions": { "outDir": "dist", "composite": true, "allowJs": true },
+  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.json"]
 }

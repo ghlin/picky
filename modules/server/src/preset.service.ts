@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { atoi10, CTYPES, defined, Drafting, MATTRIBUTES, MTYPES, Preset, PRETTY_CTYPES, PRETTY_MATTRIBUTES, PRETTY_MTYPES, tuple, YGOPROCardInfo } from '@picky/shared'
 import { DispatchMode } from '@picky/shared/src/preset'
 import { randomInt } from 'crypto'
-import { readdir, readFile } from 'fs/promises'
+import { readdir, readFile, writeFile } from 'fs/promises'
 import { join } from 'path'
 import { groupBy, identity, pick, range } from 'ramda'
 import YAML from 'yaml'
@@ -32,6 +32,11 @@ export class PresetService {
     this.logger.log(`${this.db.size} entries loaded`)
   }
 
+  async syncPool(pool: Preset.Pool) {
+    const pooldir = G_CONFIG.dirs?.pool ?? join(__dirname, '..', 'assets', 'pools')
+    await writeFile(join(pooldir, pool.id + `.sync.${Date.now()}.json`), JSON.stringify(pool))
+  }
+
   async loadPresets() {
     const presetdir = G_CONFIG.dirs?.preset ?? join(__dirname, '..', 'assets', 'presets')
     const files     = await readdir(presetdir)
@@ -57,7 +62,7 @@ export class PresetService {
     const pooldir = G_CONFIG.dirs?.pool ?? join(__dirname, '..', 'assets', 'pools')
     const files   = await readdir(pooldir)
 
-    for (const file of files) {
+    for (const file of files.sort()) {
       try {
         const content = await readFile(join(pooldir, file))
         const pool    = JSON.parse(content.toString()) as Preset.Pool

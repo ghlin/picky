@@ -1,3 +1,4 @@
+import type { Drafting } from '@picky/shared'
 import classnames from 'classnames'
 import { useContext } from 'react'
 import toast from 'react-hot-toast'
@@ -21,6 +22,19 @@ export function MainPage() {
     ctx.update.room(room)
   }
 
+  const join = async (r: Drafting.BaseRoomInfo) => {
+    try {
+      await ctx.request('c_join_room', { room_id: r.room_id }).then(ctx.update.room)
+    } catch (e: any) {
+      if (hasCode(e)) {
+        toast.error(`轮抽已经开始!`)
+        ctx.update.refresh()
+      } else {
+        ctx.handle(e)
+      }
+    }
+  }
+
   if (ctx.drafting)     { return <Draft /> }
   if (ctx.session.room) { return <Room  /> }
 
@@ -33,20 +47,7 @@ export function MainPage() {
           ctx.rooms.map(r => <CimgClipButton
             key={r.room_id}
             code={r.image_id}
-            onClick={
-              async () => {
-                try {
-                  await ctx.request('c_join_room', { room_id: r.room_id }).then(ctx.update.room)
-                } catch (e: any) {
-                  if (hasCode(e)) {
-                    toast.error(`轮抽已经开始!`)
-                    ctx.update.refresh()
-                  } else {
-                    ctx.handle(e)
-                  }
-                }
-              }
-            }
+            onClick={() => join(r)}
             renderTitle={info => <span>{info?.name ?? '...loading...'}</span>}
             renderLabel={() => <span>Join</span>}
           />)
@@ -62,6 +63,7 @@ export function MainPage() {
             创建房间
           </button>
         </div>
+
         <div className={FullW}>
           <button
             disabled={!ctx.session.bound}
@@ -70,14 +72,9 @@ export function MainPage() {
             刷新房间
           </button>
         </div>
+
         <div className={FullW}>
-          <Link to='/settings'>
-            <button
-              className={classnames(UI, FullW)}
-            >
-              设置
-            </button>
-          </Link>
+          <Link to='/settings'><button className={classnames(UI, FullW)}>设置</button></Link>
         </div>
       </div>
     </div>

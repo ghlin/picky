@@ -38,6 +38,10 @@ const configuration: webpack.Configuration = {
     path.join(webpackPaths.srcRendererPath, 'index.tsx'),
   ],
 
+  resolve: {
+    fallback: { path: false, fs: false }
+  },
+
   output: {
     path: webpackPaths.distRendererPath,
     publicPath: './',

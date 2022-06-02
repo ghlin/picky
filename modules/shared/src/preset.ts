@@ -115,7 +115,7 @@ function *_tokenize(src: string) {
 }
 
 export class TagExprParser {
-  lookahead: string
+  lookahead: string | null
   constructor(readonly stream: IterableIterator<string>) {
     this.next()
   }
